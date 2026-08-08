@@ -304,7 +304,7 @@ Browser                              Server
 | Componente | Dove | Costo |
 |---|---|---|
 | Frontend | Cloudflare Pages | gratis |
-| API | VPS Hetzner CX22 (2 vCPU, 4 GB) | ~4,5 €/mese |
+| API | VPS Hetzner CX22 (2 vCPU, 4 GB) — **affittato a M4, non prima** | ~4,5 €/mese |
 | Reverse proxy + HTTPS | Caddy sul VPS (certificati automatici) | — |
 | Immagini container | GitHub Container Registry | gratis |
 | Modello + model card | HuggingFace Hub | gratis |
@@ -407,16 +407,22 @@ autenticazione · database · riaddestramento automatico · più modelli selezio
 
 | # | Milestone | Esito verificabile |
 |---|---|---|
-| M0 | **Catena completa ma stupida online** | Browser → API → VPS → risposta, con modello non addestrato |
+| M0 | **Catena completa ma stupida, in locale** | Browser → API in container → risposta, con modello assente. Immagine pubblicata su GHCR. Nessuna macchina affittata |
 | M1 | Dataset e baseline | Stanford Dogs caricato, split verificati, linear probe allenato |
 | M2 | Esperimenti | Tre modelli allenati, tabella accuratezza/latenza, candidato scelto |
 | M3 | Export | ONNX + int8, parity test verdi, statistiche OOD calcolate |
-| M4 | API completa | `/predict` reale con gate OOD, test sugli input cattivi |
+| M4 | API completa | `/predict` reale con gate OOD, test sugli input cattivi. **Qui si affitta il VPS**: da ora c'è qualcosa che vale la pena servire |
 | M5 | Ops | Caddy + HTTPS, rate limiting, log, deploy da CI |
 | M6 | Frontend | Drag-and-drop, risultati, tre stati del verdict, mobile |
 | M7 | Documentazione | README con i due numeri, model card, error analysis |
 
-**M0 è deliberatamente prima del dataset.** Tutti i problemi di infrastruttura vanno incontrati quando non c'è ancora niente da perdere, non alla fine con il modello buono in mano.
+**M0 è deliberatamente prima del dataset.** I problemi di infrastruttura vanno incontrati quando non c'è ancora niente da perdere, non alla fine con il modello buono in mano.
+
+**Ma M0 non affitta niente.** Una prima versione di questo piano metteva il VPS in M0. È stato corretto: il modello non esisterà per settimane, quindi affittare subito significa pagare un canone e spendere serate di lavoro ops per tenere online un endpoint che risponde `{"status": "ok"}`.
+
+La distinzione che conta non è *"macchina affittata sì o no"* ma *"artefatti di deploy collaudati sì o no"*. Quasi tutto ciò che può andare storto — `docker-compose.yml`, Caddy davanti all'API, variabili d'ambiente, healthcheck, restart policy, pubblicazione dell'immagine — **si verifica in locale e gratis**. Quando poi la macchina arriva, resta solo: installare Docker, copiare il compose, avviare.
+
+Resta genuinamente rimandato solo ciò che è standard e isolato: creazione del server, chiave SSH, firewall, DNS. Nessuno di questi interagisce con il lavoro sul modello.
 
 **Stima realistica:** 5–7 settimane lavorando la sera e nei weekend. Chi dice "un weekend" sta parlando del notebook, non di questo.
 
