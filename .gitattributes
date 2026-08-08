@@ -1,0 +1,47 @@
+# ─────────────────────────────────────────────────────────────
+# Normalizzazione dei fine-riga.
+#
+# Windows termina le righe con CRLF (\r\n), Linux con LF (\n).
+# Git puo convertirli, e senza regole esplicite lo fa in modo
+# diverso a seconda della macchina: il risultato e che lo stesso
+# file arriva nel container con caratteri invisibili di troppo.
+#
+# Il sintomo classico dentro un container Linux e un errore
+# tipo "not found" su un file che esiste chiaramente: il \r
+# finale viene letto come parte del nome.
+# ─────────────────────────────────────────────────────────────
+
+# Default: git decide da solo cosa e testo, e normalizza a LF
+# nel repository. Sul disco Windows resta CRLF, dove serve.
+* text=auto
+
+# ─── File destinati a girare su Linux: SEMPRE LF ───
+# Questi finiscono dentro il container o sul VPS. Se arrivano
+# con CRLF si rompono in modi difficili da diagnosticare.
+Dockerfile      text eol=lf
+*.dockerfile    text eol=lf
+.dockerignore   text eol=lf
+*.sh            text eol=lf
+*.yml           text eol=lf
+*.yaml          text eol=lf
+Caddyfile       text eol=lf
+Makefile        text eol=lf
+
+# ─── File destinati a Windows: CRLF ───
+*.bat           text eol=crlf
+*.cmd           text eol=crlf
+*.ps1           text eol=crlf
+
+# ─── Binari: mai toccati ───
+# Senza queste righe git potrebbe "normalizzare" dei byte
+# dentro un'immagine o un modello, corrompendoli.
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.ico           binary
+*.pdf           binary
+*.onnx          binary
+*.pt            binary
+*.pth           binary
+*.ckpt          binary
+*.safetensors   binary
