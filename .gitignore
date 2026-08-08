@@ -1,0 +1,84 @@
+# ─────────────────────────────────────────────────────────────
+# Ambienti virtuali Python
+# Ricostruibili da uv.lock — non vanno versionati.
+# ─────────────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+
+# ─────────────────────────────────────────────────────────────
+# Cache e artefatti di build Python
+# ─────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ─────────────────────────────────────────────────────────────
+# Dati e modelli
+# Pesanti e ricostruibili: i dataset si riscaricano con uno
+# script, i modelli vivono su HuggingFace Hub.
+# Attenzione: "data/" e "artifacts/" valgono a QUALSIASI
+# profondita nel repo, non solo alla radice.
+# ─────────────────────────────────────────────────────────────
+data/
+artifacts/
+*.onnx
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# ─────────────────────────────────────────────────────────────
+# Tracciamento esperimenti
+# ─────────────────────────────────────────────────────────────
+wandb/
+mlruns/
+runs/
+lightning_logs/
+
+# ─────────────────────────────────────────────────────────────
+# Node / frontend
+# ─────────────────────────────────────────────────────────────
+node_modules/
+dist/
+.vite/
+
+# ─────────────────────────────────────────────────────────────
+# Segreti e credenziali
+# In M5 qui passeranno chiavi SSH e variabili di deploy.
+# .env.example resta tracciato: documenta quali variabili
+# servono, senza contenerne i valori.
+# ─────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ─────────────────────────────────────────────────────────────
+# Sistema operativo ed editor
+# Desktop.ini e Thumbs.db compaiono da soli: il repo sta
+# dentro OneDrive.
+# ─────────────────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+
+# ─────────────────────────────────────────────────────────────
+# NON ignorati, di proposito
+#
+#   uv.lock            versioni esatte di tutto l'albero Python
+#   package-lock.json  idem per il frontend
+#
+# Sono generati, ma vanno committati: sono cio che garantisce
+# che container, CI e macchina di sviluppo installino
+# esattamente le stesse versioni. Ignorarli e l'errore che
+# distrugge la riproducibilita.
+# ─────────────────────────────────────────────────────────────
