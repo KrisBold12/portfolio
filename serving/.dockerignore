@@ -1,0 +1,16 @@
+# .dockerignore file for the serving directory
+
+# environment
+.venv/
+
+# Python cache
+**/__pycache__/
+**/*.pyc
+
+# Tools cache
+.pytest_cache/
+.ruff_cache/
+
+# Docker files
+Dockerfile
+.dockerignore
