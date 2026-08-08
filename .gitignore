@@ -64,7 +64,14 @@ dist/
 # Sistema operativo ed editor
 # Desktop.ini e Thumbs.db compaiono da soli: il repo sta
 # dentro OneDrive.
+#
+# .vscode/ contiene preferenze della singola macchina, non
+# configurazione di progetto. Se un domani servisse condividere
+# impostazioni davvero comuni, il modo e ignorare .vscode/*
+# e riammettere i singoli file con "!.vscode/nome.json".
 # ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
