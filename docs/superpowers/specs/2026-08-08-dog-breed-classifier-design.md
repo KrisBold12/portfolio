@@ -96,11 +96,13 @@ Accanto a `model.onnx` viene pubblicato `model.json`:
   "mean": [0.485, 0.456, 0.406],
   "std":  [0.229, 0.224, 0.225],
   "classes": ["affenpinscher", "..."],
-  "ood": { "method": "mahalanobis", "threshold": 0.0 }
+  "ood": { "method": "mahalanobis", "threshold": null }
 }
 ```
 
 Il serving legge quel file e si configura da solo. Non esistono due copie della verità, quindi non possono divergere.
+
+(`threshold` è `null` finché la taratura del gate OOD non lo determina, in M3.)
 
 ---
 
