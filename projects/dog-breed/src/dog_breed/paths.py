@@ -7,4 +7,4 @@ DATASET_DIR = DATA_DIR / "stanford_dogs"
 IMAGES_DIR = DATASET_DIR / "images"
 LISTS_DIR = DATASET_DIR / "lists"
 BREEDS_DIR = IMAGES_DIR / "Images"
-
+SPLIT_DIR = PROJECT_ROOT / "splits"
