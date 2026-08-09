@@ -22,11 +22,15 @@ build/
 # Dati e modelli
 # Pesanti e ricostruibili: i dataset si riscaricano con uno
 # script, i modelli vivono su HuggingFace Hub.
-# Attenzione: "data/" e "artifacts/" valgono a QUALSIASI
-# profondita nel repo, non solo alla radice.
+#
+# Le regole sono ANCORATE a projects/<nome>/ di proposito.
+# Una regola nuda "data/" varrebbe a qualsiasi profondita e
+# finirebbe per ignorare anche i package di codice chiamati
+# data/ (es. src/dog_breed/data/), facendo sparire dei sorgenti
+# dal repo senza che niente si rompa in locale.
 # ─────────────────────────────────────────────────────────────
-data/
-artifacts/
+projects/*/data/
+projects/*/artifacts/
 *.onnx
 *.pt
 *.pth
