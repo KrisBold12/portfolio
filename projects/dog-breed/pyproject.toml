@@ -32,3 +32,15 @@ explicit = true
 [tool.uv.sources]
 torch = { index="pytorch" }
 torchvision = { index = "pytorch" }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+    "dataset: needs the extracted dataset on disk (~750 MB); skipped when absent",
+]
