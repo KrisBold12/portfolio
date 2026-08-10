@@ -9,3 +9,6 @@ LISTS_DIR = DATASET_DIR / "lists"
 BREEDS_DIR = IMAGES_DIR / "Images"
 SPLIT_DIR = PROJECT_ROOT / "splits"
 SPLIT_FILE = SPLIT_DIR / "data_splits.csv"
+
+MODEL_DIR = PROJECT_ROOT / "artifacts"
+MODEL_FILE = MODEL_DIR / "best_model.pt"

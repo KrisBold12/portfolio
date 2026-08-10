@@ -33,6 +33,28 @@ CSV_DELIMITER = ";"
 CSV_HEADER = ["file_name", "label", "split"]
 
 
+def load_split(split_name: str) -> list[tuple[str, int]]:
+    """
+    Load a split from the CSV file.
+
+    Args:
+        split_name (str): One of 'train', 'val', or 'test'.
+    """
+    if split_name not in {"train", "val", "test"}:
+        raise ValueError(f"Invalid split name: {split_name}. Must be 'train', 'val', or 'test'.")
+
+    if not SPLIT_FILE.exists():
+        raise FileNotFoundError(f"The split file {SPLIT_FILE} does not exist. Please run the split-building code first.")
+
+    split_data = []
+    with open(SPLIT_FILE, newline="", encoding="utf-8") as f:
+        csv_reader = csv.DictReader(f, delimiter=CSV_DELIMITER)
+        for row in csv_reader:
+            if row["split"] == split_name:
+                split_data.append((row["file_name"], int(row["label"])))
+    return split_data
+
+
 def load_mat_file(file_path: Path) -> dict:
     """
     Load a .mat file and return its contents as a dictionary.
