@@ -20,16 +20,4 @@ class DogBreedDataset(Dataset):
                 img = self.transform(img)
         return img, label
 
-def test():
-    for s in ['train', 'val', 'test']:
-      d = DogBreedDataset(s)
-      img, label = d[0]
-      last_img, last_label = d[len(d) - 1]
-      print(f'{s:6} len={len(d):6}  primo: {img.size} {img.mode} label={label}   ultimo: {last_img.size} label={last_label}')
-
-def main():
-    test()
-
-if __name__ == "__main__":
-    main()
     

@@ -2,11 +2,11 @@ import timm
 import torch
 from dog_breed.paths import MODEL_DIR, MODEL_FILE
 
-def create_model(model_name="resnet50", num_classes=120, freeze_backbone=True) -> torch.nn.Module:
+def create_model(model_name="resnet50", num_classes=120, freeze_backbone=True, pretrained=True) -> torch.nn.Module:
     """
     Create a model using the timm library.
     """  
-    model = timm.create_model(model_name, pretrained=True, num_classes=num_classes)
+    model = timm.create_model(model_name, pretrained=pretrained, num_classes=num_classes)
     if freeze_backbone:
         for param in model.parameters():
             param.requires_grad = False

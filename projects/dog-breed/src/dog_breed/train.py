@@ -13,14 +13,14 @@ import csv
 BATCH_SIZE = 32
 
 
-def accuracy(y_pred, y_true):
-    return (y_pred == y_true).sum().item() / len(y_pred)
+def correct_predictions(y_pred, y_true):
+    return (y_pred == y_true).sum().item()
 
 
 def train_one_epoch(model: torch.nn.Module, loader: DataLoader, loss_fn, optimizer, device):
     model.train()
     total_loss = 0
-    total_acc = 0
+    total_correct = 0
     for images, labels in tqdm(loader, desc="Training one epoch..."):
         images = images.to(device)
         labels = labels.to(device)
@@ -29,23 +29,23 @@ def train_one_epoch(model: torch.nn.Module, loader: DataLoader, loss_fn, optimiz
         outputs = model(images)
 
         loss = loss_fn(outputs, labels)
-        total_loss += loss.item()
+        total_loss += loss.item() * labels.size(0)
 
         y_preds = outputs.argmax(dim=1)
-        total_acc += accuracy(y_pred=y_preds, y_true=labels)
+        total_correct += correct_predictions(y_pred=y_preds, y_true=labels)
 
         loss.backward()
         optimizer.step()
 
 
-    return total_loss / len(loader), total_acc / len(loader)
+    return total_loss / len(loader.dataset), total_correct / len(loader.dataset)
 
 
 def evaluation(model: torch.nn.Module, loader: DataLoader, loss_fn, device):
     model.eval()
     with torch.inference_mode():
         total_loss = 0
-        total_acc = 0
+        total_correct = 0
         for images, labels in tqdm(loader, desc="Evaluating the model..."):
             images = images.to(device)
             labels = labels.to(device)
@@ -53,12 +53,12 @@ def evaluation(model: torch.nn.Module, loader: DataLoader, loss_fn, device):
             outputs = model(images)
 
             loss = loss_fn(outputs, labels)
-            total_loss += loss.item()
+            total_loss += loss.item() * labels.size(0)
 
             y_preds = outputs.argmax(dim=1)
-            total_acc += accuracy(y_pred=y_preds, y_true=labels)   
+            total_correct += correct_predictions(y_pred=y_preds, y_true=labels)   
 
-    return total_loss / len(loader), total_acc / len(loader)
+    return total_loss / len(loader.dataset), total_correct / len(loader.dataset)
 
 
 def main():
