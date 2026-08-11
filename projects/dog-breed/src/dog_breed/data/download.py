@@ -1,9 +1,15 @@
 from pathlib import Path
 import requests
-from dog_breed.paths import RAW_DIR
+from dog_breed.paths import RAW_DIR, OXFORD_RAW_DIR
 from tqdm import tqdm
 
-BASE_URL = "http://vision.stanford.edu/aditya86/ImageNetDogs/"
+STANFORD_BASE_URL = "http://vision.stanford.edu/aditya86/ImageNetDogs/"
+OXFORD_BASE_URL   = "https://thor.robots.ox.ac.uk/~vgg/data/pets/"
+
+DATASETS = (
+    (STANFORD_BASE_URL, ("images.tar", "lists.tar"), RAW_DIR),
+    (OXFORD_BASE_URL,   ("images.tar.gz", "annotations.tar.gz"), OXFORD_RAW_DIR),
+)
 
 
 def download_file(url: str, dest_path: Path) -> None:
@@ -25,15 +31,10 @@ def download_file(url: str, dest_path: Path) -> None:
         
 
 def main() -> None:
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
-
-    file_names = (
-        "images.tar",
-        "lists.tar",
-    )
-
-    for file_name in file_names:
-        download_file(BASE_URL + file_name, RAW_DIR / file_name)
+    for base_url, file_names, dest_dir in DATASETS:
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        for file_name in file_names:
+            download_file(base_url + file_name, dest_dir / file_name)
 
 
 if __name__ == "__main__":

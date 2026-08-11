@@ -1,10 +1,17 @@
 from pathlib import Path
 import tarfile
-from dog_breed.paths import RAW_DIR, DATASET_DIR, IMAGES_DIR, LISTS_DIR, BREEDS_DIR
+from dog_breed.paths import RAW_DIR, IMAGES_DIR, LISTS_DIR, BREEDS_DIR, OXFORD_RAW_DIR, OXFORD_IMAGES_DIR, OXFORD_ANNOTATIONS_DIR, OXFORD_PHOTOS_DIR, OXFORD_LIST_FILE
 
 
 EXPECTED_BREEDS = 120
 EXPECTED_IMAGES = 20580
+OXFORD_EXPECTED_IMAGES = 7390
+
+EXTRACTIONS = (
+    (RAW_DIR, {"images.tar": IMAGES_DIR, "lists.tar": LISTS_DIR}),
+    (OXFORD_RAW_DIR, {"images.tar.gz": OXFORD_IMAGES_DIR,
+                    "annotations.tar.gz": OXFORD_ANNOTATIONS_DIR}),
+)
 
 
 def extract_tar_file(tar_path: Path, extract_to: Path) -> None:
@@ -19,7 +26,7 @@ def extract_tar_file(tar_path: Path, extract_to: Path) -> None:
     temp_dir.rename(extract_to)
 
 
-def verify_dataset() -> None:
+def verify_stanford() -> None:
     actual_breeds = len([d for d in BREEDS_DIR.iterdir() if d.is_dir()])
     if actual_breeds != EXPECTED_BREEDS:
         raise ValueError(f"Expected {EXPECTED_BREEDS} breeds, but found {actual_breeds}.")
@@ -29,19 +36,24 @@ def verify_dataset() -> None:
         raise ValueError(f"Expected {EXPECTED_IMAGES} images, but found {actual_images}.")
 
 
+def verify_oxford() -> None:
+    actual_images = len(list(OXFORD_PHOTOS_DIR.glob("*.jpg")))
+    if actual_images != OXFORD_EXPECTED_IMAGES:
+        raise ValueError(f"Expected {OXFORD_EXPECTED_IMAGES} images, but found {actual_images}.")
+    if not OXFORD_LIST_FILE.exists():
+        raise FileNotFoundError(f"Could not find the list file for Oxford's dataset in {OXFORD_LIST_FILE}")
+
+
 def main() -> None:
-    DATASET_DIR.mkdir(parents=True, exist_ok=True)
+    for raw_dir, tar_files in EXTRACTIONS:
+        for key in tar_files:
+            tar_path = raw_dir / key
+            extract_to = tar_files[key]
+            extract_to.parent.mkdir(parents=True, exist_ok=True)
+            extract_tar_file(tar_path, extract_to)
 
-    tar_files = {
-        "images.tar": IMAGES_DIR,
-        "lists.tar": LISTS_DIR,
-    }
-
-    for tar_file, extract_to in tar_files.items():
-        tar_path = RAW_DIR / tar_file
-        extract_tar_file(tar_path, extract_to)
-
-    verify_dataset()
+    verify_stanford()
+    verify_oxford()
 
 
 if __name__ == "__main__":
