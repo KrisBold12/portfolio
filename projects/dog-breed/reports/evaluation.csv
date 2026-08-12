@@ -1,0 +1,4 @@
+model_name,epoch,evaluation,num_images,loss,acc
+resnet50,11,Stanford test (120 breeds),8580,0.44176304653669013,0.8772727272727273
+resnet50,11,Stanford test (21 breeds),1630,0.41386291354986054,0.894478527607362
+resnet50,11,Oxford dogs (21 breeds),4178,0.6075524682345831,0.8334131163235998

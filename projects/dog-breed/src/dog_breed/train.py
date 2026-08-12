@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from dog_breed.data.dataset import DogBreedDataset
+from dog_breed.data.dataset import stanford_dataset
 from dog_breed.data.transforms import train_transforms, val_test_transforms
 from dog_breed.model import create_model, save_model
 import matplotlib.pyplot as plt
@@ -71,8 +71,8 @@ def main():
     cfg = model.pretrained_cfg
 
     # Datasets
-    train_ds = DogBreedDataset("train", transform=train_transforms(cfg))
-    val_ds = DogBreedDataset("val", transform=val_test_transforms(cfg))
+    train_ds = stanford_dataset("train", transform=train_transforms(cfg))
+    val_ds = stanford_dataset("val", transform=val_test_transforms(cfg))
 
     # Dataloaders
     train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, pin_memory=True)

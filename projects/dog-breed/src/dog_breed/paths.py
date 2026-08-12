@@ -16,6 +16,7 @@ MODEL_FILE = MODEL_DIR / "best_model.pt"
 REPORTS_DIR = PROJECT_ROOT / "reports"
 METRICS_FILE = REPORTS_DIR / "training_metrics.csv"
 PLOT_FILE = REPORTS_DIR / "training_metrics.png"
+EVAL_FILE = REPORTS_DIR / "evaluation.csv"
 
 OXFORD_DIR = DATA_DIR / "oxford_pet"
 OXFORD_RAW_DIR = OXFORD_DIR / "raw"
