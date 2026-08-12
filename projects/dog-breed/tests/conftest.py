@@ -8,8 +8,15 @@ import csv
 
 import pytest
 
+from dog_breed.data.oxford import stanford_label_index
 from dog_breed.data.splits import CSV_DELIMITER
 from dog_breed.paths import SPLIT_FILE
+
+
+@pytest.fixture(scope="session")
+def stanford_index() -> dict[str, int]:
+    """Stanford breed name -> label index, derived from the committed split."""
+    return stanford_label_index()
 
 
 @pytest.fixture(scope="session")

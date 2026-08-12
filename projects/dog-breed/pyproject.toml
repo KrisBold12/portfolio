@@ -43,5 +43,5 @@ dev = [
 testpaths = ["tests"]
 addopts = "-q --strict-markers"
 markers = [
-    "dataset: needs the extracted dataset on disk (~750 MB); skipped when absent",
+    "dataset: needs image data extracted on disk (Stanford ~750 MB, Oxford ~810 MB); skipped when absent",
 ]
