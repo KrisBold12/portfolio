@@ -15,6 +15,7 @@ from dog_breed.data.splits import (
     TEST_DATA_SIZE,
     TRAIN_DATA_SIZE,
     VAL_FRACTION,
+    class_names,
 )
 
 EXPECTED_VAL_SIZE = int(TRAIN_DATA_SIZE * VAL_FRACTION)
@@ -80,6 +81,29 @@ def test_rows_are_sorted_by_path(split_rows):
     """Keeps regeneration diffs readable."""
     paths = [path for path, _, _ in split_rows]
     assert paths == sorted(paths)
+
+
+def test_class_names_are_indexed_by_label(stanford_index):
+    """Position in the list must equal the logit index. This is the mapping
+    the served model.json ships, and the one thing that fails silently: a
+    list shifted by one turns every prediction into a plausible wrong breed
+    with nothing raised anywhere.
+    """
+    names = class_names()
+
+    assert len(names) == LABEL_SIZE
+    misplaced = {
+        breed: (label, names[label])
+        for breed, label in stanford_index.items()
+        if names[label] != breed
+    }
+    assert not misplaced, f"breeds at the wrong index: {misplaced}"
+
+
+def test_class_names_has_no_duplicates():
+    """Two labels sharing a name would make one breed unreachable in the API."""
+    names = class_names()
+    assert len(set(names)) == len(names)
 
 
 def test_label_matches_the_breed_folder(split_rows):

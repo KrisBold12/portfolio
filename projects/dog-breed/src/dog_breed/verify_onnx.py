@@ -82,6 +82,8 @@ def main():
 
     # Write on report file
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    # Checked before opening: 'a' creates the file, so exists() would always
+    # be True afterwards and the header would never be written.
     write_header = not ONNX_PARITY_FILE.exists()
     with open(ONNX_PARITY_FILE, 'a', encoding='utf-8', newline='') as f:
         writer = csv.writer(f)

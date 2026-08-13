@@ -47,4 +47,5 @@ testpaths = ["tests"]
 addopts = "-q --strict-markers"
 markers = [
     "dataset: needs image data extracted on disk (Stanford ~750 MB, Oxford ~810 MB); skipped when absent",
+    "export: needs the exported artifacts in artifacts/; skipped when absent",
 ]

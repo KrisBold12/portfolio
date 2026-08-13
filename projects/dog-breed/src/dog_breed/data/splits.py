@@ -19,6 +19,7 @@ import scipy.io as sio
 from sklearn.model_selection import train_test_split
 
 from dog_breed.paths import LISTS_DIR, SPLIT_FILE
+from dog_breed.data.oxford import stanford_label_index
 
 TRAIN_DATA_SIZE = 12000
 TEST_DATA_SIZE = 8580
@@ -145,6 +146,14 @@ def save_split_to_file(
         csv_writer = csv.writer(f, delimiter=CSV_DELIMITER)
         csv_writer.writerow(CSV_HEADER)
         csv_writer.writerows(data_list)
+
+
+def class_names() -> list[str]:
+    """
+    Returns a list of unique labels and the corresponding dog breed, sorted by the labels.
+    """
+    index = stanford_label_index()
+    return sorted(index, key=index.get)
 
 
 def main() -> None:
