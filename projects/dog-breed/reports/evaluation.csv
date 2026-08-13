@@ -1,4 +1,16 @@
-model_name,epoch,evaluation,num_images,loss,acc
-resnet50,11,Stanford test (120 breeds),8580,0.44176304653669013,0.8772727272727273
-resnet50,11,Stanford test (21 breeds),1630,0.41386291354986054,0.894478527607362
-resnet50,11,Oxford dogs (21 breeds),4178,0.6075524682345831,0.8334131163235998
+experiment,model,epoch,evaluation,num_images,loss,acc
+baseline,resnet50,7,Stanford test (120 breeds),8580,0.5505403442851036,0.8686480186480187
+baseline,resnet50,7,Stanford test (21 breeds),1630,0.5257004170604279,0.8871165644171779
+baseline,resnet50,7,Oxford dogs (21 breeds),4178,0.7240326429109587,0.8137865007180469
+effnet_b0,efficientnet_b0,13,Stanford test (120 breeds),8580,0.6145137344438437,0.8085081585081585
+effnet_b0,efficientnet_b0,13,Stanford test (21 breeds),1630,0.5233017166287987,0.845398773006135
+effnet_b0,efficientnet_b0,13,Oxford dogs (21 breeds),4178,0.7363357460915386,0.7943992340832935
+convnext_t,convnext_tiny,4,Stanford test (120 breeds),8580,0.7158394627377287,0.7764568764568764
+convnext_t,convnext_tiny,4,Stanford test (21 breeds),1630,0.6774583155849229,0.7950920245398773
+convnext_t,convnext_tiny,4,Oxford dogs (21 breeds),4178,0.9601803069881641,0.726663475347056
+effnet_b0_probe,efficientnet_b0,15,Stanford test (120 breeds),8580,0.7954704635891637,0.7630536130536131
+effnet_b0_probe,efficientnet_b0,15,Stanford test (21 breeds),1630,0.7123531653654356,0.7895705521472393
+effnet_b0_probe,efficientnet_b0,15,Oxford dogs (21 breeds),4178,0.9056226254764956,0.7424605074198181
+convnext_t_probe,convnext_tiny,4,Stanford test (120 breeds),8580,0.32744144740772796,0.8998834498834499
+convnext_t_probe,convnext_tiny,4,Stanford test (21 breeds),1630,0.22702597155052873,0.9411042944785276
+convnext_t_probe,convnext_tiny,4,Oxford dogs (21 breeds),4178,0.5117804373762949,0.8786500718046912

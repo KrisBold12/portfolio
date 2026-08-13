@@ -1,0 +1,16 @@
+experiment,scenario,model,threads,image_res,draft,runs,mean_ms,p50_ms,p95_ms,p99_ms
+baseline,model only,resnet50,2,224x224 synthetic,n/a,200,52.79,51.54,61.43,66.83
+baseline,end to end,resnet50,2,3840x2160 jpeg,no,200,232.75,229.02,267.3,284.88
+baseline,end to end,resnet50,2,3840x2160 jpeg,yes,200,120.29,118.23,143.54,154.9
+effnet_b0,model only,efficientnet_b0,2,224x224 synthetic,n/a,200,10.82,10.48,13.73,15.45
+effnet_b0,end to end,efficientnet_b0,2,3840x2160 jpeg,no,200,168.5,167.63,186.21,194.12
+effnet_b0,end to end,efficientnet_b0,2,3840x2160 jpeg,yes,200,63.8,64.17,70.57,75.0
+convnext_t,model only,convnext_tiny,2,224x224 synthetic,n/a,200,101.24,99.89,117.02,129.07
+convnext_t,end to end,convnext_tiny,2,3840x2160 jpeg,no,200,256.9,255.47,276.71,292.11
+convnext_t,end to end,convnext_tiny,2,3840x2160 jpeg,yes,200,167.31,166.82,184.81,190.31
+effnet_b0_probe,model only,efficientnet_b0,2,224x224 synthetic,n/a,200,9.87,9.4,13.19,15.31
+effnet_b0_probe,end to end,efficientnet_b0,2,3840x2160 jpeg,no,200,152.65,153.1,167.15,168.82
+effnet_b0_probe,end to end,efficientnet_b0,2,3840x2160 jpeg,yes,200,60.51,59.81,70.27,74.54
+convnext_t_probe,model only,convnext_tiny,2,224x224 synthetic,n/a,200,105.05,104.69,126.56,130.25
+convnext_t_probe,end to end,convnext_tiny,2,3840x2160 jpeg,no,200,238.31,237.03,264.01,280.5
+convnext_t_probe,end to end,convnext_tiny,2,3840x2160 jpeg,yes,200,142.77,141.78,160.26,170.4
