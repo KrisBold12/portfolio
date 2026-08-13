@@ -1,0 +1,9 @@
+experiment,calibrated_on,threshold,dataset,n,accept_rate
+convnext_t_probe,val_dogs,42.12107,train (fitted on),10200,0.9677450980392157
+convnext_t_probe,val_dogs,42.12107,val_dogs,1800,0.95
+convnext_t_probe,val_dogs,42.12107,oxford_dogs,4178,0.8781713738630924
+convnext_t_probe,val_dogs,42.12107,oxford_cats,2371,0.0025305778152678194
+convnext_t_probe,oxford_dogs,49.26933,train (fitted on),10200,0.9913725490196078
+convnext_t_probe,oxford_dogs,49.26933,val_dogs,1800,0.9777777777777777
+convnext_t_probe,oxford_dogs,49.26933,oxford_dogs,4178,0.9499760651029201
+convnext_t_probe,oxford_dogs,49.26933,oxford_cats,2371,0.01180936313791649

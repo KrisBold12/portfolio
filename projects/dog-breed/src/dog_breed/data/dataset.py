@@ -2,7 +2,7 @@ from torch.utils.data import Dataset
 from dog_breed.data.splits import load_split
 from PIL import Image
 from dog_breed.paths import BREEDS_DIR, OXFORD_PHOTOS_DIR
-from dog_breed.data.oxford import mapped_dog_samples
+from dog_breed.data.oxford import mapped_dog_samples, cat_samples
 
 
 class DogBreedDataset(Dataset):
@@ -33,3 +33,6 @@ def stanford_dataset(split_name, transform=None, keep_labels=None):
 def oxford_dataset(transform=None):
     return DogBreedDataset(mapped_dog_samples(), OXFORD_PHOTOS_DIR, transform)
 
+
+def oxford_cat_dataset(transform=None):
+    return DogBreedDataset(cat_samples(), OXFORD_PHOTOS_DIR, transform)

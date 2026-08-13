@@ -88,7 +88,7 @@ def dog_breeds(rows):
 
 def mapped_dog_samples() -> list[tuple[str, int]]:
     """
-    Returns tuples of image_paths and the corresponding stanford labels
+    Returns tuples of dogs image_paths and the corresponding stanford labels
     """
     samples = []
     rows = load_oxford_list()
@@ -101,6 +101,19 @@ def mapped_dog_samples() -> list[tuple[str, int]]:
         if target is None:
             continue
         samples.append((name + ".jpg", label_index[target]))
+    return samples
+
+
+def cat_samples() -> list[tuple[str, int]]:
+    """
+    Returns tuples of cats image_paths and the corresponding stanford labels
+    """
+    samples = []
+    rows = load_oxford_list()
+    for name, species in rows:
+        if species != CAT_SPECIES:
+            continue
+        samples.append((name + ".jpg", -1))
     return samples
 
 
