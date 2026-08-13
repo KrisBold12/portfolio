@@ -1,0 +1,2 @@
+experiment,model,max_abs_logit_difference,onnx_acc,torch_acc,disagreements,num_images
+convnext_t_probe,convnext_tiny,4.2438507e-05,0.8998834498834499,0.8998834498834499,0,8580
