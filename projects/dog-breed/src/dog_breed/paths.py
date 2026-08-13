@@ -15,6 +15,7 @@ MODEL_DIR = PROJECT_ROOT / "artifacts"
 REPORTS_DIR = PROJECT_ROOT / "reports"
 EVAL_FILE = REPORTS_DIR / "evaluation.csv"
 BENCHMARK_FILE = REPORTS_DIR / "benchmark.csv"
+ONNX_PARITY_FILE = REPORTS_DIR / "onnx_parity.csv"
 
 OXFORD_DIR = DATA_DIR / "oxford_pet"
 OXFORD_RAW_DIR = OXFORD_DIR / "raw"
