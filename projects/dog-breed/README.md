@@ -114,8 +114,10 @@ most tutorials do, would have silently mis-preprocessed two of them.
 
 **The exported model is checked, not assumed.** `verify_onnx.py` compares logits and
 predictions between PyTorch and onnxruntime over the full test set, both on CPU so
-the runtime is the only variable. On the resnet50 baseline: maximum logit difference
-7.7e-05, and zero disagreements across 8580 images.
+the runtime is the only variable. For the selected model: same accuracy to two
+decimals, and zero disagreements across 8580 images. The raw logits do differ, on
+the order of 1e-05, because the two runtimes accumulate the same sums in a different
+order and fuse operators differently. What matters is that no prediction flips.
 
 **Measurement bugs found along the way.** Accuracy was averaging per-batch means,
 which weights the last incomplete batch as heavily as a full one. Weakening the
