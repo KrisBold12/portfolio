@@ -2,12 +2,15 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+import argparse
+import csv
 from dog_breed.data.dataset import stanford_dataset
 from dog_breed.data.transforms import train_transforms, val_test_transforms
 from dog_breed.model import create_model, save_model
 import matplotlib.pyplot as plt
-from dog_breed.paths import REPORTS_DIR, METRICS_FILE, PLOT_FILE
-import csv
+from dog_breed.paths import REPORTS_DIR, metrics_file, plot_file, model_file
+from dog_breed.experiments import EXPERIMENTS
+from dog_breed.data.splits import RANDOM_SEED
 
 
 BATCH_SIZE = 32
@@ -62,12 +65,20 @@ def evaluation(model: torch.nn.Module, loader: DataLoader, loss_fn, device):
 
 
 def main():
+    torch.manual_seed(RANDOM_SEED)
+    torch.cuda.manual_seed(RANDOM_SEED)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("experiment", choices=EXPERIMENTS.keys())
+    name = parser.parse_args().experiment
+    exp = EXPERIMENTS[name]
+
     # Device
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(f"Selected device: {device}")
 
     # Model and config
-    model = create_model().to(device)
+    model = create_model(model_name=exp['model_name'], freeze_backbone=exp['freeze_backbone']).to(device)
     cfg = model.pretrained_cfg
 
     # Datasets
@@ -79,9 +90,10 @@ def main():
     val_loader = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=False, num_workers=4, pin_memory=True)
 
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.AdamW(model.get_classifier().parameters(), lr=0.001)
+    params = model.get_classifier().parameters() if exp["freeze_backbone"] else model.parameters()
+    optimizer = torch.optim.AdamW(params, lr=exp['lr'])
 
-    epochs = 15
+    epochs = exp['epochs']
 
     # Metrics
     best_acc = 0
@@ -92,11 +104,11 @@ def main():
 
     # Metrics file
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(METRICS_FILE, 'w', encoding='utf-8', newline='') as f:
+    with open(metrics_file(name), 'w', encoding='utf-8', newline='') as f:
         csv.writer(f).writerow(['epoch', 'train_loss', 'train_acc', 'val_loss', 'val_acc'])
 
     # Training loop
-    for epoch in tqdm(range(epochs), desc="Training..."):
+    for epoch in tqdm(range(epochs), desc=f"Training {name} model..."):
         train_loss, train_acc = train_one_epoch(model=model, loader=train_loader, loss_fn=loss_fn, optimizer=optimizer, device=device)
         val_loss, val_acc = evaluation(model=model, loader=val_loader, loss_fn=loss_fn, device=device)
 
@@ -107,12 +119,12 @@ def main():
         val_loss_history.append(val_loss)
 
         # Write metrics on metrics file
-        with open(METRICS_FILE, "a", encoding='utf-8', newline='') as f:
+        with open(metrics_file(name), "a", encoding='utf-8', newline='') as f:
             csv.writer(f).writerow([epoch + 1, train_loss, train_acc, val_loss, val_acc])
 
         if val_acc > best_acc: 
             best_acc = val_acc
-            save_model(model=model, epoch=epoch + 1, val_acc=val_acc)
+            save_model(model=model, epoch=epoch + 1, val_acc=val_acc, dest=model_file(name))
 
 
         print(f"Epoch: {epoch + 1} | Train loss: {train_loss:.4f}, Train acc: {train_acc * 100:.2f}% | Val loss: {val_loss:.4f}, Val acc: {val_acc * 100:.2f}%")
@@ -122,6 +134,7 @@ def main():
     # Plot
     epoch_range = range(1, epochs + 1)
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle(name)
 
     # Accuracy plot
     ax1.plot(epoch_range, train_acc_history, label="Train Accuracy", marker="o")
@@ -144,7 +157,7 @@ def main():
     plt.tight_layout()
 
     # Save plot image
-    plt.savefig(PLOT_FILE)
+    plt.savefig(plot_file(name))
 
 
 if __name__ == "__main__":
