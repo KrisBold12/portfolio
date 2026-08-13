@@ -15,7 +15,8 @@ scores 94.11% on Stanford photos and 87.87% on Oxford photos.
 
 Five configurations across three architectures, evaluated on both datasets and
 benchmarked on CPU before choosing one. Selected model reaches 89.99% on the full
-Stanford test split at 160 ms p95 end to end.
+Stanford test split at 160 ms p95 end to end, behind a Mahalanobis gate that accepts
+95% of real dog photos and 1.2% of cats.
 
 [Read more](projects/dog-breed/README.md)
 

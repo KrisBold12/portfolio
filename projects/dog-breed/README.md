@@ -101,6 +101,34 @@ that verify every entry still refers to a breed that exists.
 Oxford's 2371 cat photos are kept aside as near-distribution negatives for the
 out-of-distribution gate.
 
+## Rejecting what isn't a dog
+
+The classifier always returns 120 logits. Hand it a cat and it answers with a
+breed and a confidence, because softmax has no way to say "not a dog".
+
+The gate works one layer earlier, on the 768-dimensional features the classifier
+reads from. The training dogs form a cloud there; the Mahalanobis distance to the
+nearest breed centre measures how far an image falls outside it. Per-breed means
+with one shared covariance, since 85 images per breed cannot support 120 separate
+768x768 estimates but 10200 residuals can support one.
+
+The negatives are Oxford's 2371 cats, not blank walls: fur, four legs, a muzzle,
+the same pet-photo framing. Rejecting a photo of a car proves nothing.
+
+| Threshold calibrated on | Val dogs | Oxford dogs | Oxford cats |
+|---|---:|---:|---:|
+| Stanford validation | 95.0% | 87.8% | 0.25% |
+| **Oxford dogs** | 97.8% | **95.0%** | **1.18%** |
+
+Both columns of dogs should be high and the cats column low. The first row is what
+calibrating on the development distribution gets you: it looks correct on Stanford
+and quietly rejects one real Oxford dog in eight. Since user uploads will resemble
+Oxford far more than Stanford, the threshold is read off Oxford's dogs instead. That
+buys 7 points of real-photo acceptance for 22 additional cats out of 2371.
+
+At 1.18%, the gate is well inside the 10% ceiling the design set for escalating to a
+dedicated binary dog detector, so that model was not needed.
+
 ## Engineering notes
 
 **Reproducibility.** Training is seeded, the split is a committed artifact, and
@@ -126,8 +154,19 @@ validation accuracy: with 85 images per breed the aggressive crop was doing real
 regularisation work, and the low training accuracy that prompted the change was not
 a symptom of anything, just the difference between augmented crops and clean ones.
 
-**Tests.** 37 tests. 26 of them need only the committed split CSV and run without
-either dataset; the rest are marked `dataset` and skip when the images are absent.
+**The model describes itself.** `export.py` writes a JSON next to the ONNX carrying
+the preprocessing config and the 120 class names in label order. The serving project
+is independent — no timm, no torch, no split CSV — so without it the container would
+have to hardcode both, and would keep using the old crop ratio the day the model
+changes. Tests rebuild the preprocessing from the JSON alone and assert the tensors
+are identical to the ones the model was evaluated with.
+
+**Tests.** 46 tests, 34 of which need only the committed split CSV and run without
+either dataset; the rest are marked `dataset` or `export` and skip when the images
+or artifacts are absent. The assertions that matter were checked by mutation:
+shifting the class list by one position, or changing the crop ratio to the value
+most tutorials hardcode, has to turn something red. Two tests were rewritten after
+that check showed they passed anyway.
 
 ## Running it
 
@@ -142,6 +181,7 @@ uv run python -m dog_breed.evaluate   convnext_t_probe
 uv run python -m dog_breed.export     convnext_t_probe
 uv run python -m dog_breed.verify_onnx convnext_t_probe
 uv run python -m dog_breed.benchmark  convnext_t_probe --image photo.jpg
+uv run python -m dog_breed.ood        convnext_t_probe
 
 uv run pytest
 uv run pytest -m "not dataset"
@@ -155,9 +195,8 @@ training convnext; without it the allocator fragments and fails mid-run.
 
 ## Status
 
-Done: data pipeline, five experiments, evaluation on both datasets, ONNX export and
-verification, CPU latency benchmark.
+Done: data pipeline, five experiments, evaluation on both datasets, ONNX export with
+self-describing metadata, parity verification, CPU latency benchmark, and the
+out-of-distribution gate.
 
-Next: self-describing model metadata so the serving project needs neither timm nor
-torch, a Mahalanobis out-of-distribution gate validated against Oxford's cats, the
-prediction endpoint, and the frontend.
+Next: the prediction endpoint, deployment, and the frontend.
