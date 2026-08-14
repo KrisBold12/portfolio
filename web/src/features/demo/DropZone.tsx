@@ -5,9 +5,9 @@ type DropZoneProps = {
   onFile: (file: File) => void
   disabled?: boolean
   /**
-   * Fix round 1, R1: once a photo has been tried, the zone recedes to a
-   * modest control rather than staying the largest object on screen — it
-   * does not disappear, since a visitor will want a second try.
+   * Once a photo has been tried, the zone recedes to a modest control
+   * rather than staying the largest object on screen — it does not
+   * disappear, since a visitor will want a second try.
    */
   compact?: boolean
 }
@@ -19,7 +19,7 @@ type DropZoneProps = {
  * input stays in the tab order (visually hidden with a clip, not
  * `display: none`), so keyboard users can Tab to it and press Space to
  * open the same dialog — no custom keydown handling needed. Drag-over
- * state changes the border colour only (Task 5 brief).
+ * state changes the border colour only.
  */
 function DropZone({ onFile, disabled = false, compact = false }: DropZoneProps) {
   const [dragging, setDragging] = useState(false)

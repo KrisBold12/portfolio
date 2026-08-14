@@ -3,6 +3,18 @@
   gap: var(--s2);
 }
 
+/* The gate verdict's colour, as classes rather than an inline `style`
+   (same rationale as DogBreedProject.module.css's `.signal`/`.probe`):
+   grep-able, and consistent with how every other colour on the site is
+   applied. */
+.signal {
+  color: var(--signal);
+}
+
+.reject {
+  color: var(--reject);
+}
+
 .answer {
   display: flex;
   flex-wrap: wrap;
@@ -24,6 +36,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-h1);
   font-weight: 600;
+  font-stretch: 110%;
   color: var(--bone);
 }
 
@@ -39,8 +52,8 @@
   letter-spacing: 0.14em;
 }
 
-/* UX round, P2: the rejected case leads with the verdict, not the breed
-   guess. Two stacked lines instead of the accepted case's single row. */
+/* The rejected case leads with the verdict, not the breed guess. Two
+   stacked lines instead of the accepted case's single row. */
 .answerRejected {
   display: grid;
   gap: var(--s2);
@@ -50,6 +63,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-h1);
   font-weight: 600;
+  font-stretch: 110%;
 }
 
 .answerGuess {

@@ -15,10 +15,10 @@ type State =
   | { phase: 'error'; previewUrl: string; fileName: string; message: string }
 
 /**
- * Fix round 1, IMPORTANT (`--reject` as a generic error colour): a file
- * being too large or the backend being down is not a gate rejection, so
- * neither gets `--reject`. Weight and brightness lead the eye here instead
- * of a hue — the message's own words already carry the meaning.
+ * A file being too large or the backend being down is not a gate
+ * rejection, so neither gets `--reject`. Weight and brightness lead the
+ * eye here instead of a hue — the message's own words already carry the
+ * meaning.
  */
 function busyOrErrorText(state: Extract<State, { phase: 'busy' | 'error' }>): string {
   return state.phase === 'busy' ? 'Reading the photo and asking the model.' : state.message
@@ -33,18 +33,18 @@ function busyOrErrorText(state: Extract<State, { phase: 'busy' | 'error' }>): st
  * a server-side 400 — same cause, same message, so it reuses the kind
  * rather than inventing a second message for it.
  *
- * Fix round 1, R1/R2: once a photo has been tried (`phase !== 'idle'`), the
- * drop zone recedes to a modest control and `Answer` leads instead, stating
- * the breed and its confidence once, large, before `Result`'s rails.
+ * Once a photo has been tried (`phase !== 'idle'`), the drop zone recedes
+ * to a modest control and `Answer` leads instead, stating the breed and
+ * its confidence once, large, before `Result`'s rails.
  */
 function ClassifierDemo() {
   const [state, setState] = useState<State>({ phase: 'idle' })
   const [previewBroken, setPreviewBroken] = useState(false)
   const previewUrlRef = useRef<string | null>(null)
-  // Fix round 1, IMPORTANT (no unmount guard): busy->result/error setState
-  // calls land after an await; if the component has unmounted in the
-  // meantime (e.g. the visitor clicked the Back link mid-request), they
-  // must be skipped rather than firing into a gone component.
+  // busy->result/error setState calls land after an await; if the
+  // component has unmounted in the meantime (e.g. the visitor clicked the
+  // Back link mid-request), they must be skipped rather than firing into a
+  // gone component.
   const mountedRef = useRef(true)
 
   useEffect(() => {
@@ -89,7 +89,8 @@ function ClassifierDemo() {
   const merge = state.phase === 'result' ? applyBreedMerges(state.response.predictions) : null
   const displayResponse: PredictResponse | null =
     state.phase === 'result' && merge ? { ...state.response, predictions: merge.predictions } : null
-  const mergeNote = merge && mergeIsTopAnswer(merge) ? (merge.applied?.note ?? null) : null
+  const mergeNote = merge?.applied?.note ?? null
+  const isMergedTop = merge !== null && mergeIsTopAnswer(merge)
 
   return (
     <section className={styles.demo} aria-labelledby="classifier-demo-heading">
@@ -101,15 +102,17 @@ function ClassifierDemo() {
         is.
       </p>
 
-      {displayResponse && <Answer response={displayResponse} note={mergeNote} />}
+      <div className={styles.answerSlot} aria-live="polite">
+        {displayResponse && <Answer response={displayResponse} note={mergeNote} />}
+      </div>
 
       <Panel>
         <div className={state.phase === 'idle' ? styles.uploadRow : styles.uploadRowCompact}>
           <DropZone onFile={handleFile} disabled={busy} compact={state.phase !== 'idle'} />
 
-          {state.phase !== 'idle' && (
-            <div className={styles.previewSlot}>
-              {previewBroken ? (
+          <div className={state.phase === 'idle' ? `${styles.previewSlot} ${styles.previewSlotIdle}` : styles.previewSlot}>
+            {state.phase !== 'idle' &&
+              (previewBroken ? (
                 <div className={styles.thumbFallback} role="img" aria-label={`Preview of ${state.fileName} could not be loaded`} />
               ) : (
                 <img
@@ -118,23 +121,19 @@ function ClassifierDemo() {
                   className={styles.thumb}
                   onError={() => setPreviewBroken(true)}
                 />
+              ))}
+            <div className={styles.statusLineSlot} aria-live="polite">
+              {(state.phase === 'busy' || state.phase === 'error') && (
+                <p className={state.phase === 'error' ? `${styles.statusLine} ${styles.statusIssue}` : styles.statusLine}>
+                  {busyOrErrorText(state)}
+                </p>
               )}
-              <div className={styles.statusLineSlot}>
-                {(state.phase === 'busy' || state.phase === 'error') && (
-                  <p
-                    className={state.phase === 'error' ? `${styles.statusLine} ${styles.statusIssue}` : styles.statusLine}
-                    aria-live="polite"
-                  >
-                    {busyOrErrorText(state)}
-                  </p>
-                )}
-              </div>
             </div>
-          )}
+          </div>
         </div>
       </Panel>
 
-      {displayResponse && <Result response={displayResponse} />}
+      {displayResponse && <Result response={displayResponse} isMergedTop={isMergedTop} />}
     </section>
   )
 }

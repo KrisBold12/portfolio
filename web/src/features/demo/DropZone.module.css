@@ -21,8 +21,8 @@
   cursor: not-allowed;
 }
 
-/* Fix round 1, R1: recede to a modest control once a photo has been tried,
-   so the empty invitation stops outweighing the answer above it. */
+/* Recede to a modest control once a photo has been tried, so the empty
+   invitation stops outweighing the answer above it. */
 .zone[data-compact] {
   flex: 0 1 auto;
   min-width: 200px;

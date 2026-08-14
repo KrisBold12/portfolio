@@ -18,6 +18,12 @@
   max-width: 68ch;
 }
 
+/* Wraps the conditionally-rendered Answer so the grid gap does not open a
+   gap for an empty row while no result exists yet. */
+.answerSlot {
+  display: contents;
+}
+
 .uploadRow {
   display: flex;
   flex-wrap: wrap;
@@ -25,9 +31,9 @@
   align-items: flex-start;
 }
 
-/* Fix round 1, R1: the recede layout — a small drop-zone control and the
-   preview sit side by side at a modest scale, rather than the full-height
-   invitation row used before any photo has been tried. */
+/* The recede layout — a small drop-zone control and the preview sit side
+   by side at a modest scale, rather than the full-height invitation row
+   used before any photo has been tried. */
 .uploadRowCompact {
   display: flex;
   flex-wrap: wrap;
@@ -40,6 +46,21 @@
   flex-direction: column;
   gap: var(--s2);
   width: calc(var(--s10) + var(--s6));
+}
+
+/* The status paragraph's aria-live region needs to exist before its text
+   changes to be announced, so this wrapper (and .statusLineSlot inside it)
+   stays mounted through the idle phase too, instead of only appearing once
+   a photo has been tried. Idle has no thumbnail and no status text, so it
+   collapses to zero width here rather than reserving the full column. */
+.previewSlotIdle {
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.previewSlotIdle .statusLineSlot {
+  min-height: 0;
 }
 
 .thumb,
@@ -56,20 +77,20 @@
   display: flex;
 }
 
-/* Fix round 2: the reservation lives here, on a wrapper that survives every
-   non-idle phase, rather than on the paragraph itself. The paragraph's
-   content still disappears on `result` (the accepted/best-guess line moved
-   into `Answer`), but the space it used to occupy must not collapse at
-   exactly the moment the request resolves — that was the busy->result
-   layout shift this fixes.
-   Fix round 3 (Task 6): the busy message ("Reading the photo and asking the
-   model.") wraps to exactly two lines at the 160px preview-column width,
-   but three of the four error messages ("That image is too large...",
-   "No image was received...", "The classifier is unavailable...") wrap to
-   three — measured at 46.19px and 69.28px respectively, a ~23px busy->error
-   shift with the old two-line reservation. Three lines is the reservation
-   now, sized for the longest message this slot ever has to hold rather
-   than the busy phase's own text. `font-size` and `line-height` are pinned
+/* The reservation lives here, on a wrapper that survives every non-idle
+   phase, rather than on the paragraph itself. The paragraph's content
+   still disappears on `result` (the accepted/best-guess line moved into
+   `Answer`), but the space it used to occupy must not collapse at exactly
+   the moment the request resolves — that was the busy->result layout
+   shift this fixes.
+   The busy message ("Reading the photo and asking the model.") wraps to
+   exactly two lines at the 160px preview-column width, but three of the
+   four error messages ("That image is too large...", "No image was
+   received...", "The classifier is unavailable...") wrap to three —
+   measured at 46.19px and 69.28px respectively, a ~23px busy->error shift
+   with the old two-line reservation. Three lines is the reservation now,
+   sized for the longest message this slot ever has to hold rather than
+   the busy phase's own text. `font-size` and `line-height` are pinned
    here to match `.statusLine` exactly, rather than relying on the
    inherited body line-height, so the `em` basis holds regardless of the
    paragraph being rendered or not. */
@@ -86,10 +107,10 @@
   color: var(--muted);
 }
 
-/* Fix round 1, IMPORTANT: a too-large file or a down backend is not a gate
-   rejection, so it does not get `--reject` — that token means one thing on
-   this site. Weight and brightness lead instead of a hue; the message's own
-   words already carry what went wrong. */
+/* A too-large file or a down backend is not a gate rejection, so it does
+   not get `--reject` — that token means one thing on this site. Weight and
+   brightness lead instead of a hue; the message's own words already carry
+   what went wrong. */
 .statusIssue {
   color: var(--bone);
   font-weight: 600;
