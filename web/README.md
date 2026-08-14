@@ -1,32 +1,9 @@
-# React + TypeScript + Vite
+# web
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The React frontend for the portfolio: the home page, the dog breed classifier project page, and the live demo that calls the serving API.
 
-Currently, two official plugins are available:
+- `npm run dev` starts the Vite dev server. `vite.config.ts` proxies `/api` to `http://127.0.0.1:8000`, so the FastAPI service in `serving/` must be running locally for the demo to work.
+- `npm run build` type-checks with `tsc -b` and produces the static bundle nginx serves in production.
+- `npm run test` runs the vitest suite for the pure logic modules (calibration, breed merging, downscaling, the ReadoutRail geometry helpers).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+In production, nginx serves the built files and forwards `/api` to the same container on loopback (see `deploy/nginx/kb-portfolio.conf`), so the site and the API share one origin in both places, just by different means.
