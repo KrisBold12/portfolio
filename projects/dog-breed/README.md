@@ -129,6 +129,37 @@ buys 7 points of real-photo acceptance for 22 additional cats out of 2371.
 At 1.18%, the gate is well inside the 10% ceiling the design set for escalating to a
 dedicated binary dog detector, so that model was not needed.
 
+## Making the percentage mean something
+
+A softmax output is not a confidence. Networks are systematically overconfident,
+so showing the raw number to a user is a claim the model cannot back.
+
+Measured with expected calibration error: group predictions by stated confidence,
+and in each bucket compare that confidence against the accuracy actually achieved.
+A calibrated model says 80% and is right 80% of the time.
+
+Temperature scaling corrects it by dividing the logits by one scalar before the
+softmax. Fitted on validation by minimising negative log-likelihood, which is
+smooth and convex in T, unlike the ECE itself: optimising a step function of the
+binning invites solutions that game the bins rather than fix the model.
+
+| | Uncalibrated | T = 1.21 |
+|---|---:|---:|
+| Validation, 1800 images | 2.86% | 1.63% |
+| **Test, 8580 images** | **3.12%** | **0.98%** |
+
+Three times better on data the temperature never saw. The bucket that matters is
+0.93-1.00, which holds 5814 of the 8580 test images: stated confidence 0.985
+against 0.985 accuracy, a gap of zero to three decimals.
+
+Dividing by a positive constant cannot reorder the logits, so not a single
+prediction changes and accuracy is untouched. Only the number shown moves.
+
+The division is folded into the exported graph rather than left for the server
+to apply, so the deployed model cannot be served uncalibrated by forgetting a
+step. The metadata records the value alongside `"applied": "in_graph"`, which
+is there to stop a reader from applying it a second time.
+
 ## Engineering notes
 
 **Reproducibility.** Training is seeded, the split is a committed artifact, and
@@ -178,6 +209,7 @@ uv run python -m dog_breed.data.splits
 
 uv run python -m dog_breed.train      convnext_t_probe
 uv run python -m dog_breed.evaluate   convnext_t_probe
+uv run python -m dog_breed.calibrate  convnext_t_probe
 uv run python -m dog_breed.export     convnext_t_probe
 uv run python -m dog_breed.verify_onnx convnext_t_probe
 uv run python -m dog_breed.benchmark  convnext_t_probe --image photo.jpg
@@ -196,7 +228,7 @@ training convnext; without it the allocator fragments and fails mid-run.
 ## Status
 
 Done: data pipeline, five experiments, evaluation on both datasets, ONNX export with
-self-describing metadata, parity verification, CPU latency benchmark, and the
-out-of-distribution gate.
+self-describing metadata, parity verification, CPU latency benchmark, the
+out-of-distribution gate, and confidence calibration.
 
 Next: the prediction endpoint, deployment, and the frontend.

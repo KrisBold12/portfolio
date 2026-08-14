@@ -31,6 +31,7 @@ build/
 # ─────────────────────────────────────────────────────────────
 projects/*/data/
 projects/*/artifacts/
+servings/models/
 *.onnx
 *.pt
 *.pth

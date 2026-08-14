@@ -1,0 +1,504 @@
+{
+  "experiment": "convnext_t_probe",
+  "model_name": "convnext_tiny",
+  "input_size": [
+    3,
+    224,
+    224
+  ],
+  "crop_pct": 0.95,
+  "interpolation": "bicubic",
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "classes": [
+    {
+      "id": "chihuahua",
+      "name": "Chihuahua"
+    },
+    {
+      "id": "japanese_spaniel",
+      "name": "Japanese Spaniel"
+    },
+    {
+      "id": "maltese_dog",
+      "name": "Maltese Dog"
+    },
+    {
+      "id": "pekinese",
+      "name": "Pekinese"
+    },
+    {
+      "id": "shih-tzu",
+      "name": "Shih-Tzu"
+    },
+    {
+      "id": "blenheim_spaniel",
+      "name": "Blenheim Spaniel"
+    },
+    {
+      "id": "papillon",
+      "name": "Papillon"
+    },
+    {
+      "id": "toy_terrier",
+      "name": "Toy Terrier"
+    },
+    {
+      "id": "rhodesian_ridgeback",
+      "name": "Rhodesian Ridgeback"
+    },
+    {
+      "id": "afghan_hound",
+      "name": "Afghan Hound"
+    },
+    {
+      "id": "basset",
+      "name": "Basset"
+    },
+    {
+      "id": "beagle",
+      "name": "Beagle"
+    },
+    {
+      "id": "bloodhound",
+      "name": "Bloodhound"
+    },
+    {
+      "id": "bluetick",
+      "name": "Bluetick"
+    },
+    {
+      "id": "black-and-tan_coonhound",
+      "name": "Black-And-Tan Coonhound"
+    },
+    {
+      "id": "walker_hound",
+      "name": "Walker Hound"
+    },
+    {
+      "id": "english_foxhound",
+      "name": "English Foxhound"
+    },
+    {
+      "id": "redbone",
+      "name": "Redbone"
+    },
+    {
+      "id": "borzoi",
+      "name": "Borzoi"
+    },
+    {
+      "id": "irish_wolfhound",
+      "name": "Irish Wolfhound"
+    },
+    {
+      "id": "italian_greyhound",
+      "name": "Italian Greyhound"
+    },
+    {
+      "id": "whippet",
+      "name": "Whippet"
+    },
+    {
+      "id": "ibizan_hound",
+      "name": "Ibizan Hound"
+    },
+    {
+      "id": "norwegian_elkhound",
+      "name": "Norwegian Elkhound"
+    },
+    {
+      "id": "otterhound",
+      "name": "Otterhound"
+    },
+    {
+      "id": "saluki",
+      "name": "Saluki"
+    },
+    {
+      "id": "scottish_deerhound",
+      "name": "Scottish Deerhound"
+    },
+    {
+      "id": "weimaraner",
+      "name": "Weimaraner"
+    },
+    {
+      "id": "staffordshire_bullterrier",
+      "name": "Staffordshire Bullterrier"
+    },
+    {
+      "id": "american_staffordshire_terrier",
+      "name": "American Staffordshire Terrier"
+    },
+    {
+      "id": "bedlington_terrier",
+      "name": "Bedlington Terrier"
+    },
+    {
+      "id": "border_terrier",
+      "name": "Border Terrier"
+    },
+    {
+      "id": "kerry_blue_terrier",
+      "name": "Kerry Blue Terrier"
+    },
+    {
+      "id": "irish_terrier",
+      "name": "Irish Terrier"
+    },
+    {
+      "id": "norfolk_terrier",
+      "name": "Norfolk Terrier"
+    },
+    {
+      "id": "norwich_terrier",
+      "name": "Norwich Terrier"
+    },
+    {
+      "id": "yorkshire_terrier",
+      "name": "Yorkshire Terrier"
+    },
+    {
+      "id": "wire-haired_fox_terrier",
+      "name": "Wire-Haired Fox Terrier"
+    },
+    {
+      "id": "lakeland_terrier",
+      "name": "Lakeland Terrier"
+    },
+    {
+      "id": "sealyham_terrier",
+      "name": "Sealyham Terrier"
+    },
+    {
+      "id": "airedale",
+      "name": "Airedale"
+    },
+    {
+      "id": "cairn",
+      "name": "Cairn"
+    },
+    {
+      "id": "australian_terrier",
+      "name": "Australian Terrier"
+    },
+    {
+      "id": "dandie_dinmont",
+      "name": "Dandie Dinmont"
+    },
+    {
+      "id": "boston_bull",
+      "name": "Boston Bull"
+    },
+    {
+      "id": "miniature_schnauzer",
+      "name": "Miniature Schnauzer"
+    },
+    {
+      "id": "giant_schnauzer",
+      "name": "Giant Schnauzer"
+    },
+    {
+      "id": "standard_schnauzer",
+      "name": "Standard Schnauzer"
+    },
+    {
+      "id": "scotch_terrier",
+      "name": "Scotch Terrier"
+    },
+    {
+      "id": "tibetan_terrier",
+      "name": "Tibetan Terrier"
+    },
+    {
+      "id": "silky_terrier",
+      "name": "Silky Terrier"
+    },
+    {
+      "id": "soft-coated_wheaten_terrier",
+      "name": "Soft-Coated Wheaten Terrier"
+    },
+    {
+      "id": "west_highland_white_terrier",
+      "name": "West Highland White Terrier"
+    },
+    {
+      "id": "lhasa",
+      "name": "Lhasa"
+    },
+    {
+      "id": "flat-coated_retriever",
+      "name": "Flat-Coated Retriever"
+    },
+    {
+      "id": "curly-coated_retriever",
+      "name": "Curly-Coated Retriever"
+    },
+    {
+      "id": "golden_retriever",
+      "name": "Golden Retriever"
+    },
+    {
+      "id": "labrador_retriever",
+      "name": "Labrador Retriever"
+    },
+    {
+      "id": "chesapeake_bay_retriever",
+      "name": "Chesapeake Bay Retriever"
+    },
+    {
+      "id": "german_short-haired_pointer",
+      "name": "German Short-Haired Pointer"
+    },
+    {
+      "id": "vizsla",
+      "name": "Vizsla"
+    },
+    {
+      "id": "english_setter",
+      "name": "English Setter"
+    },
+    {
+      "id": "irish_setter",
+      "name": "Irish Setter"
+    },
+    {
+      "id": "gordon_setter",
+      "name": "Gordon Setter"
+    },
+    {
+      "id": "brittany_spaniel",
+      "name": "Brittany Spaniel"
+    },
+    {
+      "id": "clumber",
+      "name": "Clumber"
+    },
+    {
+      "id": "english_springer",
+      "name": "English Springer"
+    },
+    {
+      "id": "welsh_springer_spaniel",
+      "name": "Welsh Springer Spaniel"
+    },
+    {
+      "id": "cocker_spaniel",
+      "name": "Cocker Spaniel"
+    },
+    {
+      "id": "sussex_spaniel",
+      "name": "Sussex Spaniel"
+    },
+    {
+      "id": "irish_water_spaniel",
+      "name": "Irish Water Spaniel"
+    },
+    {
+      "id": "kuvasz",
+      "name": "Kuvasz"
+    },
+    {
+      "id": "schipperke",
+      "name": "Schipperke"
+    },
+    {
+      "id": "groenendael",
+      "name": "Groenendael"
+    },
+    {
+      "id": "malinois",
+      "name": "Malinois"
+    },
+    {
+      "id": "briard",
+      "name": "Briard"
+    },
+    {
+      "id": "kelpie",
+      "name": "Kelpie"
+    },
+    {
+      "id": "komondor",
+      "name": "Komondor"
+    },
+    {
+      "id": "old_english_sheepdog",
+      "name": "Old English Sheepdog"
+    },
+    {
+      "id": "shetland_sheepdog",
+      "name": "Shetland Sheepdog"
+    },
+    {
+      "id": "collie",
+      "name": "Collie"
+    },
+    {
+      "id": "border_collie",
+      "name": "Border Collie"
+    },
+    {
+      "id": "bouvier_des_flandres",
+      "name": "Bouvier Des Flandres"
+    },
+    {
+      "id": "rottweiler",
+      "name": "Rottweiler"
+    },
+    {
+      "id": "german_shepherd",
+      "name": "German Shepherd"
+    },
+    {
+      "id": "doberman",
+      "name": "Doberman"
+    },
+    {
+      "id": "miniature_pinscher",
+      "name": "Miniature Pinscher"
+    },
+    {
+      "id": "greater_swiss_mountain_dog",
+      "name": "Greater Swiss Mountain Dog"
+    },
+    {
+      "id": "bernese_mountain_dog",
+      "name": "Bernese Mountain Dog"
+    },
+    {
+      "id": "appenzeller",
+      "name": "Appenzeller"
+    },
+    {
+      "id": "entlebucher",
+      "name": "Entlebucher"
+    },
+    {
+      "id": "boxer",
+      "name": "Boxer"
+    },
+    {
+      "id": "bull_mastiff",
+      "name": "Bull Mastiff"
+    },
+    {
+      "id": "tibetan_mastiff",
+      "name": "Tibetan Mastiff"
+    },
+    {
+      "id": "french_bulldog",
+      "name": "French Bulldog"
+    },
+    {
+      "id": "great_dane",
+      "name": "Great Dane"
+    },
+    {
+      "id": "saint_bernard",
+      "name": "Saint Bernard"
+    },
+    {
+      "id": "eskimo_dog",
+      "name": "Eskimo Dog"
+    },
+    {
+      "id": "malamute",
+      "name": "Malamute"
+    },
+    {
+      "id": "siberian_husky",
+      "name": "Siberian Husky"
+    },
+    {
+      "id": "affenpinscher",
+      "name": "Affenpinscher"
+    },
+    {
+      "id": "basenji",
+      "name": "Basenji"
+    },
+    {
+      "id": "pug",
+      "name": "Pug"
+    },
+    {
+      "id": "leonberg",
+      "name": "Leonberg"
+    },
+    {
+      "id": "newfoundland",
+      "name": "Newfoundland"
+    },
+    {
+      "id": "great_pyrenees",
+      "name": "Great Pyrenees"
+    },
+    {
+      "id": "samoyed",
+      "name": "Samoyed"
+    },
+    {
+      "id": "pomeranian",
+      "name": "Pomeranian"
+    },
+    {
+      "id": "chow",
+      "name": "Chow"
+    },
+    {
+      "id": "keeshond",
+      "name": "Keeshond"
+    },
+    {
+      "id": "brabancon_griffon",
+      "name": "Brabancon Griffon"
+    },
+    {
+      "id": "pembroke",
+      "name": "Pembroke"
+    },
+    {
+      "id": "cardigan",
+      "name": "Cardigan"
+    },
+    {
+      "id": "toy_poodle",
+      "name": "Toy Poodle"
+    },
+    {
+      "id": "miniature_poodle",
+      "name": "Miniature Poodle"
+    },
+    {
+      "id": "standard_poodle",
+      "name": "Standard Poodle"
+    },
+    {
+      "id": "mexican_hairless",
+      "name": "Mexican Hairless"
+    },
+    {
+      "id": "dingo",
+      "name": "Dingo"
+    },
+    {
+      "id": "dhole",
+      "name": "Dhole"
+    },
+    {
+      "id": "african_hunting_dog",
+      "name": "African Hunting Dog"
+    }
+  ],
+  "tag": "in12k_ft_in1k"
+}
