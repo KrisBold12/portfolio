@@ -12,10 +12,13 @@
 
 /* endLabelMin | scaleArea (flex:1) | endLabelMax. Flex reserves the end
    labels' own width, so a marker or threshold approaching 0%/100% inside
-   scaleArea can never render underneath them. */
+   scaleArea can never render underneath them. align-items: flex-start (not
+   center) because .trackVisual's height is no longer a fixed, roughly
+   symmetric box (R2) — each end label aligns to the axis's own computed
+   y-position via its own marginTop instead (see ReadoutRail.tsx). */
 .body {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--s3);
   width: 100%;
 }
@@ -50,19 +53,18 @@
 }
 
 /* Houses the axis line and its end ticks, the threshold rule and its
-   label, and every marker (leader + triangle + value). Fixed height
-   reserves room for a stacked band of marker rows above the axis and the
-   threshold's label tight below it; markers/labels are absolutely
-   positioned so content taller than this reservation does not affect
-   layout of the rows below (e.g. .zonesRow). */
+   label, and every marker (stem + label). Fix round 2, R2: height is set
+   inline per rail (see ReadoutRail.tsx's trackHeightPx), derived from what
+   this particular rail actually contains — the tallest stacked marker row
+   plus a measured label height above the axis, and a measured threshold
+   label (or a small fixed minimum) below it — instead of a constant tall
+   enough for the worst case every rail might have. */
 .trackVisual {
   position: relative;
-  min-height: var(--s10);
 }
 
 .axisLine {
   position: absolute;
-  top: 50%;
   left: 0;
   right: 0;
   height: 1px;
@@ -86,7 +88,6 @@
    squashed by the axis's own scaleX sweep. */
 .axisTick {
   position: absolute;
-  top: 50%;
   width: 1px;
   height: 9px;
   background: var(--rule);
@@ -113,7 +114,9 @@
 
 /* D2: a full-height dashed rule spanning the entire marker band, top to
    bottom of .trackVisual — not a short segment that barely crosses the
-   axis. */
+   axis. Unaffected by R2's dynamic sizing: .trackVisual's box *is* the
+   band now, whatever height it computes to, so top:0/bottom:0 already
+   means "the whole band" without needing its own measurement. */
 .thresholdLine {
   position: absolute;
   top: 0;
@@ -124,35 +127,48 @@
 
 .thresholdLabel {
   position: absolute;
-  /* Tight underneath the axis/threshold line, not floating below with a
-     gap (D2). */
-  top: calc(50% + var(--s2));
   font-family: var(--font-data);
   font-size: var(--fs-small);
   font-variant-numeric: tabular-nums;
   color: var(--muted);
   white-space: nowrap;
+  /* R1: an opaque mask in the surface's own colour, so the full-height
+     threshold rule (which necessarily passes right through this label's
+     position — that's the point of D2) is interrupted by the label and
+     resumes on the other side, instead of visibly cutting it in half.
+     --panel matches Panel's own surface, which is what this rail always
+     renders inside on this site; if a rail is ever used outside a Panel,
+     this token would need to travel with that context. */
+  background: var(--panel);
+  padding-inline: var(--s1);
 }
 
-/* D3 + D4: every marker sits above the axis (the threshold's label is now
-   the only thing below it — see .thresholdLabel). DOM order is triangle,
-   leader, value; `column-reverse` renders that visually as value (top),
-   leader (a vertical tick in the marker's own colour), triangle (bottom,
-   exactly on the axis) — the leader is what visibly joins the number to
-   its point on the line (D3). A marker whose label would overlap another
-   at this viewport width gets a taller leader (see .markerLeader), which
-   is how it moves to "a second row further above" without changing its
-   horizontal position. */
-.marker {
+/* D3 + D4: a marker's stem is its leader (a vertical tick in the marker's
+   own colour, running from the axis up to where its label sits) plus the
+   triangle marking the exact point on the axis. Stems render as one DOM
+   group, before the labels group below (R1) — that ordering, not per-
+   marker DOM position, is what guarantees every label paints on top of
+   every stem regardless of which marker a stem or a label belongs to, or
+   which row a label was measured into. */
+.markerStem {
   position: absolute;
-  bottom: 50%;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  gap: var(--s1);
-  white-space: nowrap;
+  width: 1px;
+  background: currentColor;
   color: var(--marker-color);
+  transform: translateX(-50%);
   animation: marker-in 300ms ease-out 400ms both;
+}
+
+.markerTriangle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid currentColor;
 }
 
 @keyframes marker-in {
@@ -164,19 +180,19 @@
   }
 }
 
-.markerTriangle {
-  flex: 0 0 auto;
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 7px solid currentColor;
-}
-
-.markerLeader {
-  flex: 0 0 auto;
-  width: 1px;
-  background: currentColor;
+/* A marker's value + name, as one label. R1: an opaque --panel background
+   with a little horizontal padding, so any rule passing behind it (its own
+   stem's leader when another marker's stem crosses it in a stacked row —
+   see .markerStem above) is masked rather than visibly cutting through the
+   text. Same animation timing as the stem it belongs to, so the two still
+   read as one marker easing in together. */
+.markerLabel {
+  position: absolute;
+  color: var(--marker-color);
+  white-space: nowrap;
+  background: var(--panel);
+  padding-inline: var(--s1);
+  animation: marker-in 300ms ease-out 400ms both;
 }
 
 .markerValue {
@@ -214,19 +230,16 @@
 .anchorStart {
   transform: translateX(0);
   text-align: left;
-  align-items: flex-start;
 }
 
 .anchorCenter {
   transform: translateX(-50%);
   text-align: center;
-  align-items: center;
 }
 
 .anchorEnd {
   transform: translateX(-100%);
   text-align: right;
-  align-items: flex-end;
 }
 
 /* A marker's optional caption is prose, potentially a full sentence
@@ -268,7 +281,8 @@
     opacity: 1;
   }
 
-  .marker {
+  .markerStem,
+  .markerLabel {
     animation: none;
     opacity: 1;
   }
