@@ -43,7 +43,7 @@ export const projects: Project[] = [
     domain: 'Image classification',
     title: 'Dog breed classifier',
     summary:
-      'A vision model that names one of 120 dog breeds from a single photo, with a gate that turns away images that are not dogs before they get a confident wrong answer. Measured twice: once on the dataset it was trained on, once on photos it has never seen.',
+      'Names one of 120 dog breeds from a photo, and turns away anything that is not a dog before it gets a confident wrong answer. Scored twice, on the usual benchmark and on photos from a different source, because the two disagree by six points.',
     figures: [
       { value: '89.99%', label: 'Stanford test, 8580 images', color: 'var(--signal)' },
       { value: '137 ms', label: 'p95, deployed VPS incl. network' },

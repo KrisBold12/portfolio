@@ -29,8 +29,8 @@ function Home() {
               color: 'var(--signal)',
               caption: (
                 <>
-                  Same model, same <Num>21</Num> breeds — only the source of the photos
-                  differs.
+                  Same model, same <Num>21</Num> breeds. Only the photos come from somewhere
+                  else.
                 </>
               ),
             },
