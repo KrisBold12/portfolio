@@ -100,7 +100,7 @@ function ClassifierDemo() {
           {state.phase !== 'idle' && (
             <div className={styles.previewSlot}>
               {previewBroken ? (
-                <div className={styles.thumbFallback} aria-hidden="true" />
+                <div className={styles.thumbFallback} role="img" aria-label={`Preview of ${state.fileName} could not be loaded`} />
               ) : (
                 <img
                   src={state.previewUrl}

@@ -30,7 +30,14 @@
   padding: var(--s3) var(--s5);
 }
 
-.zone:focus-within {
+/* The visible box is this <label>; the real control is the visually hidden
+   <input> it wraps, so a plain :focus-visible on the input renders nowhere
+   and the ring has to live here instead. Plain :focus-within would also
+   light the ring on an ordinary mouse click (clicking the label moves focus
+   to the input), which is exactly what :focus-visible normally exists to
+   avoid — :has(:focus-visible) recovers that: it only matches while the
+   input itself is in its own :focus-visible state, i.e. keyboard focus. */
+.zone:focus-within:has(:focus-visible) {
   outline: 2px solid var(--signal);
   outline-offset: 2px;
 }

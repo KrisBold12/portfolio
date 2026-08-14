@@ -5,6 +5,7 @@ import ProjectCard from '../components/ProjectCard/ProjectCard'
 import ReadoutRail from '../components/ReadoutRail/ReadoutRail'
 import SiteHeader from '../components/SiteHeader/SiteHeader'
 import { projects } from '../data/projects'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import styles from './Home.module.css'
 
 /**
@@ -12,6 +13,11 @@ import styles from './Home.module.css'
  * the projects grid. Task 3 (docs/plans/web-frontend.md).
  */
 function Home() {
+  useDocumentMeta(
+    'Kristian Boldini — Machine learning engineer',
+    'Portfolio of Kristian Boldini, a machine learning engineer. Evidence-first project pages, starting with a dog breed classifier measured across two datasets.',
+  )
+
   return (
     <main className={styles.page}>
       <SiteHeader />
@@ -40,7 +46,9 @@ function Home() {
       </Panel>
 
       <section>
-        <Label className={styles.projectsHeading}>Projects</Label>
+        <Label as="h2" className={styles.projectsHeading}>
+          Projects
+        </Label>
         <ul className={styles.grid}>
           {projects.map((project) => (
             <li key={project.slug}>

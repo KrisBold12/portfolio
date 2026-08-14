@@ -62,18 +62,21 @@
    into `Answer`), but the space it used to occupy must not collapse at
    exactly the moment the request resolves — that was the busy->result
    layout shift this fixes.
-   The busy message ("Reading the photo and asking the model.") is fixed
-   text and always wraps to exactly two lines at the 160px preview-column
-   width, so two lines is the reservation, not the old flat `2.6em` (which
-   undershot the real two-line height and left a smaller version of the
-   same shift). `font-size` and `line-height` are pinned here to match
-   `.statusLine` exactly, rather than relying on the inherited body
-   line-height, so the `em` basis holds regardless of the paragraph being
-   rendered or not. */
+   Fix round 3 (Task 6): the busy message ("Reading the photo and asking the
+   model.") wraps to exactly two lines at the 160px preview-column width,
+   but three of the four error messages ("That image is too large...",
+   "No image was received...", "The classifier is unavailable...") wrap to
+   three — measured at 46.19px and 69.28px respectively, a ~23px busy->error
+   shift with the old two-line reservation. Three lines is the reservation
+   now, sized for the longest message this slot ever has to hold rather
+   than the busy phase's own text. `font-size` and `line-height` are pinned
+   here to match `.statusLine` exactly, rather than relying on the
+   inherited body line-height, so the `em` basis holds regardless of the
+   paragraph being rendered or not. */
 .statusLineSlot {
   font-size: var(--fs-small);
   line-height: 1.65;
-  min-height: calc(2 * 1.65em);
+  min-height: calc(3 * 1.65em);
 }
 
 .statusLine {

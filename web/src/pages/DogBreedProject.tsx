@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import ClassifierDemo from '../features/demo/ClassifierDemo'
 import Num from '../components/Num/Num'
 import Panel from '../components/Panel/Panel'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import styles from './DogBreedProject.module.css'
 
 const REPO_URL = 'https://github.com/KrisBold12/portfolio'
@@ -27,6 +28,11 @@ const REPO_URL = 'https://github.com/KrisBold12/portfolio'
  * coloured.
  */
 function DogBreedProject() {
+  useDocumentMeta(
+    'Dog breed classifier — Kristian Boldini',
+    'A dog breed classifier scored on two datasets to measure benchmark contamination, with an out-of-distribution gate, calibrated confidence, and a live demo.',
+  )
+
   return (
     <main className={styles.page}>
       <Link to="/" className={styles.back}>
@@ -302,7 +308,7 @@ function DogBreedProject() {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>Making the percentage mean something</h2>
+        <h2 className={styles.heading}>Making the percentage mean&nbsp;something</h2>
         <p className={styles.prose}>
           A softmax output is not a confidence. Networks are systematically overconfident, so
           showing the raw number claims more than the model can back.
