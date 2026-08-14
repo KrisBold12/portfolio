@@ -152,3 +152,83 @@
 .repoLink:focus-visible {
   color: var(--bone);
 }
+
+/* At a glance
+ *
+ * The page's five sections each argue one decision. This block exists because
+ * a reader arriving cold needs the outcome before the arguments, and had no
+ * way to get it: the headline accuracy was buried in a table cell in section
+ * one. Figures only, no prose -- the labels say what each number is and the
+ * sections say why it is that. */
+.glance {
+  margin-top: var(--s5);
+}
+
+.glanceGrid {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+/* A row per figure rather than a card grid: the labels are different lengths
+ * and a grid of tiles would either truncate them or leave ragged whitespace.
+ * Rows also let the numbers share a right edge, which is the point of tabular
+ * figures. */
+.glanceRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.glanceRow:last-child {
+  border-bottom: none;
+}
+
+.glanceLabel {
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.glanceValue {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-h2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Read the rest
+ *
+ * One per section, pointing at the matching README heading. The page states a
+ * finding; the README carries the reasoning. Set quietly: it is an exit, not a
+ * call to action. */
+.more {
+  margin: var(--s4) 0 0;
+  font-family: var(--font-data);
+  font-size: var(--fs-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.more a {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 2px;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.more a:hover,
+.more a:focus-visible {
+  color: var(--signal);
+  border-bottom-color: var(--signal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .more a {
+    transition: none;
+  }
+}

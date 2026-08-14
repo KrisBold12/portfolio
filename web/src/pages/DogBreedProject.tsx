@@ -7,6 +7,26 @@ import styles from './DogBreedProject.module.css'
 
 const REPO_URL = 'https://github.com/KrisBold12/portfolio'
 
+// blob/HEAD resolves to whatever the repository's default branch is, so these
+// keep working after dev is merged rather than pinning to the branch that
+// happened to be checked out when they were written.
+const README = `${REPO_URL}/blob/HEAD/projects/dog-breed/README.md`
+
+/**
+ * The page states a finding and its number. The reasoning behind it lives in
+ * the README, one link per section, so a reader can stop at the result or go
+ * all the way down without the page having to serve both audiences at once.
+ */
+function More({ to, children }: { to: string; children: React.ReactNode }) {
+  return (
+    <p className={styles.more}>
+      <a href={`${README}${to}`} target="_blank" rel="noreferrer">
+        {children} &rarr;
+      </a>
+    </p>
+  )
+}
+
 /**
  * The dog breed classifier project page: the written account around the
  * live demo. Task 4 (docs/plans/web-frontend.md). The demo itself is
@@ -54,19 +74,53 @@ function DogBreedProject() {
       </div>
 
       <section className={styles.section}>
+        <h2 className={styles.heading}>At a glance</h2>
+        <p className={styles.prose}>
+          Five models trained and compared, evaluated on two datasets, exported to ONNX and
+          checked image by image against the original, then served from a container behind a
+          gate and a calibration. It is live.
+        </p>
+        <Panel className={styles.glance}>
+          <dl className={styles.glanceGrid}>
+            <div className={styles.glanceRow}>
+              <dt className={styles.glanceLabel}>Accuracy, 8580 test images</dt>
+              <dd className={`${styles.glanceValue} ${styles.signal}`}>
+                <Num>89.99%</Num>
+              </dd>
+            </div>
+            <div className={styles.glanceRow}>
+              <dt className={styles.glanceLabel}>Lost by changing the photo source</dt>
+              <dd className={styles.glanceValue}>
+                <Num>6</Num> points
+              </dd>
+            </div>
+            <div className={styles.glanceRow}>
+              <dt className={styles.glanceLabel}>Cats accepted by the gate</dt>
+              <dd className={styles.glanceValue}>
+                <Num>1.18%</Num>
+              </dd>
+            </div>
+            <div className={styles.glanceRow}>
+              <dt className={styles.glanceLabel}>Calibration error, from 3.12%</dt>
+              <dd className={styles.glanceValue}>
+                <Num>0.98%</Num>
+              </dd>
+            </div>
+            <div className={styles.glanceRow}>
+              <dt className={styles.glanceLabel}>p95 in production, network included</dt>
+              <dd className={styles.glanceValue}>
+                <Num>137 ms</Num>
+              </dd>
+            </div>
+          </dl>
+        </Panel>
+      </section>
+
+      <section className={styles.section}>
         <h2 className={styles.heading}>The finding</h2>
         <p className={styles.prose}>
-          Stanford Dogs is built from ImageNet photos. All <Num>120</Num> breeds are ImageNet
-          classes. Any ImageNet-pretrained backbone has therefore seen the test images before
-          training starts, which inflates the published accuracy. The amount is not usually
-          reported.
-        </p>
-        <p className={styles.prose}>
-          Comparing the two datasets head to head would blend two effects, because the{' '}
-          <Num>21</Num> breeds they share are easier than the average of <Num>120</Num>. The
-          middle row holds the breed set fixed. What is left between it and the bottom row
-          comes from the photos. That gap ran between <Num>4.7</Num> and <Num>7.3</Num> points
-          across every configuration tried.
+          Stanford Dogs is built from ImageNet photos, and all <Num>120</Num> breeds are
+          ImageNet classes. Every pretrained backbone has already seen the test set.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -114,13 +168,18 @@ function DogBreedProject() {
             </tbody>
           </table>
         </Panel>
+        <p className={styles.prose}>
+          The middle row holds the breeds fixed, so the gap below it comes from the photos
+          alone. It ran between <Num>4.7</Num> and <Num>7.3</Num> points across every
+          configuration tried.
+        </p>
+        <More to="#results">How the three-way split was built</More>
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Choosing the model</h2>
         <p className={styles.prose}>
-          Five configurations, same data, same seed, same preprocessing. Three architectures,
-          each one frozen and fine-tuned.
+          Five configurations, same data, same seed, same preprocessing.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -230,31 +289,21 @@ function DogBreedProject() {
         </Panel>
         <p className={styles.prose}>
           Freezing the backbone helped convnext by <Num>12.3</Num> points and hurt efficientnet
-          by <Num>4.5</Num>. So the regime is not what decided the outcome. The pretrained
-          features did. Convnext&apos;s ImageNet-12k representations are already good enough
-          for a linear head, and fine-tuning on <Num>85</Num> images per breed damages them.
+          by <Num>4.5</Num>. The regime is not what decided it. The pretrained features did.
         </p>
         <p className={styles.prose}>
-          The chosen model is about <Num>10&times;</Num> slower than the fastest candidate. It
-          buys <Num>13.7</Num> points of accuracy, and <Num>3.1</Num> over the resnet50
-          baseline. Standard error on <Num>8580</Num> images is around <Num>0.36</Num> points,
-          so both margins are real.
+          Standard error on <Num>8580</Num> images is <Num>0.36</Num> points, so the{' '}
+          <Num>3.1</Num>-point margin over resnet50 is real.
         </p>
+        <More to="#model-selection">Why frozen beats fine-tuned here</More>
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Rejecting what isn&apos;t a dog</h2>
         <p className={styles.prose}>
-          The classifier always returns <Num>120</Num> logits. Hand it a cat and it answers
-          with a breed and a confidence, because softmax has no way to say &ldquo;not a
-          dog&rdquo;. The gate works one layer earlier, on the <Num>768</Num> features the
-          classifier reads from. The training dogs form a cloud there. Mahalanobis distance to
-          the nearest breed centre measures how far an image falls outside it.
-        </p>
-        <p className={styles.prose}>
-          The negatives are Oxford&apos;s <Num>2371</Num> cat photos. Fur, four legs, a muzzle,
-          the same pet-photo framing. A gate that only turns away pictures of cars proves
-          nothing.
+          Softmax has no way to say &ldquo;not a dog&rdquo;. The gate works one layer earlier,
+          on the <Num>768</Num> features behind the classifier: Mahalanobis distance to the
+          nearest breed centre.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -295,30 +344,18 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          Calibrating the threshold on Stanford&apos;s own validation split scores well there
-          and turns away about one real Oxford dog in eight. A user&apos;s photo will look like
-          Oxford&apos;s, not Stanford&apos;s. So the threshold comes off Oxford&apos;s dogs
-          instead. That trade buys <Num>7</Num> points of real-photo acceptance for{' '}
-          <Num>22</Num> more cats out of <Num>2371</Num>.
+          The negatives are Oxford&apos;s <Num>2371</Num> cat photos, not blank walls. The
+          threshold comes off Oxford&apos;s dogs rather than Stanford&apos;s own split, which
+          scored well there and turned away one real dog in eight.
         </p>
-        <p className={styles.prose}>
-          The design had set <Num>10%</Num> cat acceptance as the point where a dedicated dog
-          detector would be worth building. The gate came in at <Num>1.18%</Num>.
-        </p>
+        <More to="#rejecting-what-isnt-a-dog">How the threshold was chosen</More>
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Making the percentage mean&nbsp;something</h2>
         <p className={styles.prose}>
-          A softmax output is not a confidence. Networks are systematically overconfident, so
-          showing the raw number claims more than the model can back.
-        </p>
-        <p className={styles.prose}>
-          Expected calibration error measures the gap. Group the predictions by stated
-          confidence, then compare each bucket against the accuracy it actually reached.
-          Temperature scaling corrects it by dividing every logit by one scalar before the
-          softmax, fitted on validation. Dividing by a positive constant cannot reorder logits,
-          so no prediction changes. Only the number shown moves.
+          A softmax output is not a confidence. Networks are overconfident, so the raw number
+          claims more than the model can back.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -358,21 +395,20 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          Three times better on data the temperature never saw. The division is folded into the
-          exported graph, so the deployed model cannot be served uncalibrated by skipping a
-          step.
+          Temperature scaling divides every logit by one scalar before the softmax. No
+          prediction changes. Only the number shown moves.
         </p>
+        <More to="#making-the-percentage-mean-something">
+          How the temperature was fitted
+        </More>
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Serving it</h2>
         <p className={styles.prose}>
-          The deployed service carries neither PyTorch nor timm. Dropping the training stack
-          takes about <Num>400 MB</Num> out of the image and costs a guarantee: the
-          preprocessing and the Mahalanobis distance have to be reimplemented on PIL and numpy.
-          Parity tests hold both to the training originals, checked for exact equality rather
-          than a tolerance. That is what caught a one-pixel rounding difference in the crop
-          offset.
+          The deployed service carries neither PyTorch nor timm, which takes about{' '}
+          <Num>400 MB</Num> out of the image. Parity tests hold the reimplemented preprocessing
+          and distance to the training originals, checked for exact equality.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -426,17 +462,11 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          The <Num>300 ms</Num> budget was fixed before any model was trained. Until deployment
-          it was the one number that had never been tested on real hardware. A desktop
-          extrapolation put p95 somewhere between <Num>240</Num> and <Num>400 ms</Num>. On the
-          VPS it came in at <Num>137 ms</Num> with TLS and the network included. The estimate
-          was pessimistic by a factor of two, because it had been taken through Docker Desktop
-          on a WSL2 virtual machine rather than on native cores.
+          The <Num>300 ms</Num> budget was fixed before any model was trained. It was the last
+          number still untested on real hardware. The VPS came in at <Num>137 ms</Num>, network
+          included.
         </p>
-        <p className={styles.prose}>
-          Client-side downscaling and int8 quantisation were held in reserve for this. Neither
-          was needed.
-        </p>
+        <More to="#serving">The container and the deployment</More>
       </section>
 
       <p className={styles.closing}>
