@@ -1,0 +1,140 @@
+/* Layout matches Home.module.css: content column caps at 1120px, gutters
+   24px below 768px and 48px at and above it (Global Constraints, "Layout"). */
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s5);
+  display: grid;
+  gap: var(--s7);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: var(--s7) var(--s7);
+  }
+}
+
+.back {
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 150ms;
+  align-self: start;
+}
+
+.back:hover,
+.back:focus-visible {
+  color: var(--bone);
+}
+
+.header {
+  display: grid;
+  gap: var(--s4);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 600;
+  color: var(--bone);
+}
+
+.thesis {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--muted);
+  max-width: 68ch;
+}
+
+.section {
+  display: grid;
+  gap: var(--s4);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  color: var(--bone);
+}
+
+.prose {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--bone);
+  max-width: 68ch;
+}
+
+/* Tables scroll inside their own box rather than widening the page: the
+   scroll container is Panel's own element (className merges with
+   Panel.module.css's .panel), so overflow never escapes the panel's
+   border. */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--s2) var(--s3);
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--rule);
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table th {
+  font-family: var(--font-data);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.table td {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--bone);
+}
+
+.table td code {
+  font-family: var(--font-data);
+  font-size: 0.95em;
+  color: var(--bone);
+}
+
+.numCol {
+  text-align: right;
+}
+
+.closing {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--s5);
+}
+
+.repoLink {
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 150ms;
+}
+
+.repoLink:hover,
+.repoLink:focus-visible {
+  color: var(--bone);
+}
