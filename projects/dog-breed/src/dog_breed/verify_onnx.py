@@ -25,9 +25,8 @@ import csv
 from dog_breed.data.dataset import stanford_dataset
 from dog_breed.data.transforms import val_test_transforms
 from dog_breed.experiments import parse_experiment
-from dog_breed.model import load_trained_model
-from dog_breed.paths import onnx_file
-from dog_breed.paths import REPORTS_DIR, ONNX_PARITY_FILE
+from dog_breed.model import ModelWithFeatures, load_temperature, load_trained_model
+from dog_breed.paths import REPORTS_DIR, ONNX_PARITY_FILE, onnx_file
 
 BATCH_SIZE = 32
 CSV_HEADER = ['experiment', 'model', 'max_abs_logit_difference', 'onnx_acc', 'torch_acc', 'disagreements', 'num_images']
@@ -39,13 +38,14 @@ def compare_full(model, session, loader):
 
     for images, labels in tqdm(loader, desc="Comparing onnx against torch"):
         with torch.inference_mode():
-            torch_pred = model(images).argmax(dim=1).numpy()
+            logits, _ = model(images)
+            torch_preds = logits.argmax(dim=1).numpy()
         onnx_pred = session.run(["logits"], {"input": images.numpy()})[0].argmax(axis=1)
         labels_np = labels.numpy()
 
         onnx_correct += (onnx_pred == labels_np).sum()
-        torch_correct += (torch_pred == labels_np).sum()
-        disagreements += (onnx_pred != torch_pred).sum()
+        torch_correct += (torch_preds == labels_np).sum()
+        disagreements += (onnx_pred != torch_preds).sum()
 
     return onnx_correct, torch_correct, disagreements
 
@@ -54,7 +54,8 @@ def main():
     name = parse_experiment()
 
     model, ckpt = load_trained_model(name, "cpu")
-    model.eval()
+    wrapped = ModelWithFeatures(model, load_temperature(name))
+    wrapped.eval()
     session = ort.InferenceSession(str(onnx_file(name)), providers=["CPUExecutionProvider"])
 
     ds = stanford_dataset("test", val_test_transforms(model.pretrained_cfg))
@@ -63,7 +64,7 @@ def main():
     # 1. one batch, raw logits
     images, _ = next(iter(loader))
     with torch.inference_mode():
-        torch_logits = model(images)
+        torch_logits, _ = wrapped(images)
     onnx_logits = session.run(["logits"], {"input": images.numpy()})[0]
 
     max_diff = np.abs(torch_logits.numpy() - onnx_logits).max()
@@ -73,7 +74,7 @@ def main():
 
     # 2. the whole test set
     total = len(ds)
-    onnx_correct, torch_correct, disagreements = compare_full(model, session, loader)
+    onnx_correct, torch_correct, disagreements = compare_full(wrapped, session, loader)
     onnx_frac = onnx_correct / total
     torch_frac = torch_correct / total
     print(f"onnx accuracy:  {onnx_frac * 100:.2f}%")

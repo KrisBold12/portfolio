@@ -13,52 +13,15 @@ import torch
 import json
 
 from dog_breed.experiments import parse_experiment
-from dog_breed.model import load_trained_model
-from dog_breed.paths import MODEL_DIR, onnx_file, model_meta_file, temperature_file
+from dog_breed.model import ModelWithFeatures, load_temperature, load_trained_model
+from dog_breed.paths import MODEL_DIR, onnx_file, model_meta_file
 from dog_breed.data.splits import class_names
 
 OPSET_VERSION = 17
 
 
-class ModelWithFeatures(torch.nn.Module):
-    """
-    Exports both outputs: the logits and the features the OOD gate needs.
-
-    Two ONNX files would mean two sessions and two forward passes for what is
-    one computation -- the logits are just a projection of the features.
-
-    The logits come out already divided by the calibration temperature.
-    Dividing by a positive constant cannot reorder them, so predictions and
-    accuracy are unchanged; only the softmax the caller computes is corrected.
-    """
-    def __init__(self, model, temperature: float = 1.0):
-        super().__init__()
-        self.model = model
-        self.temperature = temperature
-
-    def forward(self, x):
-        f = self.model.forward_features(x)
-        features = self.model.forward_head(f, pre_logits=True)
-        logits = self.model.get_classifier()(features) / self.temperature
-        return logits, features
-
-
 def pretty(raw_breed: str):
     return raw_breed.replace('_', ' ').title()
-
-
-def load_temperature(name: str) -> float:
-    """The fitted temperature, or 1.0 when the model has not been calibrated.
-
-    Defaulting keeps export usable on a model that has never been through
-    calibrate.py, rather than failing on a missing file.
-    """
-    path = temperature_file(name)
-    if not path.exists():
-        return 1.0
-
-    with open(path, encoding="utf-8") as f:
-        return float(json.load(f)["temperature"])
 
 
 def main():
