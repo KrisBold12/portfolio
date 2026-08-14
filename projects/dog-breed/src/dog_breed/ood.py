@@ -85,8 +85,8 @@ def fit_mahalanobis(features, labels):
     # which is exactly where a cat can land.
     residuals = features - means[labels]
 
-    # Shrinkage, not the empirical estimate: in 768 dimensions the empirical
-    # covariance is near-singular and inverting it amplifies rounding error.
+    # Shrinkage, not the empirical estimate: in 768 dimensions the empirical covariance is 
+    # near-singular and inverting it amplifies rounding error.
     precision = LedoitWolf().fit(residuals).precision_
     return means, precision
 
@@ -102,8 +102,7 @@ def mahalanobis_score(features, means, precision):
         dists.append(d2)
 
     d2_all = np.stack(dists, axis=1)
-    # Nearest centre: resembling one breed is enough to be a dog. The clamp
-    # guards the sqrt against the -1e-13 a point sitting on a centre produces.
+    # Nearest centre: resembling one breed is enough to be a dog. The clamp is insurance, not a fix
     return np.sqrt(np.maximum(d2_all.min(axis=1), 0))
 
 
