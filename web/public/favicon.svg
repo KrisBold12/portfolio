@@ -1,7 +1,22 @@
+<!-- A marker landing on a scale: the site's ReadoutRail reduced to what
+     survives at 16px. The end ticks and the threshold are gone; at tab size
+     they are one pixel each and turn to mush.
+
+     Three things were decided by rendering it at 16, 24, 32, 64 and 128
+     rather than by looking at it large.
+
+     The marker's point sits inside the bar instead of a hair above it: a
+     two-unit gap reads fine at 128 and becomes an ambiguous smear at 16.
+
+     The shapes run nearly to the edge. An earlier version left a comfortable
+     margin, which at tab size left a mostly-empty square with a speck in it.
+
+     And the palette is inverted against the rest of the site, which is ink
+     with signal as its one accent. At 16px in a row of other tabs, a dark
+     mark on a dark tile is not seen at all, and an accent that cannot be
+     picked out is not doing the job an accent exists for. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#0B0E13" />
-  <line x1="6" y1="20" x2="26" y2="20" stroke="#7E8A9C" stroke-width="2" stroke-linecap="round" />
-  <line x1="6" y1="16" x2="6" y2="24" stroke="#7E8A9C" stroke-width="2" stroke-linecap="round" />
-  <line x1="26" y1="16" x2="26" y2="24" stroke="#7E8A9C" stroke-width="2" stroke-linecap="round" />
-  <path d="M18 8 L23 18 L13 18 Z" fill="#F2A63B" />
+  <rect width="32" height="32" rx="7" fill="#F2A63B" />
+  <path d="M16 25 L4 5 L28 5 Z" fill="#0B0E13" />
+  <line x1="3" y1="25.5" x2="29" y2="25.5" stroke="#0B0E13" stroke-width="4" stroke-linecap="round" />
 </svg>
