@@ -1,32 +1,5 @@
-/* Layout matches Home.module.css: content column caps at 1120px, gutters
-   24px below 768px and 48px at and above it (Global Constraints, "Layout"). */
-.page {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: var(--s6) var(--s5);
-  display: grid;
-  gap: var(--s7);
-}
-
-@media (min-width: 768px) {
-  .page {
-    padding: var(--s7) var(--s7);
-  }
-}
-
 .back {
-  font-family: var(--font-data);
-  font-size: var(--fs-small);
-  color: var(--muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 150ms;
   align-self: start;
-}
-
-.back:hover,
-.back:focus-visible {
-  color: var(--bone);
 }
 
 .header {
@@ -36,8 +9,10 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: var(--fs-h1);
-  font-weight: 600;
+  font-size: var(--fs-display);
+  font-weight: 700;
+  font-stretch: 115%;
+  letter-spacing: -0.02em;
   color: var(--bone);
 }
 
@@ -137,20 +112,17 @@
 .closing {
   border-top: 1px solid var(--rule);
   padding-top: var(--s5);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3) var(--s5);
 }
 
-.repoLink {
+.closingIdentity {
   font-family: var(--font-data);
   font-size: var(--fs-small);
   color: var(--muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 150ms;
-}
-
-.repoLink:hover,
-.repoLink:focus-visible {
-  color: var(--bone);
 }
 
 /* At a glance
@@ -223,8 +195,8 @@
 
 .more a:hover,
 .more a:focus-visible {
-  color: var(--signal);
-  border-bottom-color: var(--signal);
+  color: var(--bone);
+  border-bottom-color: var(--bone);
 }
 
 @media (prefers-reduced-motion: reduce) {

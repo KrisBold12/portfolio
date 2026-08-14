@@ -3,9 +3,12 @@ import ClassifierDemo from '../features/demo/ClassifierDemo'
 import Num from '../components/Num/Num'
 import Panel from '../components/Panel/Panel'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import pageLayout from '../styles/pageLayout.module.css'
+import quietLink from '../styles/quietLink.module.css'
 import styles from './DogBreedProject.module.css'
 
-const REPO_URL = 'https://github.com/KrisBold12/portfolio'
+const GITHUB_URL = 'https://github.com/KrisBold12'
+const REPO_URL = `${GITHUB_URL}/portfolio`
 
 // blob/HEAD resolves to whatever the repository's default branch is, so these
 // keep working after dev is merged rather than pinning to the branch that
@@ -29,9 +32,9 @@ function More({ to, children }: { to: string; children: React.ReactNode }) {
 
 /**
  * The dog breed classifier project page: the written account around the
- * live demo. Task 4 (docs/plans/web-frontend.md). The demo itself is
- * Task 5. This page only leaves a mount slot for it, directly under the
- * header, per the Task 4 brief.
+ * live demo (docs/plans/web-frontend.md, Task 4). The demo itself is
+ * Task 5; this page only leaves a mount slot for it, directly under the
+ * header.
  *
  * Every figure below is copied from projects/dog-breed/README.md or
  * serving/README.md and rewritten shorter for the web; none is invented.
@@ -39,13 +42,12 @@ function More({ to, children }: { to: string; children: React.ReactNode }) {
  * Colour marks a figure whose dataset is load-bearing for the argument being
  * made. Where it is, a Stanford figure is `--signal` and an Oxford figure is
  * `--probe`, without exception; where the dataset is not the variable under
- * discussion, the figure carries no colour (Global Constraints, "Colour",
- * amended after this task's review — colouring a number for a property that
- * is not in question is decoration, and a device that fires everywhere stops
- * encoding anything). The calibration table below compares T = 1 against
- * T = 1.21 on the same Stanford data, so its rows are uncoloured; the
- * out-of-distribution table compares the two datasets, so its columns are
- * coloured.
+ * discussion, the figure carries no colour (Global Constraints, "Colour" —
+ * colouring a number for a property that is not in question is decoration,
+ * and a device that fires everywhere stops encoding anything). The
+ * calibration table below compares T = 1 against T = 1.21 on the same
+ * Stanford data, so its rows are uncoloured; the out-of-distribution table
+ * compares the two datasets, so its columns are coloured.
  */
 function DogBreedProject() {
   useDocumentMeta(
@@ -54,8 +56,8 @@ function DogBreedProject() {
   )
 
   return (
-    <main className={styles.page}>
-      <Link to="/" className={styles.back}>
+    <main className={pageLayout.page}>
+      <Link to="/" className={`${quietLink.quietLink} ${styles.back}`}>
         &larr; Back
       </Link>
 
@@ -506,11 +508,19 @@ function DogBreedProject() {
         <More to="#serving">The container and the deployment</More>
       </section>
 
-      <p className={styles.closing}>
-        <a href={REPO_URL} target="_blank" rel="noreferrer" className={styles.repoLink}>
+      {/* This is the page that gets shared on its own, so it carries the
+          owner's identity too, not just a link back to the home page. */}
+      <div className={styles.closing}>
+        <span className={styles.closingIdentity}>
+          Kristian Boldini &middot;{' '}
+          <a href={GITHUB_URL} target="_blank" rel="noreferrer" className={quietLink.quietLink}>
+            github.com/KrisBold12
+          </a>
+        </span>
+        <a href={REPO_URL} target="_blank" rel="noreferrer" className={quietLink.quietLink}>
           Full write-up and code on GitHub &rarr;
         </a>
-      </p>
+      </div>
     </main>
   )
 }

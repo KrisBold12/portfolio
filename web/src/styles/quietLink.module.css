@@ -1,0 +1,18 @@
+/* The quiet text-link treatment shared across the site: muted mono text
+   that brightens to --bone on hover/focus. Used for SiteHeader's GitHub
+   link and DogBreedProject's back link and repo link — the same
+   affordance, extracted once instead of copied three times byte for
+   byte. */
+.quietLink {
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 150ms;
+}
+
+.quietLink:hover,
+.quietLink:focus-visible {
+  color: var(--bone);
+}

@@ -36,7 +36,6 @@
   --fs-body: 1.0625rem; /* Plex Sans 400, line-height 1.65 */
   --fs-small: 0.875rem; /* Plex Sans 400 */
   --fs-label: 0.75rem; /* Plex Mono 500, uppercase, tracking 0.14em */
-  --fs-readout: clamp(1.75rem, 4vw, 2.5rem); /* Plex Mono 600, tabular */
 
   /* ---- Spacing: 4px scale ------------------------------------------ */
   --s1: 4px;
@@ -47,7 +46,6 @@
   --s6: 32px;
   --s7: 48px;
   --s8: 64px;
-  --s9: 96px;
   --s10: 128px;
 
   /* ---- Radius -------------------------------------------------------- */

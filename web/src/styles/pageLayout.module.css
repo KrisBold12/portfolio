@@ -1,0 +1,17 @@
+/* Shared by every page: content column caps at 1120px, gutters 24px below
+   768px and 48px at and above it (Global Constraints, "Layout"). Home and
+   DogBreedProject both need exactly this contract, so it lives once here
+   instead of being copied into each page's own module. */
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s5);
+  display: grid;
+  gap: var(--s7);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: var(--s7) var(--s7);
+  }
+}

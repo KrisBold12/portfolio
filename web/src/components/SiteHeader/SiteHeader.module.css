@@ -1,9 +1,21 @@
+/* SiteHeader is a page banner, so it renders as a sibling of <main> rather
+   than inside it — but it still needs the shared content-column width
+   (Global Constraints, "Layout") to line up with the page below it. */
 .header {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s5) 0;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--s3) var(--s5);
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: var(--s7) var(--s7) 0;
+  }
 }
 
 .identity {
@@ -14,8 +26,10 @@
 
 .name {
   font-family: var(--font-display);
-  font-size: var(--fs-h1);
-  font-weight: 600;
+  font-size: var(--fs-display);
+  font-weight: 700;
+  font-stretch: 115%;
+  letter-spacing: -0.02em;
   color: var(--bone);
 }
 
@@ -23,18 +37,4 @@
   font-family: var(--font-data);
   font-size: var(--fs-small);
   color: var(--muted);
-}
-
-.github {
-  font-family: var(--font-data);
-  font-size: var(--fs-small);
-  color: var(--muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 150ms;
-}
-
-.github:hover,
-.github:focus-visible {
-  color: var(--bone);
 }
