@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import ClassifierDemo from '../features/demo/ClassifierDemo'
 import Num from '../components/Num/Num'
 import Panel from '../components/Panel/Panel'
 import styles from './DogBreedProject.module.css'
@@ -37,9 +38,10 @@ function DogBreedProject() {
       </header>
 
       {/* DEMO SLOT: Task 5 mounts the live classifier demo here, directly
-          under the header. Left empty on purpose; do not add placeholder
-          content or styling that would need to be undone. */}
-      <div id="classifier-demo-slot" />
+          under the header. */}
+      <div id="classifier-demo-slot">
+        <ClassifierDemo />
+      </div>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>The finding</h2>

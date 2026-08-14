@@ -1,0 +1,52 @@
+.result {
+  display: grid;
+  gap: var(--s5);
+}
+
+.gateNote {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--muted);
+  margin-bottom: var(--s4);
+  max-width: 68ch;
+}
+
+.breedList {
+  display: grid;
+  gap: var(--s3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breedRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--s3);
+  row-gap: var(--s1);
+  align-items: center;
+}
+
+.breedName {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--bone);
+}
+
+.breedPct {
+  text-align: right;
+}
+
+.breedBarTrack {
+  grid-column: 1 / -1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rule);
+  overflow: hidden;
+}
+
+.breedBarFill {
+  display: block;
+  height: 100%;
+  background: var(--muted);
+}

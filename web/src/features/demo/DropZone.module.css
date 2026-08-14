@@ -1,0 +1,61 @@
+.zone {
+  display: flex;
+  flex: 1 1 260px;
+  min-width: 220px;
+  min-height: 160px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--s5);
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 150ms;
+}
+
+.zone[data-dragging] {
+  border-color: var(--signal);
+}
+
+.zone[data-disabled] {
+  cursor: not-allowed;
+}
+
+.zone:focus-within {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+/* Visually hidden but still in the tab order and reachable by keyboard —
+   the label wrapping this input is what carries the visible box. */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.prompt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  pointer-events: none;
+}
+
+.promptMain {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  color: var(--bone);
+}
+
+.promptSub {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--muted);
+}

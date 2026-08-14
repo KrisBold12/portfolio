@@ -1,0 +1,58 @@
+.demo {
+  display: grid;
+  gap: var(--s5);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  color: var(--bone);
+}
+
+.intro {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--muted);
+  max-width: 68ch;
+}
+
+.uploadRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s5);
+  align-items: flex-start;
+}
+
+.previewSlot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  width: 160px;
+}
+
+.thumb,
+.thumbFallback {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  background: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.thumbFallback {
+  display: flex;
+}
+
+.statusLine {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--muted);
+  min-height: 2.6em;
+}
+
+.statusError {
+  color: var(--reject);
+}
