@@ -10,9 +10,9 @@
  *
  * Every value here matches projects/dog-breed/README.md exactly:
  * - 89.99% top-1 on the 8580-image Stanford test split.
- * - 97.5% of real Oxford dog photos are accepted by the OOD gate. The
+ * - 98.0% of real Oxford dog photos are accepted by the OOD gate. The
  *   threshold is calibrated on Oxford's dogs rather than on Stanford's own
- *   validation split, and sits at a 97.5% true positive rate rather than the
+ *   validation split, and sits at a 98% true positive rate rather than the
  *   95% it launched with, because photographs taken from a few metres away
  *   were being turned away (README, "Step back from the dog and the gate
  *   stops working").
@@ -61,7 +61,7 @@ export const projects: Project[] = [
       },
       { value: "137 ms", label: "p95, deployed VPS incl. network" },
       {
-        value: "97.5%",
+        value: "98.0%",
         label: "Oxford dog photos accepted",
         color: "var(--probe)",
       },

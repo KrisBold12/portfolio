@@ -48,15 +48,29 @@ BATCH_SIZE = 32
 # sets are pet portraits, so a distant dog genuinely is far from the training
 # distribution, and the gate said so.
 #
-# The half point is not a typo. Sweeping the threshold against Oxford's dogs and
-# cats puts the knee of the curve here:
+# Sweeping the threshold against Oxford's dogs and cats:
 #
 #   TPR     oxford dogs   cats accepted   dogs under 10% of frame
 #   95.0          95.0%           1.18%                     77.3%
 #   97.0          97.0%           1.98%                     84.1%
 #   97.5          97.5%           2.36%                     85.8%
-#   98.0          98.0%           4.51%                     87.6%
+#   98.0          98.0%           4.47%                     87.6%
+#   98.5          98.5%           8.10%                     88.8%
 #   99.0          99.0%          17.80%                     92.3%
+#
+# The cliff is at 99, where the gate admits nearly a fifth of all cats and stops
+# being a gate. Everything at or below 98.5 is on the safe side of it, so the
+# choice between those values is a product judgement rather than something the
+# data settles: on a public demo a false negative costs more than a false
+# positive, because a visitor whose own dog is turned away concludes the thing
+# is broken, while a visitor who feeds it a cat is deliberately probing it.
+#
+# 98 rather than 98.5 because of what each further step buys. From 95 the price
+# runs 3 cats per point recovered on distant dogs, then 28, then 65 above 98.
+# The curve has already turned by 98.5, and at 8.10% cats that setting sits 1.9
+# points under the 10% ceiling this project committed to before it had any of
+# these numbers, where 98 leaves 5.5. A limit worth quoting is a limit worth
+# keeping room under.
 #
 TARGET_TPR = 98
 

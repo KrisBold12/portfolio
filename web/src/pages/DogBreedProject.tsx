@@ -99,7 +99,7 @@ function DogBreedProject() {
             <div className={styles.glanceRow}>
               <dt className={styles.glanceLabel}>Cats accepted by the gate</dt>
               <dd className={styles.glanceValue}>
-                <Num>2.36%</Num>
+                <Num>4.47%</Num>
               </dd>
             </div>
             <div className={styles.glanceRow}>
@@ -368,16 +368,16 @@ function DogBreedProject() {
               </tr>
               <tr>
                 <td>
-                  Oxford dogs, <Num>97.5%</Num> TPR (used)
+                  Oxford dogs, <Num>98%</Num> TPR (used)
                 </td>
                 <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>99.0%</Num>
                 </td>
                 <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>97.5%</Num>
+                  <Num>98.0%</Num>
                 </td>
                 <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>2.36%</Num>
+                  <Num>4.47%</Num>
                 </td>
               </tr>
             </tbody>

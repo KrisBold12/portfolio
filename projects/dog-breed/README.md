@@ -128,7 +128,7 @@ the same pet-photo framing. Rejecting a photo of a car proves nothing.
 |---|---:|---:|---:|
 | Stanford validation | 95.0% | 87.8% | 0.25% |
 | Oxford dogs, 95% TPR | 97.8% | 95.0% | 1.18% |
-| **Oxford dogs, 97.5% TPR** | 99.0% | **97.5%** | **2.36%** |
+| **Oxford dogs, 98% TPR** | 99.0% | **98.0%** | **4.47%** |
 
 Both columns of dogs should be high and the cats column low. The first row is what
 calibrating on the development distribution gets you: it looks correct on Stanford
@@ -137,7 +137,7 @@ Oxford far more than Stanford, the threshold is read off Oxford's dogs instead.
 
 The third row came later, from using the deployed demo. See below.
 
-At 2.36%, the gate is well inside the 10% ceiling the design set for escalating to a
+At 4.47%, the gate is still inside the 10% ceiling the design set for escalating to a
 dedicated binary dog detector, so that model was not needed. In hindsight 10% was a
 loose bar: the measured rate is four times better than the limit, which means the
 limit never had a chance to bind. A tighter one would have been more useful, and it
@@ -177,15 +177,22 @@ Sweeping the threshold shows where the cost turns:
 |---:|---:|---:|---:|---:|
 | 95.0 | 49.27 | 95.0% | 1.18% | 77.3% |
 | 97.0 | 53.18 | 97.0% | 1.98% | 84.1% |
-| **97.5** | **54.26** | **97.5%** | **2.36%** | **85.8%** |
-| 98.0 | 56.36 | 98.0% | 4.51% | 87.6% |
+| 97.5 | 54.26 | 97.5% | 2.36% | 85.8% |
+| **98.0** | **56.36** | **98.0%** | **4.47%** | **87.6%** |
+| 98.5 | 58.24 | 98.5% | 8.10% | 88.8% |
 | 99.0 | 60.85 | 99.0% | 17.80% | 92.3% |
 | 99.5 | 65.72 | 99.5% | 39.48% | 94.8% |
 
-Moving from 95 to 97.5 costs 28 more cats and buys 8.5 points on the distant dogs.
-The next half point costs 51 more cats and buys 1.7. Past 99 the gate stops being a
-gate: at 99.75 it admits more than half of all cats. The knee is at 97.5, and that
-is where it now sits.
+The cliff is at 99, where the gate admits nearly a fifth of all cats and stops being
+a gate. Everything at or below 98.5 is on the safe side of it, so the choice between
+those values is a product judgement rather than something the data settles: on a
+public demo a visitor whose own dog is turned away concludes the thing is broken,
+while a visitor who feeds it a cat is deliberately probing it.
+
+98 rather than 98.5 because of what each further step buys. From 95 the price runs 3
+cats per point recovered on distant dogs, then 28, then 65 above 98. At 8.10% cats,
+98.5 would sit 1.9 points under the ceiling where 98 leaves 5.5, and a limit worth
+quoting is a limit worth keeping room under.
 
 One more thing fell out of the same table. Accuracy peaks at 91.7% when the dog
 fills a fifth to a third of the frame, not when it fills the whole thing. A tight
@@ -300,7 +307,7 @@ project.
 
 It is deployed at **https://kb-portfolio.dev/api**, behind nginx on a 4-vCPU VPS,
 at 137 ms p95 including TLS and the network. A Chihuahua photo returns 99.60% at
-a distance of 32.4 against the 54.26 threshold; an Abyssinian cat is rejected at
+a distance of 32.4 against the 56.36 threshold; an Abyssinian cat is rejected at
 61.5 with its best guess reaching only 10.3%.
 
 ## Status
