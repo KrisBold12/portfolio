@@ -58,7 +58,7 @@
 
 .figureValue {
   order: 1;
-  font-size: 1.0625rem;
+  font-size: var(--fs-h3);
   font-weight: 600;
   color: var(--bone);
 }
