@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { predict, PredictError, type PredictResponse } from '../../api/client'
 import Panel from '../../components/Panel/Panel'
 import Answer from './Answer'
+import { applyBreedMerges, mergeIsTopAnswer } from './breedMerge'
 import DropZone from './DropZone'
 import Result from './Result'
 import { downscale } from './downscale'
@@ -81,6 +82,15 @@ function ClassifierDemo() {
 
   const busy = state.phase === 'busy'
 
+  // A breed appearing under two Stanford Dogs labels (breedMerge.ts) is
+  // corrected once, here, so the headline, the confidence rail and the
+  // breed list all read the joined entry instead of three places having to
+  // agree on how to merge it separately.
+  const merge = state.phase === 'result' ? applyBreedMerges(state.response.predictions) : null
+  const displayResponse: PredictResponse | null =
+    state.phase === 'result' && merge ? { ...state.response, predictions: merge.predictions } : null
+  const mergeNote = merge && mergeIsTopAnswer(merge) ? (merge.applied?.note ?? null) : null
+
   return (
     <section className={styles.demo} aria-labelledby="classifier-demo-heading">
       <h2 id="classifier-demo-heading" className={styles.heading}>
@@ -91,7 +101,7 @@ function ClassifierDemo() {
         is.
       </p>
 
-      {state.phase === 'result' && <Answer response={state.response} />}
+      {displayResponse && <Answer response={displayResponse} note={mergeNote} />}
 
       <Panel>
         <div className={state.phase === 'idle' ? styles.uploadRow : styles.uploadRowCompact}>
@@ -124,7 +134,7 @@ function ClassifierDemo() {
         </div>
       </Panel>
 
-      {state.phase === 'result' && <Result response={state.response} />}
+      {displayResponse && <Result response={displayResponse} />}
     </section>
   )
 }

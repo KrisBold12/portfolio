@@ -4,6 +4,13 @@ import styles from './Answer.module.css'
 
 type AnswerProps = {
   response: PredictResponse
+  /**
+   * The disclosure line for a merged breed pair (breedMerge.ts), passed down
+   * already resolved so this component does not need to know the merge
+   * table exists — it only decides where the sentence goes if it is given
+   * one. `null` when the top prediction is not a merged entry.
+   */
+  note?: string | null
 }
 
 /**
@@ -26,8 +33,13 @@ type AnswerProps = {
  * plain "Not a dog", with the model's closest guess demoted to a smaller
  * line underneath and named as a guess rather than a result. The accepted
  * case is unchanged.
+ *
+ * Husky round: `response.predictions` arrives already passed through
+ * `applyBreedMerges` (breedMerge.ts), so `top` here can be a joined entry
+ * without this component doing anything special for it. `note` is the one
+ * addition, a line disclosing the join when the joined entry is the answer.
  */
-function Answer({ response }: AnswerProps) {
+function Answer({ response, note }: AnswerProps) {
   const top = response.predictions[0]
 
   if (!response.is_dog) {
@@ -46,16 +58,19 @@ function Answer({ response }: AnswerProps) {
   }
 
   return (
-    <p className={styles.answer} aria-live="polite">
-      {top && (
-        <span className={styles.answerName}>
-          {top.name}, <Num className={styles.answerPct}>{(top.probability * 100).toFixed(2)}%</Num>
+    <div className={styles.answerAccepted} aria-live="polite">
+      <p className={styles.answer}>
+        {top && (
+          <span className={styles.answerName}>
+            {top.name}, <Num className={styles.answerPct}>{(top.probability * 100).toFixed(2)}%</Num>
+          </span>
+        )}
+        <span className={styles.answerVerdict} style={{ color: 'var(--signal)' }}>
+          accepted
         </span>
-      )}
-      <span className={styles.answerVerdict} style={{ color: 'var(--signal)' }}>
-        accepted
-      </span>
-    </p>
+      </p>
+      {note && <p className={styles.answerNote}>{note}</p>}
+    </div>
   )
 }
 

@@ -1,8 +1,23 @@
+.answerAccepted {
+  display: grid;
+  gap: var(--s2);
+}
+
 .answer {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--s4);
+}
+
+/* The merged-breed disclosure (breedMerge.ts): same quiet caption style as
+   the rejected case's closest-guess line, since both are a small note under
+   a large headline rather than a second finding of their own. */
+.answerNote {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--muted);
+  max-width: 68ch;
 }
 
 .answerName {

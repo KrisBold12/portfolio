@@ -74,10 +74,20 @@ type ResultProps = {
  * ReadoutRailDemo already established for exactly this: a figure inside a
  * plain sentence, wrapped word by word in Num where the digits are
  * (web/src/pages/ReadoutRailDemo.tsx).
+ *
+ * Husky round: `response.predictions` arrives already passed through
+ * `applyBreedMerges` (breedMerge.ts), so the confidence rail's marker and
+ * the breed list below both read the joined entry for free, with no merge
+ * awareness needed here.
  */
 function Result({ response }: ResultProps) {
   const { is_dog, ood, predictions } = response
   const top = predictions[0]
+  // The panel is titled "Top 5 breeds": five rows regardless of how many
+  // raw candidates the response carries. Unmerged, the API already sends
+  // exactly five; after a husky-round merge (breedMerge.ts) collapses two
+  // into one, this is what keeps the count at five rather than four.
+  const breedRows = predictions.slice(0, 5)
   const tone = is_dog ? 'var(--signal)' : 'var(--reject)'
   const distance = ood.distance.toFixed(2)
   const threshold = ood.threshold.toFixed(2)
@@ -144,7 +154,7 @@ function Result({ response }: ResultProps) {
           </p>
         )}
         <ol className={styles.breedList}>
-          {predictions.map((prediction) => (
+          {breedRows.map((prediction) => (
             <li key={prediction.id} className={styles.breedRow}>
               <span className={styles.breedName}>{prediction.name}</span>
               <span className={styles.breedPct}>
