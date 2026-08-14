@@ -47,6 +47,22 @@ describe('predict', () => {
     expect((error as PredictError).message.length).toBeGreaterThan(0)
   })
 
+  it('maps a malformed JSON body on a 2xx response to "unavailable"', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.reject(new SyntaxError('Unexpected token')),
+      }),
+    )
+
+    const error = await predict(dummyFile).catch((e: unknown) => e)
+
+    expect(error).toBeInstanceOf(PredictError)
+    expect((error as PredictError).kind).toBe('unavailable')
+  })
+
   it('maps a network failure to "unavailable"', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('network down')))
 

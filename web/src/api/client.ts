@@ -66,5 +66,12 @@ export async function predict(file: File): Promise<PredictResponse> {
     throw new PredictError(statusToKind(response.status))
   }
 
-  return (await response.json()) as PredictResponse
+  try {
+    return (await response.json()) as PredictResponse
+  } catch {
+    // A 2xx status with a body that is not valid JSON means the service is
+    // misbehaving, not that the request itself was malformed, so this maps
+    // to the same 'unavailable' kind a network failure or a 5xx would.
+    throw new PredictError('unavailable')
+  }
 }
