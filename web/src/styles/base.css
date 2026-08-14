@@ -9,6 +9,18 @@
   margin: 0;
 }
 
+/* UX round, P3: browsers give <ul>/<ol> a default 40px left padding that
+   this reset never zeroed. Most lists on the site set their own padding: 0
+   already (Home's project grid, the breed list), but ReadoutRail's caption
+   list does not, so its captions sat 40px further right than everything
+   else in the panel. Reset here rather than in that component: it is a
+   plain missing reset, not a ReadoutRail layout decision, and this file is
+   outside the component the fix-round brief rules off limits. */
+ul,
+ol {
+  padding: 0;
+}
+
 html,
 body {
   height: 100%;
