@@ -120,7 +120,16 @@ function DogBreedProject() {
         <h2 className={styles.heading}>The finding</h2>
         <p className={styles.prose}>
           Stanford Dogs is built from ImageNet photos, and all <Num>120</Num> breeds are
-          ImageNet classes. Every pretrained backbone has already seen the test set.
+          ImageNet classes. Every pretrained backbone has already seen the test set during
+          pretraining.
+        </p>
+        <p className={styles.prose}>
+          So the accuracy everyone publishes on this benchmark is not measuring what it appears
+          to. Nobody reports by how much.
+        </p>
+        <p className={styles.prose}>
+          This project does. Oxford-IIIT Pet has <Num>21</Num> breeds in common with Stanford,
+          photographed by different people, so the same model can be scored twice.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -169,9 +178,14 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          The middle row holds the breeds fixed, so the gap below it comes from the photos
-          alone. It ran between <Num>4.7</Num> and <Num>7.3</Num> points across every
-          configuration tried.
+          The middle row is what makes the comparison honest. Those <Num>21</Num> breeds are
+          easier than the average of <Num>120</Num>, so without it the drop would mix two
+          causes.
+        </p>
+        <p className={styles.prose}>
+          With the breeds held fixed, the remaining <Num>6</Num> points come from the photos.
+          The gap ran between <Num>4.7</Num> and <Num>7.3</Num> points across every
+          configuration tried, so it belongs to the benchmark and not to one model.
         </p>
         <More to="#results">How the three-way split was built</More>
       </section>
@@ -301,9 +315,17 @@ function DogBreedProject() {
       <section className={styles.section}>
         <h2 className={styles.heading}>Rejecting what isn&apos;t a dog</h2>
         <p className={styles.prose}>
-          Softmax has no way to say &ldquo;not a dog&rdquo;. The gate works one layer earlier,
-          on the <Num>768</Num> features behind the classifier: Mahalanobis distance to the
-          nearest breed centre.
+          The classifier has <Num>120</Num> outputs and all of them are dog breeds. Show it a
+          cat and it answers confidently anyway, because softmax has no way to say &ldquo;not a
+          dog&rdquo;.
+        </p>
+        <p className={styles.prose}>
+          A demo anyone can upload to needs an answer for that.
+        </p>
+        <p className={styles.prose}>
+          The check happens one layer earlier, on the <Num>768</Num> features behind the
+          classifier. Training dogs form a cloud there, and an image is judged by how far
+          outside it falls.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -344,9 +366,17 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          The negatives are Oxford&apos;s <Num>2371</Num> cat photos, not blank walls. The
-          threshold comes off Oxford&apos;s dogs rather than Stanford&apos;s own split, which
-          scored well there and turned away one real dog in eight.
+          The negatives are Oxford&apos;s <Num>2371</Num> cat photos, not blank walls: fur,
+          four legs, a muzzle, the same framing. Turning away a photo of a car would prove
+          nothing.
+        </p>
+        <p className={styles.prose}>
+          Where the threshold is read matters more than it looks. Set on Stanford&apos;s own
+          validation split it scores well there and turns away one real Oxford dog in eight.
+        </p>
+        <p className={styles.prose}>
+          A visitor&apos;s photo looks like Oxford&apos;s, so the threshold comes off
+          Oxford&apos;s dogs instead.
         </p>
         <More to="#rejecting-what-isnt-a-dog">How the threshold was chosen</More>
       </section>
@@ -354,8 +384,14 @@ function DogBreedProject() {
       <section className={styles.section}>
         <h2 className={styles.heading}>Making the percentage mean&nbsp;something</h2>
         <p className={styles.prose}>
-          A softmax output is not a confidence. Networks are overconfident, so the raw number
-          claims more than the model can back.
+          The demo shows a percentage, which is a promise: say <Num>80%</Num> and you should be
+          right four times in five. Networks are systematically overconfident, so a raw softmax
+          output does not keep that promise.
+        </p>
+        <p className={styles.prose}>
+          Expected calibration error is the size of the broken promise. Group predictions by
+          the confidence they claimed, then compare each group against how often it was
+          actually right.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -395,8 +431,9 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          Temperature scaling divides every logit by one scalar before the softmax. No
-          prediction changes. Only the number shown moves.
+          Temperature scaling fixes it with one number, fitted on validation and folded into
+          the exported graph. Dividing by a positive constant cannot reorder the logits, so not
+          one prediction changes. Only the promise does.
         </p>
         <More to="#making-the-percentage-mean-something">
           How the temperature was fitted
