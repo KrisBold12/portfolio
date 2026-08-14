@@ -12,7 +12,7 @@ services:
     # Pinned to a commit, not to :latest. A deploy is then a one-line change
     # with a diff, and `docker compose up -d` on an unchanged file is a no-op
     # instead of a silent version bump.
-    image: ghcr.io/krisbold12/dogbreed-serving:54b633f
+    image: ghcr.io/krisbold12/dogbreed-serving:b6513a8
 
     # Bound to loopback, not 0.0.0.0. nginx is the only thing that reaches the
     # API, so TLS, the upload size limit and the access log cannot be bypassed

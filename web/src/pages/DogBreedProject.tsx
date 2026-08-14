@@ -384,29 +384,15 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          The negatives are Oxford&apos;s <Num>2371</Num> cat photos, not blank walls: fur,
-          four legs, a muzzle, the same framing. Turning away a photo of a car would prove
-          nothing.
+          The negatives are Oxford&apos;s <Num>2371</Num> cat photos, not blank walls. The
+          threshold comes off Oxford&apos;s dogs too, because a visitor&apos;s photo will
+          look like theirs.
         </p>
         <p className={styles.prose}>
-          Where the threshold is read matters more than it looks. Set on Stanford&apos;s own
-          validation split it scores well there and turns away one real Oxford dog in eight.
-        </p>
-        <p className={styles.prose}>
-          A visitor&apos;s photo looks like Oxford&apos;s, so the threshold comes off
-          Oxford&apos;s dogs instead.
-        </p>
-        <p className={styles.prose}>
-          The third row came from using this demo. Photographs taken from a few metres away
-          were being turned away, and Stanford&apos;s bounding boxes showed why: the gate
-          accepts <Num>99.7%</Num> of photos where the dog fills the frame and{' '}
-          <Num>77.3%</Num> where it fills under a tenth of it.
-        </p>
-        <p className={styles.prose}>
-          A pet portrait is what both calibration sets contain, so a distant dog really is
-          far from the training distribution. The gate was right about the measurement and
-          wrong about the question. Moving the threshold to <Num>97.5%</Num> TPR recovers{' '}
-          <Num>8.5</Num> points on those photos for <Num>28</Num> more cats.
+          Using the demo found something the datasets could not. The gate accepts{' '}
+          <Num>99.7%</Num> of photos where the dog fills the frame and <Num>77.3%</Num> where
+          it fills under a tenth of it. Both calibration sets are pet portraits, so a distant
+          dog really is outside what the gate was shown.
         </p>
         <More to="#step-back-from-the-dog-and-the-gate-stops-working">
           The framing measurement and the threshold sweep
