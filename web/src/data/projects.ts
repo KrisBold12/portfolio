@@ -22,32 +22,53 @@
  *   as the figure it replaced.
  */
 export type ProjectFigure = {
-  value: string
-  label: string
-  color?: string
-}
+  value: string;
+  label: string;
+  color?: string;
+};
 
+/**
+ * A card is either a project that exists, with a route and measured figures,
+ * or one that is planned and has neither. Written as a union rather than as
+ * optional fields so a planned card cannot be given a link that goes nowhere.
+ */
 export type Project = {
-  slug: string
-  href: string
-  domain: string
-  title: string
-  summary: string
-  figures: ProjectFigure[]
-}
+  slug: string;
+  domain: string;
+  title: string;
+  summary: string;
+} & (
+  | { planned?: false; href: string; figures: ProjectFigure[] }
+  | { planned: true; href?: never; figures?: never }
+);
 
 export const projects: Project[] = [
   {
-    slug: 'dog-breed',
-    href: '/projects/dog-breed',
-    domain: 'Image classification',
-    title: 'Dog breed classifier',
+    slug: "dog-breed",
+    href: "/projects/dog-breed",
+    domain: "Image classification",
+    title: "Dog breed classifier",
     summary:
-      'Names one of 120 dog breeds from a photo, and turns away anything that is not a dog before it gets a confident wrong answer. Scored twice, on the usual benchmark and on photos from a different source, because the two disagree by six points.',
+      "Names one of 120 dog breeds from a photo, and turns away anything that is not a dog before it gets a confident wrong answer. Scored twice, on the usual benchmark and on photos from a different source, because the two disagree by six points.",
     figures: [
-      { value: '89.99%', label: 'Stanford test, 8580 images', color: 'var(--signal)' },
-      { value: '137 ms', label: 'p95, deployed VPS incl. network' },
-      { value: '95.0%', label: 'Oxford dog photos accepted', color: 'var(--probe)' },
+      {
+        value: "89.99%",
+        label: "Stanford test, 8580 images",
+        color: "var(--signal)",
+      },
+      { value: "137 ms", label: "p95, deployed VPS incl. network" },
+      {
+        value: "95.0%",
+        label: "Oxford dog photos accepted",
+        color: "var(--probe)",
+      },
     ],
   },
-]
+  {
+    slug: "next",
+    planned: true,
+    domain: "Project in development",
+    title: "Coming soon",
+    summary: "",
+  },
+];

@@ -66,3 +66,23 @@
 .figureLabel {
   margin: 0;
 }
+
+/* Planned
+ *
+ * Dashed rather than solid, and no hover or focus treatment, so it reads as
+ * an outline of something not built rather than as a card that is broken.
+ * Its summary is the only body text on the site set in --muted: everything
+ * here is deliberately quieter than the card beside it. */
+.planned {
+  border-style: dashed;
+  background: none;
+}
+
+.planned .title {
+  color: var(--muted);
+}
+
+.planned .summary {
+  color: var(--muted);
+  margin-bottom: 0;
+}
