@@ -15,3 +15,7 @@ convnext_t_probe,oxford_dogs,54.264977,train (fitted on),10200,0.997352941176470
 convnext_t_probe,oxford_dogs,54.264977,val_dogs,1800,0.9866666666666667
 convnext_t_probe,oxford_dogs,54.264977,oxford_dogs,4178,0.9748683580660603
 convnext_t_probe,oxford_dogs,54.264977,oxford_cats,2371,0.023196963306621677
+convnext_t_probe,oxford_dogs,56.35955,train (fitted on),10200,0.9983333333333333
+convnext_t_probe,oxford_dogs,56.35955,val_dogs,1800,0.99
+convnext_t_probe,oxford_dogs,56.35955,oxford_dogs,4178,0.9798946864528483
+convnext_t_probe,oxford_dogs,56.35955,oxford_cats,2371,0.044706874736398144

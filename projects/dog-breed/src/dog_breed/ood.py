@@ -58,14 +58,7 @@ BATCH_SIZE = 32
 #   98.0          98.0%           4.51%                     87.6%
 #   99.0          99.0%          17.80%                     92.3%
 #
-# From 95 to 97.5 costs 28 more cats and buys 8.5 points on the distant dogs.
-# The next half point costs 51 more cats and buys 1.7. Past 99 the gate stops
-# being a gate: at 99.75 it admits more than half of all cats.
-#
-# 2.36% also keeps the ceiling this project set for itself before looking at any
-# of these numbers, which was that above 10% of cats accepted a dedicated binary
-# dog detector would be worth building.
-TARGET_TPR = 97.5
+TARGET_TPR = 98
 
 # Which set the threshold is read off. Stands in for production, so it has to
 # be the one furthest from the training distribution.
