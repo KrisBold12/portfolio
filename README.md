@@ -16,15 +16,19 @@ scores 94.11% on Stanford photos and 87.87% on Oxford photos.
 Five configurations across three architectures, evaluated on both datasets and
 benchmarked on CPU before choosing one. Selected model reaches 89.99% on the full
 Stanford test split at 160 ms p95 end to end, behind a Mahalanobis gate that accepts
-95% of real dog photos and 1.2% of cats.
+95% of real dog photos and 1.2% of cats, and a temperature that brings expected
+calibration error on the test split from 3.12% to 0.98%.
 
-[Read more](projects/dog-breed/README.md)
+Served by a containerised FastAPI service carrying neither torch nor timm, at a
+100 ms median per request measured inside the container.
+
+[The model](projects/dog-breed/README.md) — [the service](serving/README.md)
 
 ## Layout
 
 ```
 projects/dog-breed   training, evaluation, ONNX export and benchmarking
-serving              FastAPI service, containerised (health check only so far)
-web                  frontend, not started
+serving              FastAPI service and container image
+web                  React frontend
 docs                 design documents
 ```

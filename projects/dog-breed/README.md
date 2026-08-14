@@ -192,12 +192,15 @@ have to hardcode both, and would keep using the old crop ratio the day the model
 changes. Tests rebuild the preprocessing from the JSON alone and assert the tensors
 are identical to the ones the model was evaluated with.
 
-**Tests.** 46 tests, 34 of which need only the committed split CSV and run without
-either dataset; the rest are marked `dataset` or `export` and skip when the images
-or artifacts are absent. The assertions that matter were checked by mutation:
-shifting the class list by one position, or changing the crop ratio to the value
-most tutorials hardcode, has to turn something red. Two tests were rewritten after
-that check showed they passed anyway.
+**Tests.** 59 tests here, 28 of which need only the committed split CSV and run
+without either dataset; the rest are marked `dataset`, `export` or `serving` and
+skip when the images or artifacts are absent. The assertions that matter were
+checked by mutation: shifting the class list by one position, or changing the crop
+ratio to the value most tutorials hardcode, has to turn something red. Two tests
+were rewritten after that check showed they passed anyway. The same pass over the
+distance formula found one guard that no test covers — the clamp that stops a
+rounding error from reaching a square root — and the test says so in as many
+words, rather than implying coverage it does not have.
 
 ## Running it
 
@@ -225,10 +228,27 @@ the experiment name, so results never overwrite each other.
 On an 8 GB GPU, set `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` before
 training convnext; without it the allocator fragments and fails mid-run.
 
+## Serving
+
+The model is deployed by [`serving/`](../../serving/README.md): a FastAPI service
+around the exported graph, containerised, carrying neither torch nor timm. It
+reimplements the evaluation transform and the Mahalanobis distance on PIL and
+numpy, and both are held to the originals by parity tests that run from this
+project.
+
+Measured inside the container: 100 ms median per request, a Chihuahua photo at
+99.60% with a distance of 32.4 against the 49.27 threshold, and an Abyssinian cat
+rejected at 61.5 with its best guess reaching only 10.3%.
+
 ## Status
 
-Done: data pipeline, five experiments, evaluation on both datasets, ONNX export with
-self-describing metadata, parity verification, CPU latency benchmark, the
-out-of-distribution gate, and confidence calibration.
+Done: data pipeline, five experiments, evaluation on both datasets, ONNX export
+with self-describing metadata, parity verification, CPU latency benchmark, the
+out-of-distribution gate, confidence calibration, the prediction API, and the
+container image.
 
-Next: the prediction endpoint, deployment, and the frontend.
+Next: deployment to a VPS, and the frontend.
+
+Open: the 300 ms p95 budget has not been tested on VPS hardware. Client-side
+downscaling before upload and int8 quantisation are the two levers, both
+unmeasured.
