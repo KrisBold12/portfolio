@@ -26,11 +26,11 @@ A prediction:
     {"id": "chihuahua", "name": "Chihuahua", "probability": 0.9960},
     {"id": "pembroke",  "name": "Pembroke",  "probability": 0.0008}
   ],
-  "ood": {"distance": 32.41, "threshold": 49.27}
+  "ood": {"distance": 32.41, "threshold": 54.26}
 }
 ```
 
-`ood` is returned in the clear rather than kept server-side. The gate rejects 5%
+`ood` is returned in the clear rather than kept server-side. The gate rejects 2.5%
 of real dog photos by construction, so when someone reports that their dog was
 turned away, the number is already in the response they can paste.
 
@@ -115,7 +115,7 @@ Verified against a running container:
 | | |
 |---|---|
 | `/health` | reports `convnext_t_probe` / `convnext_tiny`, Docker health check passes |
-| Chihuahua photo | accepted, distance 32.4 against a threshold of 49.27, 99.60% on the breed |
+| Chihuahua photo | accepted, distance 32.4 against a threshold of 54.26, 99.60% on the breed |
 | Abyssinian cat | rejected, distance 61.5, and the top guess only reaches 10.3% |
 | text file | 400 |
 | request with no file | 422 |

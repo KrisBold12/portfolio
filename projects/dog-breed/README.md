@@ -127,16 +127,69 @@ the same pet-photo framing. Rejecting a photo of a car proves nothing.
 | Threshold calibrated on | Val dogs | Oxford dogs | Oxford cats |
 |---|---:|---:|---:|
 | Stanford validation | 95.0% | 87.8% | 0.25% |
-| **Oxford dogs** | 97.8% | **95.0%** | **1.18%** |
+| Oxford dogs, 95% TPR | 97.8% | 95.0% | 1.18% |
+| **Oxford dogs, 97.5% TPR** | 99.0% | **97.5%** | **2.36%** |
 
 Both columns of dogs should be high and the cats column low. The first row is what
 calibrating on the development distribution gets you: it looks correct on Stanford
 and quietly rejects one real Oxford dog in eight. Since user uploads will resemble
-Oxford far more than Stanford, the threshold is read off Oxford's dogs instead. That
-buys 7 points of real-photo acceptance for 22 additional cats out of 2371.
+Oxford far more than Stanford, the threshold is read off Oxford's dogs instead.
 
-At 1.18%, the gate is well inside the 10% ceiling the design set for escalating to a
-dedicated binary dog detector, so that model was not needed.
+The third row came later, from using the deployed demo. See below.
+
+At 2.36%, the gate is well inside the 10% ceiling the design set for escalating to a
+dedicated binary dog detector, so that model was not needed. In hindsight 10% was a
+loose bar: the measured rate is four times better than the limit, which means the
+limit never had a chance to bind. A tighter one would have been more useful, and it
+is left as written because a criterion is only worth quoting if it was fixed before
+the measurement.
+
+## Step back from the dog and the gate stops working
+
+The first version shipped at a 95% true positive rate on Oxford's dogs. Using it
+turned up something the datasets could not: photographs taken from a few metres away
+were being turned away, and the gate degraded faster than the classifier did.
+
+Stanford Dogs ships a bounding box per image, so the test split already carries the
+number that explains it. Binning the 8580 test photos by how much of the frame the
+dog occupies:
+
+| Dog fills | Images | Accuracy | Accepted by the gate | Median distance |
+|---|---:|---:|---:|---:|
+| under 10% | 233 | 82.8% | **77.3%** | 39.7 |
+| 10 to 20% | 622 | 88.9% | 91.6% | 31.4 |
+| 20 to 35% | 1331 | **91.7%** | 96.1% | 27.6 |
+| 35 to 50% | 1560 | 90.4% | 98.3% | 25.0 |
+| 50 to 70% | 2176 | 90.1% | 99.0% | 23.4 |
+| over 70% | 2658 | 89.7% | 99.7% | 22.7 |
+
+The classifier loses 7 points across that range. The gate loses 22, and rejects
+nearly a quarter of the most distant dogs.
+
+The gate was not malfunctioning. Both calibration sets are pet portraits, so a dog
+that fills a twentieth of the frame genuinely is far from the training distribution,
+and the median distance climbing from 22.7 to 39.7 is the gate saying exactly that.
+It was right about the measurement and wrong about the question.
+
+Sweeping the threshold shows where the cost turns:
+
+| TPR | Threshold | Oxford dogs | Cats | Dogs under 10% of frame |
+|---:|---:|---:|---:|---:|
+| 95.0 | 49.27 | 95.0% | 1.18% | 77.3% |
+| 97.0 | 53.18 | 97.0% | 1.98% | 84.1% |
+| **97.5** | **54.26** | **97.5%** | **2.36%** | **85.8%** |
+| 98.0 | 56.36 | 98.0% | 4.51% | 87.6% |
+| 99.0 | 60.85 | 99.0% | 17.80% | 92.3% |
+| 99.5 | 65.72 | 99.5% | 39.48% | 94.8% |
+
+Moving from 95 to 97.5 costs 28 more cats and buys 8.5 points on the distant dogs.
+The next half point costs 51 more cats and buys 1.7. Past 99 the gate stops being a
+gate: at 99.75 it admits more than half of all cats. The knee is at 97.5, and that
+is where it now sits.
+
+One more thing fell out of the same table. Accuracy peaks at 91.7% when the dog
+fills a fifth to a third of the frame, not when it fills the whole thing. A tight
+close-up costs two points, presumably by cropping away the silhouette.
 
 ## Making the percentage mean something
 
@@ -247,7 +300,7 @@ project.
 
 It is deployed at **https://kb-portfolio.dev/api**, behind nginx on a 4-vCPU VPS,
 at 137 ms p95 including TLS and the network. A Chihuahua photo returns 99.60% at
-a distance of 32.4 against the 49.27 threshold; an Abyssinian cat is rejected at
+a distance of 32.4 against the 54.26 threshold; an Abyssinian cat is rejected at
 61.5 with its best guess reaching only 10.3%.
 
 ## Status

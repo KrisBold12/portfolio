@@ -99,7 +99,7 @@ function DogBreedProject() {
             <div className={styles.glanceRow}>
               <dt className={styles.glanceLabel}>Cats accepted by the gate</dt>
               <dd className={styles.glanceValue}>
-                <Num>1.18%</Num>
+                <Num>2.36%</Num>
               </dd>
             </div>
             <div className={styles.glanceRow}>
@@ -353,7 +353,9 @@ function DogBreedProject() {
                 </td>
               </tr>
               <tr>
-                <td>Oxford dogs (used)</td>
+                <td>
+                  Oxford dogs, <Num>95%</Num> TPR
+                </td>
                 <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>97.8%</Num>
                 </td>
@@ -362,6 +364,20 @@ function DogBreedProject() {
                 </td>
                 <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>1.18%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Oxford dogs, <Num>97.5%</Num> TPR (used)
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
+                  <Num>99.0%</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>97.5%</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>2.36%</Num>
                 </td>
               </tr>
             </tbody>
@@ -380,7 +396,21 @@ function DogBreedProject() {
           A visitor&apos;s photo looks like Oxford&apos;s, so the threshold comes off
           Oxford&apos;s dogs instead.
         </p>
-        <More to="#rejecting-what-isnt-a-dog">How the threshold was chosen</More>
+        <p className={styles.prose}>
+          The third row came from using this demo. Photographs taken from a few metres away
+          were being turned away, and Stanford&apos;s bounding boxes showed why: the gate
+          accepts <Num>99.7%</Num> of photos where the dog fills the frame and{' '}
+          <Num>77.3%</Num> where it fills under a tenth of it.
+        </p>
+        <p className={styles.prose}>
+          A pet portrait is what both calibration sets contain, so a distant dog really is
+          far from the training distribution. The gate was right about the measurement and
+          wrong about the question. Moving the threshold to <Num>97.5%</Num> TPR recovers{' '}
+          <Num>8.5</Num> points on those photos for <Num>28</Num> more cats.
+        </p>
+        <More to="#step-back-from-the-dog-and-the-gate-stops-working">
+          The framing measurement and the threshold sweep
+        </More>
       </section>
 
       <section className={styles.section}>

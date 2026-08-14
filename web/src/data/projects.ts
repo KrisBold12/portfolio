@@ -10,9 +10,12 @@
  *
  * Every value here matches projects/dog-breed/README.md exactly:
  * - 89.99% top-1 on the 8580-image Stanford test split.
- * - 95.0% of real Oxford dog photos are accepted by the OOD gate once its
+ * - 97.5% of real Oxford dog photos are accepted by the OOD gate. The
  *   threshold is calibrated on Oxford's dogs rather than on Stanford's own
- *   validation split (README, "Rejecting what isn't a dog").
+ *   validation split, and sits at a 97.5% true positive rate rather than the
+ *   95% it launched with, because photographs taken from a few metres away
+ *   were being turned away (README, "Step back from the dog and the gate
+ *   stops working").
  * - 137 ms p95 measured on the deployed service itself (README, "Serving":
  *   "deployed at https://kb-portfolio.dev/api, behind nginx on a 4-vCPU
  *   VPS, at 137 ms p95 including TLS and the network") — not the in-
@@ -58,7 +61,7 @@ export const projects: Project[] = [
       },
       { value: "137 ms", label: "p95, deployed VPS incl. network" },
       {
-        value: "95.0%",
+        value: "97.5%",
         label: "Oxford dog photos accepted",
         color: "var(--probe)",
       },
