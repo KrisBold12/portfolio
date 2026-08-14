@@ -4,14 +4,7 @@ from dogbreed_serving.model import Artifacts
 from dogbreed_serving.preprocess import preprocess
 from dogbreed_serving.schemas import OodInfo, Prediction, PredictResponse
 
-# Husky round (web/src/features/demo/breedMerge.ts): the frontend joins one
-# curated pair of duplicate Stanford Dogs labels into a single displayed row
-# and still shows a five-row breed list. That needs one spare raw candidate
-# beyond the five it displays, so TOP_K carries the merge table's one entry;
-# a second merge entry would need this raised again. The response contract
-# (PredictResponse) and the accuracy figures, both based on the top-1
-# argmax, are unaffected -- this only changes how many raw rows ride along.
-TOP_K = 6
+TOP_K = 5
 
 
 def softmax(logits: np.ndarray) -> np.ndarray:

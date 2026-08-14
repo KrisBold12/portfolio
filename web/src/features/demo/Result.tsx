@@ -78,16 +78,16 @@ type ResultProps = {
  * Husky round: `response.predictions` arrives already passed through
  * `applyBreedMerges` (breedMerge.ts), so the confidence rail's marker and
  * the breed list below both read the joined entry for free, with no merge
- * awareness needed here.
+ * awareness needed here. The list renders exactly what it is given rather
+ * than assuming a count: unmerged that is the API's five, and after a
+ * merge joins two of them it is four, since padding a fifth back in would
+ * mean showing a class the model ranked below all of these inside
+ * something a visitor reads as the top five. The panel is titled "Closest
+ * matches" for the same reason "Top 5" no longer describes what is here.
  */
 function Result({ response }: ResultProps) {
   const { is_dog, ood, predictions } = response
   const top = predictions[0]
-  // The panel is titled "Top 5 breeds": five rows regardless of how many
-  // raw candidates the response carries. Unmerged, the API already sends
-  // exactly five; after a husky-round merge (breedMerge.ts) collapses two
-  // into one, this is what keeps the count at five rather than four.
-  const breedRows = predictions.slice(0, 5)
   const tone = is_dog ? 'var(--signal)' : 'var(--reject)'
   const distance = ood.distance.toFixed(2)
   const threshold = ood.threshold.toFixed(2)
@@ -147,14 +147,14 @@ function Result({ response }: ResultProps) {
         </div>
       </Panel>
 
-      <Panel label={is_dog ? 'Top 5 breeds' : 'Closest matches'}>
+      <Panel label="Closest matches">
         {!is_dog && (
           <p className={styles.gateNote}>
             The gate did not recognise a dog here. These are the closest matches anyway.
           </p>
         )}
         <ol className={styles.breedList}>
-          {breedRows.map((prediction) => (
+          {predictions.map((prediction) => (
             <li key={prediction.id} className={styles.breedRow}>
               <span className={styles.breedName}>{prediction.name}</span>
               <span className={styles.breedPct}>

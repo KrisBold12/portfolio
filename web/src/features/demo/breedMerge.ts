@@ -9,8 +9,16 @@ import type { Prediction } from '../../api/client'
  * annotators check the results. `n02109961` is the synset "Eskimo dog,
  * husky" — "husky" is a lemma *inside* that synset, not a name for a
  * different dog — so ImageNet filled both `eskimo_dog` and
- * `siberian_husky` from overlapping searches. Opening the Eskimo dog
- * folder confirms it: the photos are Siberian Huskies.
+ * `siberian_husky` from overlapping searches.
+ *
+ * Looking through the Eskimo dog folder finds Siberian Huskies: one image
+ * has two blue eyes, another has heterochromia, and neither trait occurs in
+ * the Canadian Eskimo Dog. So the folder is at least contaminated. Whether
+ * it also holds genuine Canadian Eskimo Dogs is not something these photos
+ * can settle, and labelling the merged class "Siberian Husky" would assert
+ * that it does not. The display name is `Husky`, the lemma both synsets
+ * share (`n02110185` is "Siberian husky"): true of both breeds, and it
+ * claims nothing about which one a given photo shows.
  *
  * On the 8580-image test split this pair carries a signature no other
  * confusion in the model comes close to: a Siberian Husky photo is called
@@ -42,10 +50,10 @@ export type BreedMerge = {
 export const CLASS_MERGES: readonly BreedMerge[] = [
   {
     ids: ['eskimo_dog', 'siberian_husky'],
-    id: 'siberian_husky',
-    name: 'Siberian Husky',
+    id: 'husky',
+    name: 'Husky',
     note:
-      'Stanford Dogs files this breed under two names, Eskimo Dog and Siberian Husky. This demo treats them as one answer and adds the two probabilities together.',
+      'Stanford Dogs splits this dog across two class names, Eskimo Dog and Siberian Husky, so this demo counts both as the same answer and adds their probabilities together.',
   },
 ]
 

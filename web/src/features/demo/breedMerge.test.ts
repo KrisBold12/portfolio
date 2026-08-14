@@ -19,33 +19,33 @@ describe('applyBreedMerges', () => {
     const result = applyBreedMerges(predictions)
 
     expect(result.applied).toBe(CLASS_MERGES[0])
-    expect(result.predictions[0].id).toBe('siberian_husky')
-    expect(result.predictions[0].name).toBe('Siberian Husky')
+    expect(result.predictions[0].id).toBe('husky')
+    expect(result.predictions[0].name).toBe('Husky')
     expect(result.predictions[0].probability).toBeCloseTo(0.7, 10)
     // The pair collapsed to one row, so only the ids outside it remain besides it.
-    expect(result.predictions.map((p) => p.id)).toEqual(['siberian_husky', 'pug', 'beagle', 'chihuahua'])
+    expect(result.predictions.map((p) => p.id)).toEqual(['husky', 'pug', 'beagle', 'chihuahua'])
   })
 
-  it('promotes a sixth candidate and keeps ordering correct when the merge outranks something new', () => {
+  it('re-sorts correctly when the merge outranks entries it did not outrank before', () => {
     // Before merging, siberian_husky (0.15) sits below pug (0.2) and beagle
     // (0.18) but above chihuahua (0.04). Summed with eskimo_dog (0.4), the
-    // merged entry (0.55) now outranks pug and beagle too, and the sixth
-    // candidate, poodle, has to be promoted into the fifth row it left open.
+    // merged entry (0.55) now outranks pug and beagle too.
     const predictions = [
       pred('eskimo_dog', 'Eskimo Dog', 0.4),
       pred('pug', 'Pug', 0.2),
       pred('beagle', 'Beagle', 0.18),
       pred('siberian_husky', 'Siberian Husky', 0.15),
       pred('chihuahua', 'Chihuahua', 0.04),
-      pred('poodle', 'Poodle', 0.03),
     ]
 
     const result = applyBreedMerges(predictions)
-    const top5 = result.predictions.slice(0, 5)
 
-    expect(top5.map((p) => p.id)).toEqual(['siberian_husky', 'pug', 'beagle', 'chihuahua', 'poodle'])
-    expect(top5[0].probability).toBeCloseTo(0.55, 10)
-    expect(top5).toHaveLength(5)
+    expect(result.predictions.map((p) => p.id)).toEqual(['husky', 'pug', 'beagle', 'chihuahua'])
+    expect(result.predictions[0].probability).toBeCloseTo(0.55, 10)
+    // Merging two of the five raw rows into one leaves four, not five: the
+    // list shows however many rows the merge actually produces rather than
+    // padding back up with a class the model ranked lower than all of these.
+    expect(result.predictions).toHaveLength(4)
   })
 
   it('relabels a solo appearance of either id without summing anything extra', () => {
@@ -55,8 +55,8 @@ describe('applyBreedMerges', () => {
 
     expect(result.applied).toBe(CLASS_MERGES[0])
     expect(result.predictions[0]).toEqual({
-      id: 'siberian_husky',
-      name: 'Siberian Husky',
+      id: 'husky',
+      name: 'Husky',
       probability: 0.7,
     })
   })
