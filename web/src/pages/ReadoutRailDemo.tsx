@@ -1,3 +1,4 @@
+import Num from '../components/Num/Num'
 import Panel from '../components/Panel/Panel'
 import ReadoutRail from '../components/ReadoutRail/ReadoutRail'
 
@@ -29,13 +30,23 @@ function ReadoutRailDemo() {
               value: 32.41,
               label: 'sample A',
               color: 'var(--signal)',
-              caption: 'Accepted: 32.41 sits below the 49.27 threshold, so the gate treats this as a dog.',
+              caption: (
+                <>
+                  Accepted: <Num>32.41</Num> sits below the <Num>49.27</Num> threshold, so the gate
+                  treats this as a dog.
+                </>
+              ),
             },
             {
               value: 63.8,
               label: 'sample B',
               color: 'var(--reject)',
-              caption: 'Rejected: 63.8 sits above the 49.27 threshold, so the gate does not treat this as a dog.',
+              caption: (
+                <>
+                  Rejected: <Num>63.80</Num> sits above the <Num>49.27</Num> threshold, so the gate
+                  does not treat this as a dog.
+                </>
+              ),
             },
           ]}
         />
@@ -62,6 +73,19 @@ function ReadoutRailDemo() {
           markers={[
             { value: 2, label: 'near min', color: 'var(--probe)' },
             { value: 88, label: 'near max', color: 'var(--signal)' },
+          ]}
+        />
+      </Panel>
+
+      <Panel label="Density check — labels close enough to overlap">
+        <ReadoutRail
+          title="Two measurements a few points apart"
+          min={0}
+          max={100}
+          unit="%"
+          markers={[
+            { value: 45.2, label: 'measurement one', color: 'var(--probe)' },
+            { value: 51.6, label: 'measurement two', color: 'var(--signal)' },
           ]}
         />
       </Panel>

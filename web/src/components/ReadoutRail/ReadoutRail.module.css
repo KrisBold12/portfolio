@@ -2,8 +2,12 @@
   width: 100%;
 }
 
+/* Fix round 1, D6: the axis and its own labels (end ticks, threshold,
+   zones) read as one dense block — internal gaps here stay small — and
+   that block is set apart from the caption prose below by a clearly
+   larger gap (see .captionList). */
 .header {
-  margin-bottom: var(--s5);
+  margin-bottom: var(--s3);
 }
 
 /* endLabelMin | scaleArea (flex:1) | endLabelMax. Flex reserves the end
@@ -25,6 +29,19 @@
   white-space: nowrap;
 }
 
+/* Fix round 1: these were dead keys (referenced in the component,
+   undefined here, so the rendered class list literally included the
+   string "undefined"). The comment above `.endLabel` always implied the
+   two ends were meant to diverge slightly — they sit at the outer edges of
+   `.body`, so the natural divergence is which way their own text aligns. */
+.endLabelMin {
+  text-align: left;
+}
+
+.endLabelMax {
+  text-align: right;
+}
+
 .scaleArea {
   position: relative;
   flex: 1 1 auto;
@@ -32,13 +49,15 @@
   width: 100%;
 }
 
-/* Houses the axis line, the threshold rule and the marker triangles/values.
-   Fixed height reserves room for a tier of floating text above and below
-   the axis; markers are absolutely positioned so overflowing that height
-   (e.g. a longer marker label) does not affect layout of the rows below. */
+/* Houses the axis line and its end ticks, the threshold rule and its
+   label, and every marker (leader + triangle + value). Fixed height
+   reserves room for a stacked band of marker rows above the axis and the
+   threshold's label tight below it; markers/labels are absolutely
+   positioned so content taller than this reservation does not affect
+   layout of the rows below (e.g. .zonesRow). */
 .trackVisual {
   position: relative;
-  min-height: var(--s9);
+  min-height: var(--s10);
 }
 
 .axisLine {
@@ -61,6 +80,40 @@
   }
 }
 
+/* D1: a short terminal at each end, the same weight as the axis, so the
+   line reads as a measured span rather than a rule that just stops. Kept
+   as siblings of .axisLine (not its ::before/::after) so they are not
+   squashed by the axis's own scaleX sweep. */
+.axisTick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 9px;
+  background: var(--rule);
+  transform: translateY(-50%);
+  animation: rail-fade 400ms ease-out both;
+}
+
+.axisTickStart {
+  left: 0;
+}
+
+.axisTickEnd {
+  right: 0;
+}
+
+@keyframes rail-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* D2: a full-height dashed rule spanning the entire marker band, top to
+   bottom of .trackVisual — not a short segment that barely crosses the
+   axis. */
 .thresholdLine {
   position: absolute;
   top: 0;
@@ -69,16 +122,33 @@
   transform: translateX(-50%);
 }
 
-/* One marker: a triangle glyph anchored exactly on the axis, with its value
-   text stacked toward the outside (up for the "above" tier, down for
-   "below"). DOM order is always triangle, then value, so a "below" marker
-   uses the natural column order (triangle nearest the axis) and an "above"
-   marker reverses it (triangle still nearest the axis, now at the bottom of
-   the block). */
+.thresholdLabel {
+  position: absolute;
+  /* Tight underneath the axis/threshold line, not floating below with a
+     gap (D2). */
+  top: calc(50% + var(--s2));
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* D3 + D4: every marker sits above the axis (the threshold's label is now
+   the only thing below it — see .thresholdLabel). DOM order is triangle,
+   leader, value; `column-reverse` renders that visually as value (top),
+   leader (a vertical tick in the marker's own colour), triangle (bottom,
+   exactly on the axis) — the leader is what visibly joins the number to
+   its point on the line (D3). A marker whose label would overlap another
+   at this viewport width gets a taller leader (see .markerLeader), which
+   is how it moves to "a second row further above" without changing its
+   horizontal position. */
 .marker {
   position: absolute;
+  bottom: 50%;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
+  align-items: center;
   gap: var(--s1);
   white-space: nowrap;
   color: var(--marker-color);
@@ -94,30 +164,19 @@
   }
 }
 
-.markerAbove {
-  bottom: 50%;
-  flex-direction: column-reverse;
-  padding-bottom: var(--s2);
-}
-
-.markerBelow {
-  top: 50%;
-  padding-top: var(--s2);
-}
-
 .markerTriangle {
+  flex: 0 0 auto;
   width: 0;
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-}
-
-.markerAbove .markerTriangle {
   border-top: 7px solid currentColor;
 }
 
-.markerBelow .markerTriangle {
-  border-bottom: 7px solid currentColor;
+.markerLeader {
+  flex: 0 0 auto;
+  width: 1px;
+  background: currentColor;
 }
 
 .markerValue {
@@ -133,20 +192,10 @@
   font-size: 0.75em;
 }
 
-.thresholdLabelRow,
 .zonesRow {
   position: relative;
   margin-top: var(--s2);
   min-height: 1.4em;
-}
-
-.thresholdLabel {
-  position: absolute;
-  font-family: var(--font-data);
-  font-size: var(--fs-small);
-  font-variant-numeric: tabular-nums;
-  color: var(--muted);
-  white-space: nowrap;
 }
 
 .zoneLabel {
@@ -161,7 +210,7 @@
 
 /* Anchoring: a label in the outer band of the axis grows inward from its
    near edge instead of centring on the exact point, so it cannot overflow
-   past the track. See labelAnchor() in scale.ts. */
+   past the track. See labelAnchor() in scale.ts. Unchanged by this round. */
 .anchorStart {
   transform: translateX(0);
   text-align: left;
@@ -180,45 +229,25 @@
   align-items: flex-end;
 }
 
-/* A marker's optional caption is prose, potentially a full sentence, so it
-   is not float-positioned on the axis; it renders below the rail in normal
-   flow, where it can wrap freely without ever causing horizontal scroll. */
+/* A marker's optional caption is prose, potentially a full sentence
+   (embedding a `Num` for any figure it quotes — see types.ts), so it is
+   not float-positioned on the axis; it renders below the rail in normal
+   flow, where it can wrap freely without ever causing horizontal scroll.
+   D5: plain rows — no colour swatch, no repeated label — since the rail
+   above already shows the marker's colour and name; the caption's only
+   job here is the sentence itself. D6: set apart from the axis block
+   above by a clearly larger gap than any of that block's internal gaps. */
 .captionList {
   list-style: none;
-  margin-top: var(--s4);
+  margin-top: var(--s7);
   display: flex;
   flex-direction: column;
   gap: var(--s2);
 }
 
 .captionItem {
-  display: flex;
-  align-items: baseline;
-  gap: var(--s2);
   font-size: var(--fs-small);
   color: var(--muted);
-}
-
-.captionSwatch {
-  flex: 0 0 auto;
-  width: 8px;
-  height: 8px;
-  border-radius: 1px;
-  background: var(--marker-color);
-  align-self: center;
-}
-
-.captionLabel {
-  flex: 0 0 auto;
-  font-family: var(--font-data);
-  font-size: var(--fs-label);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--marker-color);
-}
-
-.captionText {
-  flex: 1 1 auto;
 }
 
 /* The mount sweep is the only animation on the site and it is skipped
@@ -232,6 +261,11 @@
   .axisLine {
     animation: none;
     transform: scaleX(1);
+  }
+
+  .axisTick {
+    animation: none;
+    opacity: 1;
   }
 
   .marker {
