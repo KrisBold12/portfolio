@@ -120,6 +120,20 @@
   text-align: right;
 }
 
+/* The dataset colour convention (Global Constraints, "Colour"), as classes
+   rather than repeated inline styles: a Stanford figure gets `.signal`, an
+   Oxford figure gets `.probe`, applied alongside `.numCol`. Two class names
+   can be grepped and counted; inline `style` attributes have to be read one
+   at a time — and this rule is the site's structural device, so it has to
+   stay auditable. */
+.signal {
+  color: var(--signal);
+}
+
+.probe {
+  color: var(--probe);
+}
+
 .closing {
   border-top: 1px solid var(--rule);
   padding-top: var(--s5);

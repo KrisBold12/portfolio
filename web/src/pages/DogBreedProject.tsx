@@ -15,12 +15,16 @@ const REPO_URL = 'https://github.com/KrisBold12/portfolio'
  * Every figure below is copied from projects/dog-breed/README.md or
  * serving/README.md and rewritten shorter for the web; none is invented.
  *
- * Colour marks a figure whose dataset is load-bearing for the argument
- * being made: Stanford Dogs is `--signal`, Oxford-IIIT Pet is `--probe`.
- * Where the dataset is not the variable under discussion the figures are
- * left uncoloured, because colouring a number for a property that is not
- * in question is decoration. In the calibration table below the variable
- * is the temperature and both rows are Stanford, so neither is coloured.
+ * Colour marks a figure whose dataset is load-bearing for the argument being
+ * made. Where it is, a Stanford figure is `--signal` and an Oxford figure is
+ * `--probe`, without exception; where the dataset is not the variable under
+ * discussion, the figure carries no colour (Global Constraints, "Colour",
+ * amended after this task's review — colouring a number for a property that
+ * is not in question is decoration, and a device that fires everywhere stops
+ * encoding anything). The calibration table below compares T = 1 against
+ * T = 1.21 on the same Stanford data, so its rows are uncoloured; the
+ * out-of-distribution table compares the two datasets, so its columns are
+ * coloured.
  */
 function DogBreedProject() {
   return (
@@ -69,29 +73,35 @@ function DogBreedProject() {
             </thead>
             <tbody>
               <tr>
-                <td>Stanford test, 120 breeds</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td>
+                  Stanford test, <Num>120</Num> breeds
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>8580</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>89.99%</Num>
                 </td>
               </tr>
               <tr>
-                <td>Stanford test, 21 shared breeds</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td>
+                  Stanford test, <Num>21</Num> shared breeds
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>1630</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>94.11%</Num>
                 </td>
               </tr>
               <tr>
-                <td>Oxford-IIIT Pet, same 21 breeds</td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td>
+                  Oxford-IIIT Pet, same <Num>21</Num> breeds
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>4178</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>87.87%</Num>
                 </td>
               </tr>
@@ -127,10 +137,10 @@ function DogBreedProject() {
                   <code>convnext_tiny</code>
                 </td>
                 <td>frozen</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>89.99%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>87.87%</Num>
                 </td>
                 <td className={styles.numCol}>
@@ -145,10 +155,10 @@ function DogBreedProject() {
                   <code>resnet50</code>
                 </td>
                 <td>frozen</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>86.86%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>81.38%</Num>
                 </td>
                 <td className={styles.numCol}>
@@ -163,10 +173,10 @@ function DogBreedProject() {
                   <code>efficientnet_b0</code>
                 </td>
                 <td>fine-tuned</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>80.85%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>79.44%</Num>
                 </td>
                 <td className={styles.numCol}>
@@ -181,10 +191,10 @@ function DogBreedProject() {
                   <code>convnext_tiny</code>
                 </td>
                 <td>fine-tuned</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>77.65%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>72.67%</Num>
                 </td>
                 <td className={styles.numCol}>
@@ -199,10 +209,10 @@ function DogBreedProject() {
                   <code>efficientnet_b0</code>
                 </td>
                 <td>frozen</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>76.31%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>74.25%</Num>
                 </td>
                 <td className={styles.numCol}>
@@ -253,25 +263,25 @@ function DogBreedProject() {
             <tbody>
               <tr>
                 <td>Stanford validation</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>95.0%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>87.8%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>0.25%</Num>
                 </td>
               </tr>
               <tr>
                 <td>Oxford dogs (used)</td>
-                <td className={styles.numCol} style={{ color: 'var(--signal)' }}>
+                <td className={`${styles.numCol} ${styles.signal}`}>
                   <Num>97.8%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>95.0%</Num>
                 </td>
-                <td className={styles.numCol} style={{ color: 'var(--probe)' }}>
+                <td className={`${styles.numCol} ${styles.probe}`}>
                   <Num>1.18%</Num>
                 </td>
               </tr>
@@ -317,7 +327,9 @@ function DogBreedProject() {
             </thead>
             <tbody>
               <tr>
-                <td>Validation, 1800 images</td>
+                <td>
+                  Validation, <Num>1800</Num> images
+                </td>
                 <td className={styles.numCol}>
                   <Num>2.86%</Num>
                 </td>
@@ -326,7 +338,9 @@ function DogBreedProject() {
                 </td>
               </tr>
               <tr>
-                <td>Test, 8580 images</td>
+                <td>
+                  Test, <Num>8580</Num> images
+                </td>
                 <td className={styles.numCol}>
                   <Num>3.12%</Num>
                 </td>
@@ -365,7 +379,9 @@ function DogBreedProject() {
             </thead>
             <tbody>
               <tr>
-                <td>Model only, onnxruntime, 2 threads</td>
+                <td>
+                  Model only, onnxruntime, <Num>2</Num> threads
+                </td>
                 <td className={styles.numCol}>
                   <Num>104.7 ms</Num>
                 </td>
