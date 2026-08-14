@@ -128,7 +128,7 @@ def main():
     print(f"\nT = {temperature:.4f} (fitted on val)")
     print(f"NLL on val : {nll(1.0, val_logits, val_labels):.4f} -> "
           f"{nll(temperature, val_logits, val_labels):.4f}")
-    for split, _, error, _ in results:
+    for split, t, error, _ in results:
         print(f"ECE {split:4} T={t:.2f}: {error:.4f}", end="  ")
     print()
 
