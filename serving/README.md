@@ -124,6 +124,29 @@ Verified against a running container:
 The cat is the useful row. Both defences — the distance gate and the calibrated
 confidence — say the same thing independently, and neither was tuned on it.
 
+## Deployed
+
+Running at **https://kb-portfolio.dev/api** on a 4-vCPU Infomaniak VPS: Ubuntu
+24.04, Docker, nginx terminating TLS and serving the static frontend from the
+same origin.
+
+| | p50 | p95 |
+|---|---:|---:|
+| On the VPS, over loopback | 97 ms | 127 ms |
+| From a laptop in Italy, HTTPS and network included | 134 ms | **137 ms** |
+
+Against a 300 ms budget, with the client-side downscaling and int8 quantisation
+levers still unspent. The pre-deployment estimate of 240-400 ms was pessimistic
+by a factor of two because it was taken through Docker Desktop on a WSL2 virtual
+machine rather than on native cores.
+
+The container binds to `127.0.0.1:8000`, so nginx is the only route in and TLS,
+the upload limit and the access log cannot be bypassed by finding the host and
+guessing the port. `deploy/` and `serving/compose.yaml` hold the configuration,
+so what is running is answerable from git rather than from what someone typed
+over SSH; the image is pinned to a commit tag, which makes a deploy a one-line
+change with a diff.
+
 ## Running it
 
 ```

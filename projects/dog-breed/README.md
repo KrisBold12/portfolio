@@ -73,10 +73,19 @@ in the DCT domain, which cuts preprocessing roughly in half without changing the
 output resolution the model receives. What remains is Huffman decoding of the full
 stream, which cannot be avoided server-side.
 
-160 ms p95 on two desktop threads extrapolates to roughly 240-400 ms on a low-end
-VPS, which straddles the 300 ms budget. This is an open risk, not a solved problem.
-Two levers are available and unmeasured: downscaling client-side before upload, and
-int8 quantisation of the ONNX graph.
+160 ms p95 on two desktop threads was expected to extrapolate to roughly 240-400 ms
+on a low-end VPS, which straddles the 300 ms budget. Measured on the deployed
+4-vCPU VPS it came out better than the estimate:
+
+| Measured on the deployed service | p50 | p95 |
+|---|---:|---:|
+| On the VPS, over loopback | 97 ms | 127 ms |
+| From a laptop in Italy, HTTPS and network included | 134 ms | **137 ms** |
+
+The budget holds with a factor of two in hand, and the two levers held in reserve —
+client-side downscaling before upload, and int8 quantisation — were not needed.
+The estimate was pessimistic because it was taken through Docker Desktop on a
+WSL2 virtual machine; the VPS runs the same image on native cores.
 
 ## Data
 
@@ -236,19 +245,20 @@ reimplements the evaluation transform and the Mahalanobis distance on PIL and
 numpy, and both are held to the originals by parity tests that run from this
 project.
 
-Measured inside the container: 100 ms median per request, a Chihuahua photo at
-99.60% with a distance of 32.4 against the 49.27 threshold, and an Abyssinian cat
-rejected at 61.5 with its best guess reaching only 10.3%.
+It is deployed at **https://kb-portfolio.dev/api**, behind nginx on a 4-vCPU VPS,
+at 137 ms p95 including TLS and the network. A Chihuahua photo returns 99.60% at
+a distance of 32.4 against the 49.27 threshold; an Abyssinian cat is rejected at
+61.5 with its best guess reaching only 10.3%.
 
 ## Status
 
 Done: data pipeline, five experiments, evaluation on both datasets, ONNX export
 with self-describing metadata, parity verification, CPU latency benchmark, the
-out-of-distribution gate, confidence calibration, the prediction API, and the
-container image.
+out-of-distribution gate, confidence calibration, the prediction API, the
+container image, and deployment.
 
-Next: deployment to a VPS, and the frontend.
+Next: the frontend.
 
-Open: the 300 ms p95 budget has not been tested on VPS hardware. Client-side
-downscaling before upload and int8 quantisation are the two levers, both
-unmeasured.
+The one number that was an open risk — p95 on real VPS hardware rather than on a
+development machine — is now measured, and the estimate was pessimistic by a
+factor of two.

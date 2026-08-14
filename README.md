@@ -19,8 +19,9 @@ Stanford test split at 160 ms p95 end to end, behind a Mahalanobis gate that acc
 95% of real dog photos and 1.2% of cats, and a temperature that brings expected
 calibration error on the test split from 3.12% to 0.98%.
 
-Served by a containerised FastAPI service carrying neither torch nor timm, at a
-100 ms median per request measured inside the container.
+Served by a containerised FastAPI service carrying neither torch nor timm, live at
+**https://kb-portfolio.dev/api** on a 4-vCPU VPS: 137 ms p95 per request with TLS
+and the network included, against a 300 ms budget fixed before any model existed.
 
 [The model](projects/dog-breed/README.md) — [the service](serving/README.md)
 
