@@ -39,6 +39,7 @@ torchvision = { index = "pytorch" }
 
 [dependency-groups]
 dev = [
+    "pydantic>=2.13",
     "pytest>=9.1.1",
 ]
 

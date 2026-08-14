@@ -12,6 +12,7 @@ dependencies = [
     "numpy>=2.5.2",
     "onnxruntime>=1.28.0",
     "pillow>=12.3.0",
+    "pydantic>=2.13.4",
     "python-multipart>=0.0.32",
     "uvicorn[standard]>=0.52.1",
 ]

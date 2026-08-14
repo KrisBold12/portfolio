@@ -63,6 +63,7 @@ dependencies = [
     { name = "numpy" },
     { name = "onnxruntime" },
     { name = "pillow" },
+    { name = "pydantic" },
     { name = "python-multipart" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -73,6 +74,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.5.2" },
     { name = "onnxruntime", specifier = ">=1.28.0" },
     { name = "pillow", specifier = ">=12.3.0" },
+    { name = "pydantic", specifier = ">=2.13.4" },
     { name = "python-multipart", specifier = ">=0.0.32" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.52.1" },
 ]

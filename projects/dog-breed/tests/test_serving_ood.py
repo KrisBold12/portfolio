@@ -103,11 +103,16 @@ def train_features() -> np.ndarray:
 def artifacts(serving):
     """The server's startup state, loaded from serving/models/."""
     pytest.importorskip("onnxruntime")
-    if not (SERVED_MODELS / f"{EXPERIMENT}.onnx").exists():
-        pytest.skip(
-            f"{SERVED_MODELS} not populated; copy the exported .onnx, .json "
-            f"and _ood.npz there"
-        )
+    # All three, not just the graph: serving/models/ is gitignored and gets
+    # populated by hand, so a partial copy is the likely state, and a missing
+    # .npz would otherwise surface as a FileNotFoundError from inside numpy.
+    missing = [
+        f"{EXPERIMENT}{suffix}"
+        for suffix in (".onnx", ".json", "_ood.npz")
+        if not (SERVED_MODELS / f"{EXPERIMENT}{suffix}").exists()
+    ]
+    if missing:
+        pytest.skip(f"{SERVED_MODELS} is missing {', '.join(missing)}")
     return importlib.import_module("dogbreed_serving.model").load_artifacts()
 
 
@@ -175,36 +180,38 @@ def test_a_class_centre_scores_zero(serving, gate):
 # -------------------------------------------------------------------- payload
 
 
-def test_payload_is_json_serialisable(serving, artifacts, dog_bytes):
-    """One assertion covering every numpy scalar that could reach the response.
+def test_serialises_to_the_expected_json(serving, artifacts, dog_bytes):
+    """The field names on the wire, which are the frontend's actual contract.
 
-    json.dumps raises TypeError on np.float32 and np.int64, which is what the
-    softmax and argsort produce. Without this the failure would first appear in
-    the web layer, on a request, far from the line that forgot the cast.
+    model_dump_json is the path FastAPI takes, so this is what the browser
+    receives. Renaming a field, or giving one an alias, is invisible from
+    inside the model and breaks every consumer -- the assertions below all read
+    attributes and would stay green.
     """
-    payload = serving.predict(dog_bytes, artifacts)
+    wire = json.loads(serving.predict(dog_bytes, artifacts).model_dump_json())
 
-    json.dumps(payload)
+    assert set(wire) == {"is_dog", "predictions", "ood"}
+    assert set(wire["ood"]) == {"distance", "threshold"}
+    assert set(wire["predictions"][0]) == {"id", "name", "probability"}
 
 
 def test_payload_structure(serving, artifacts, dog_bytes):
+    """What Pydantic cannot check: that the values are the right ones.
+
+    The model already guarantees the types and the [0, 1] bound. It has no
+    opinion on how many predictions there are, whether the ids exist, or
+    whether they arrive in the order the UI renders them in.
+    """
     payload = serving.predict(dog_bytes, artifacts)
 
-    assert set(payload) == {"is_dog", "predictions", "ood"}
-    assert type(payload["is_dog"]) is bool
-    assert set(payload["ood"]) == {"distance", "threshold"}
-    assert payload["ood"]["threshold"] == artifacts.threshold
-
-    predictions = payload["predictions"]
-    assert len(predictions) == serving.TOP_K
+    assert payload.ood.threshold == artifacts.threshold
+    assert len(payload.predictions) == serving.TOP_K
 
     known_ids = {c["id"] for c in artifacts.meta["classes"]}
-    for entry in predictions:
-        assert set(entry) == {"id", "name", "probability"}
-        assert entry["id"] in known_ids
-        assert 0.0 <= entry["probability"] <= 1.0
+    for entry in payload.predictions:
+        assert entry.id in known_ids
 
-    probabilities = [e["probability"] for e in predictions]
+    probabilities = [e.probability for e in payload.predictions]
     assert probabilities == sorted(probabilities, reverse=True), "top-k is not descending"
 
 
@@ -221,16 +228,16 @@ def test_top_prediction_matches_the_graph(serving, artifacts, dog_bytes):
     logits = artifacts.session.run(["logits"], {"input": tensor})[0][0]
     expected = artifacts.meta["classes"][int(logits.argmax())]
 
-    top = serving.predict(dog_bytes, artifacts)["predictions"][0]
+    top = serving.predict(dog_bytes, artifacts).predictions[0]
 
-    assert (top["id"], top["name"]) == (expected["id"], expected["name"])
+    assert (top.id, top.name) == (expected["id"], expected["name"])
 
 
 def test_the_gate_is_wired_to_the_threshold(serving, artifacts, dog_bytes):
     """is_dog has to follow the distance, not be hardcoded true."""
     payload = serving.predict(dog_bytes, artifacts)
 
-    assert payload["is_dog"] == (payload["ood"]["distance"] < payload["ood"]["threshold"])
+    assert payload.is_dog == (payload.ood.distance < payload.ood.threshold)
 
 
 # ----------------------------------------------------------------------- gate
@@ -255,7 +262,7 @@ def test_accepts_dogs_and_rejects_cats(serving, artifacts):
         step = max(1, len(samples) // GATE_SAMPLE)
         chosen = samples[::step][:GATE_SAMPLE]
         accepted = sum(
-            serving.predict((OXFORD_PHOTOS_DIR / path).read_bytes(), artifacts)["is_dog"]
+            serving.predict((OXFORD_PHOTOS_DIR / path).read_bytes(), artifacts).is_dog
             for path, _ in chosen
         )
         return accepted / len(chosen)
