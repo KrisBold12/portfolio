@@ -2,7 +2,7 @@
   display: flex;
   flex: 1 1 260px;
   min-width: 220px;
-  min-height: 160px;
+  min-height: calc(var(--s10) + var(--s6));
   align-items: center;
   justify-content: center;
   text-align: center;

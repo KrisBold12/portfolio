@@ -56,11 +56,31 @@
   display: flex;
 }
 
+/* Fix round 2: the reservation lives here, on a wrapper that survives every
+   non-idle phase, rather than on the paragraph itself. The paragraph's
+   content still disappears on `result` (the accepted/best-guess line moved
+   into `Answer`), but the space it used to occupy must not collapse at
+   exactly the moment the request resolves — that was the busy->result
+   layout shift this fixes.
+   The busy message ("Reading the photo and asking the model.") is fixed
+   text and always wraps to exactly two lines at the 160px preview-column
+   width, so two lines is the reservation, not the old flat `2.6em` (which
+   undershot the real two-line height and left a smaller version of the
+   same shift). `font-size` and `line-height` are pinned here to match
+   `.statusLine` exactly, rather than relying on the inherited body
+   line-height, so the `em` basis holds regardless of the paragraph being
+   rendered or not. */
+.statusLineSlot {
+  font-size: var(--fs-small);
+  line-height: 1.65;
+  min-height: calc(2 * 1.65em);
+}
+
 .statusLine {
   font-family: var(--font-body);
   font-size: var(--fs-small);
+  line-height: 1.65;
   color: var(--muted);
-  min-height: 2.6em;
 }
 
 /* Fix round 1, IMPORTANT: a too-large file or a down backend is not a gate

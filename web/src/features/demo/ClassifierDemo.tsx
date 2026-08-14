@@ -109,14 +109,16 @@ function ClassifierDemo() {
                   onError={() => setPreviewBroken(true)}
                 />
               )}
-              {(state.phase === 'busy' || state.phase === 'error') && (
-                <p
-                  className={state.phase === 'error' ? `${styles.statusLine} ${styles.statusIssue}` : styles.statusLine}
-                  aria-live="polite"
-                >
-                  {busyOrErrorText(state)}
-                </p>
-              )}
+              <div className={styles.statusLineSlot}>
+                {(state.phase === 'busy' || state.phase === 'error') && (
+                  <p
+                    className={state.phase === 'error' ? `${styles.statusLine} ${styles.statusIssue}` : styles.statusLine}
+                    aria-live="polite"
+                  >
+                    {busyOrErrorText(state)}
+                  </p>
+                )}
+              </div>
             </div>
           )}
         </div>
