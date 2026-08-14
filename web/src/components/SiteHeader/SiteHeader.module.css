@@ -1,0 +1,40 @@
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3) var(--s5);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 600;
+  color: var(--bone);
+}
+
+.role {
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+.github {
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 150ms;
+}
+
+.github:hover,
+.github:focus-visible {
+  color: var(--bone);
+}
