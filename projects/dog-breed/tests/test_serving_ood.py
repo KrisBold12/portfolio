@@ -53,12 +53,20 @@ PARITY_SAMPLE = 64
 PARITY_RTOL = 1e-6
 
 GATE_SAMPLE = 40
-# ood.csv, full sets: 95.0% of 4178 Oxford dogs accepted, 1.18% of 2371 cats.
-# The margins here are wide on purpose -- this test asks whether the gate still
-# works, not what its rate is. On 40 images binomial noise alone is several
-# points, and re-measuring is ood.py's job.
+# ood.csv, full sets at TARGET_TPR = 97.5: 97.5% of 4178 Oxford dogs accepted,
+# 2.36% of 2371 cats. The margins stay wide -- this test asks whether the gate
+# still works, not what its rate is, and on 40 images binomial noise alone is
+# several points. Re-measuring is ood.py's job.
+#
+# The cat ceiling is 10% rather than something closer to the measured rate,
+# because 10% is the number this project committed to before it had any of
+# these measurements: the point above which a dedicated binary dog detector
+# would be worth building. It was 20% while the rate was 1.18%, which turned
+# out to be too loose to be useful -- a threshold set at 99% TPR admits 17.8%
+# of cats and would have slipped through. Tying the bound to the project's own
+# stated limit gives it a reason to be where it is.
 MIN_DOG_ACCEPT = 0.80
-MAX_CAT_ACCEPT = 0.20
+MAX_CAT_ACCEPT = 0.10
 
 pytestmark = [
     pytest.mark.serving,

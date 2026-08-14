@@ -39,10 +39,33 @@ from dog_breed.data.splits import LABEL_SIZE
 
 BATCH_SIZE = 32
 
-# Accept this share of the calibration dogs. A product decision, not a tuned
-# value: it sets where the threshold lands, and a higher threshold lets more
-# dogs through and more cats with them.
-TARGET_TPR = 95
+# Accept this share of the calibration dogs. A product decision rather than a
+# tuned value, but not an arbitrary one: it was 95, and moved after using the
+# deployed demo showed that photographs taken from a few metres away were being
+# turned away. Measured against Stanford's own bounding boxes, the gate accepted
+# 99.7% of photos where the dog filled most of the frame and only 77.3% where it
+# filled under a tenth of it. The gate was not malfunctioning. Both calibration
+# sets are pet portraits, so a distant dog genuinely is far from the training
+# distribution, and the gate said so.
+#
+# The half point is not a typo. Sweeping the threshold against Oxford's dogs and
+# cats puts the knee of the curve here:
+#
+#   TPR     oxford dogs   cats accepted   dogs under 10% of frame
+#   95.0          95.0%           1.18%                     77.3%
+#   97.0          97.0%           1.98%                     84.1%
+#   97.5          97.5%           2.36%                     85.8%
+#   98.0          98.0%           4.51%                     87.6%
+#   99.0          99.0%          17.80%                     92.3%
+#
+# From 95 to 97.5 costs 28 more cats and buys 8.5 points on the distant dogs.
+# The next half point costs 51 more cats and buys 1.7. Past 99 the gate stops
+# being a gate: at 99.75 it admits more than half of all cats.
+#
+# 2.36% also keeps the ceiling this project set for itself before looking at any
+# of these numbers, which was that above 10% of cats accepted a dedicated binary
+# dog detector would be worth building.
+TARGET_TPR = 97.5
 
 # Which set the threshold is read off. Stands in for production, so it has to
 # be the one furthest from the training distribution.
