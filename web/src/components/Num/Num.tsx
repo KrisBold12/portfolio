@@ -7,14 +7,14 @@ type NumProps = {
 }
 
 /**
- * Fix round 1, CRITICAL: every number displayed anywhere on the site must
- * render in `--font-data` with tabular figures — "a number set in the body
- * face is a defect" (Global Constraints). That rule is easy to satisfy
- * inside a component that only ever renders numbers (ReadoutRail's own
- * axis/marker text already uses the mono styles directly) and easy to miss
- * inside prose, where a figure is embedded in a sentence written in the
- * body face — exactly ReadoutRail's `marker.caption` and, per the fix-round
- * brief, Task 5's confidence caption ("...right 98.5% of the time").
+ * Every number displayed anywhere on the site must render in `--font-data`
+ * with tabular figures — "a number set in the body face is a defect"
+ * (Global Constraints). That rule is easy to satisfy inside a component
+ * that only ever renders numbers (ReadoutRail's own axis/marker text
+ * already uses the mono styles directly) and easy to miss inside prose,
+ * where a figure is embedded in a sentence written in the body face —
+ * exactly ReadoutRail's `marker.caption` and Task 5's confidence caption
+ * ("...right 98.5% of the time").
  *
  * `Num` is the fix: a caller wraps just the numeric substring, e.g.
  * `<>Accepted: <Num>32.41</Num> sits below...</>`, so the digits render in

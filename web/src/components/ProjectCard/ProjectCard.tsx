@@ -9,12 +9,11 @@ type ProjectCardProps = {
 }
 
 /**
- * One project, one card, the whole card a single link (Task 3 brief: "The
- * whole card is one link to the project route, focusable once, with a
- * visible focus ring"). Figures carry the dataset colour convention — a
- * figure's own `color`, if any, comes from `projects.ts`, never inferred
- * here, matching how ReadoutRail's markers take their colour from the
- * caller.
+ * One project, one card, the whole card a single link to the project
+ * route, focusable once, with a visible focus ring. Figures carry the
+ * dataset colour convention — a figure's own `color`, if any, comes from
+ * `projects.ts`, never inferred here, matching how ReadoutRail's markers
+ * take their colour from the caller.
  */
 function ProjectCard({ project }: ProjectCardProps) {
   return (

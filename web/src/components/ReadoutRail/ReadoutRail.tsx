@@ -13,9 +13,9 @@ const ANCHOR_CLASS = {
 }
 
 // A marker's leader (the vertical tick running from its value down to the
-// axis, D3) is tall enough by default to clear the axis and grow taller
-// per stacked row (D4), pushing the value further from the axis so it
-// clears the row below it.
+// axis) is tall enough by default to clear the axis and grow taller per
+// stacked row, pushing the value further from the axis so it clears the
+// row below it.
 const LEADER_BASE_PX = 14
 const LEADER_ROW_STEP_PX = 28
 // Gap between a leader's top and the label that sits above it, and between
@@ -37,6 +37,10 @@ type TrackLayout = {
   endLabelHeight: number
 }
 
+function leaderHeightForRow(row: number): number {
+  return LEADER_BASE_PX + row * LEADER_ROW_STEP_PX
+}
+
 function layoutsEqual(a: TrackLayout, b: TrackLayout): boolean {
   return (
     a.maxLabelHeight === b.maxLabelHeight &&
@@ -52,57 +56,50 @@ function layoutsEqual(a: TrackLayout, b: TrackLayout): boolean {
  * used for every quantity on the site (see docs/plans/web-frontend.md,
  * "The signature element: ReadoutRail").
  *
- * Fix round 1 reworked this component around three ideas from the design
- * review (D1–D4 below); fix round 2 addressed two things only visible in
- * the rendered page (R1, R2). See task-2-report.md for the full rationale
- * of both rounds and task-2-design-findings.md for D1–D6 in full.
- *
- * - **Terminals** (D1): the axis has a short tick at each end.
- * - **Attachment** (D3): every marker has a leader — a 1px tick in the
+ * - **Terminals**: the axis has a short tick at each end.
+ * - **Attachment**: every marker has a leader — a 1px tick in the
  *   marker's own colour running from its value down to the exact point on
  *   the axis, ending in the triangle.
- * - **Density / one-sided stacking** (D4): all markers render above the
- *   axis; only the threshold's label sits below it. A marker whose label
- *   would overlap another (by measured position, not array order) moves to
- *   a second row further out via a taller leader. Row assignment
+ * - **Density / one-sided stacking**: all markers render above the axis;
+ *   only the threshold's label sits below it. A marker whose label would
+ *   overlap another (by measured position, not array order) moves to a
+ *   second row further out via a taller leader. Row assignment
  *   (`assignRows` in rows.ts) is driven by each label's *actual measured*
  *   width via `getBoundingClientRect` in a layout effect, recomputed on
  *   resize — not a percentage-distance guess.
- * - **No rule shares a pixel with a glyph** (R1, fix round 2): a leader or
- *   the threshold line can still pass geometrically behind a label at some
- *   viewport width (that's the point of D2 — the threshold line spans the
- *   whole marker band, and a stacked marker's leader must cross the row
- *   below it to reach the axis). Two mechanisms make that invisible rather
- *   than forbidding it structurally (which would mean giving up D2's full-
- *   height rule or D4's row-stacking, and the fix-round brief was explicit
- *   that neither should be undone): every label (`.markerLabel`,
+ * - **No rule shares a pixel with a glyph**: a leader or the threshold
+ *   line can still pass geometrically behind a label at some viewport
+ *   width — the threshold line spans the whole marker band, and a stacked
+ *   marker's leader must cross the row below it to reach the axis. Two
+ *   mechanisms make that invisible rather than forbidding it structurally
+ *   (which would mean giving up the full-height threshold rule or the
+ *   row-stacking, and neither should go): every label (`.markerLabel`,
  *   `.thresholdLabel`) gets an opaque `--panel` background with a little
- *   horizontal padding — the "instrument silkscreen" the design review
- *   asked for, masking whatever passes behind it — *and* every rule
- *   element (axis, ticks, threshold line, leader) renders in one DOM group
- *   before every label element renders in a second group, both direct
- *   children of `.trackVisual`. That ordering is what makes the masking
- *   work regardless of which marker ends up in which row: pure DOM/array
- *   order between individual markers can't be relied on (row assignment is
- *   measured, not authored), so "all labels paint after all rules" has to
- *   be a property of the tree shape, not of any one marker's position in
- *   it.
- * - **The track is sized to its content, not a constant** (R2, fix round
- *   2): `.trackVisual`'s height is computed per rail from what it actually
- *   holds — the tallest stacked marker row plus a measured label height
- *   above the axis, and either a measured threshold-label reservation or a
- *   small fixed minimum below it. A rail with one marker row and no
- *   threshold is visibly shorter than one with a threshold and stacked
- *   markers; the difference now carries information instead of being
- *   absorbed by empty track. One consequence: the axis is no longer
- *   guaranteed to sit at the vertical centre of `.trackVisual` (a rail with
- *   no threshold reserves much less space below the axis than above it), so
- *   the min/max end labels can no longer be centred against the *box* —
- *   they are aligned against the *axis's* own computed position instead
+ *   horizontal padding — an "instrument silkscreen" that masks whatever
+ *   passes behind it — *and* every rule element (axis, ticks, threshold
+ *   line, leader) renders in one DOM group before every label element
+ *   renders in a second group, both direct children of `.trackVisual`.
+ *   That ordering is what makes the masking work regardless of which
+ *   marker ends up in which row: pure DOM/array order between individual
+ *   markers can't be relied on (row assignment is measured, not
+ *   authored), so "all labels paint after all rules" has to be a property
+ *   of the tree shape, not of any one marker's position in it.
+ * - **The track is sized to its content, not a constant**: `.trackVisual`'s
+ *   height is computed per rail from what it actually holds — the tallest
+ *   stacked marker row plus a measured label height above the axis, and
+ *   either a measured threshold-label reservation or a small fixed
+ *   minimum below it. A rail with one marker row and no threshold is
+ *   visibly shorter than one with a threshold and stacked markers; the
+ *   difference now carries information instead of being absorbed by empty
+ *   track. One consequence: the axis is no longer guaranteed to sit at the
+ *   vertical centre of `.trackVisual` (a rail with no threshold reserves
+ *   much less space below the axis than above it), so the min/max end
+ *   labels can no longer be centred against the *box* — they are aligned
+ *   against the *axis's* own computed position instead
  *   (`endLabelMarginTop` below), or they would drift into the marker band
- *   on exactly the short, no-threshold rails R2 targets.
+ *   on exactly the short, no-threshold rails this targets.
  *
- * Still true, unchanged since fix round 1:
+ * Still true:
  *
  * - Min/max end labels are flex siblings either side of the scale area, so
  *   a marker or threshold approaching 0%/100% can never render underneath
@@ -111,7 +108,7 @@ function layoutsEqual(a: TrackLayout, b: TrackLayout): boolean {
  *   its near edge instead of centring on the exact point (`labelAnchor` in
  *   scale.ts).
  * - A marker's caption is normal-flow prose below the rail, not
- *   float-positioned on the axis, and renders as a plain row (D5).
+ *   float-positioned on the axis, and renders as a plain row.
  *
  * Colour is always supplied by the caller via `marker.color`; nothing here
  * infers meaning from a value.
@@ -205,7 +202,7 @@ function ReadoutRail({ title, min, max, markers, threshold, zones, unit }: Reado
           <div className={styles.trackVisual} ref={trackRef} style={{ height: `${trackHeightPx}px` }}>
             {/* Rules layer: painted first, so it always sits behind the
                 labels layer below, regardless of which marker ends up in
-                which row (R1). */}
+                which row. */}
             <div className={styles.axisLine} style={{ top: `${aboveAxisPx}px` }} aria-hidden="true" />
             <span
               className={`${styles.axisTick} ${styles.axisTickStart}`}
@@ -229,7 +226,7 @@ function ReadoutRail({ title, min, max, markers, threshold, zones, unit }: Reado
             {markers.map((marker, index) => {
               const pct = toPercent(marker.value, min, max)
               const row = layout.rows[index] ?? 0
-              const leaderHeight = LEADER_BASE_PX + row * LEADER_ROW_STEP_PX
+              const leaderHeight = leaderHeightForRow(row)
               return (
                 <span
                   key={`${marker.label}-${index}-stem`}
@@ -250,15 +247,15 @@ function ReadoutRail({ title, min, max, markers, threshold, zones, unit }: Reado
             })}
 
             {/* Labels layer: painted after every rule above, and each
-                label carries its own opaque --panel background (R1) — the
-                two together are what guarantee a rule never shows through
-                a glyph, independent of DOM order between individual
+                label carries its own opaque --panel background — the two
+                together are what guarantee a rule never shows through a
+                glyph, independent of DOM order between individual
                 markers. */}
             {markers.map((marker, index) => {
               const pct = toPercent(marker.value, min, max)
               const anchorClass = ANCHOR_CLASS[labelAnchor(pct)]
               const row = layout.rows[index] ?? 0
-              const leaderHeight = LEADER_BASE_PX + row * LEADER_ROW_STEP_PX
+              const leaderHeight = leaderHeightForRow(row)
               const style = {
                 left: `${pct}%`,
                 bottom: `${belowAxisPx + leaderHeight + LABEL_GAP_PX}px`,

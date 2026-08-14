@@ -1,8 +1,8 @@
 /**
- * Greedy row assignment for marker labels sharing one axis (fix round 1,
- * D4: markers no longer alternate above/below by index parity — all of
- * them stack above the axis, and a marker whose label would overlap an
- * already-placed one moves to the next row out instead).
+ * Greedy row assignment for marker labels sharing one axis. Markers no
+ * longer alternate above/below by index parity — all of them stack above
+ * the axis, and a marker whose label would overlap an already-placed one
+ * moves to the next row out instead.
  *
  * Pure and DOM-agnostic: callers measure each label's actual rendered
  * left/right edges (in any consistent unit, typically px from

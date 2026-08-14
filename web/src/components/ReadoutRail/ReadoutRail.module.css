@@ -2,10 +2,10 @@
   width: 100%;
 }
 
-/* Fix round 1, D6: the axis and its own labels (end ticks, threshold,
-   zones) read as one dense block — internal gaps here stay small — and
-   that block is set apart from the caption prose below by a clearly
-   larger gap (see .captionList). */
+/* The axis and its own labels (end ticks, threshold, zones) read as one
+   dense block — internal gaps here stay small — and that block is set
+   apart from the caption prose below by a clearly larger gap (see
+   .captionList). */
 .header {
   margin-bottom: var(--s3);
 }
@@ -14,7 +14,7 @@
    labels' own width, so a marker or threshold approaching 0%/100% inside
    scaleArea can never render underneath them. align-items: flex-start (not
    center) because .trackVisual's height is no longer a fixed, roughly
-   symmetric box (R2) — each end label aligns to the axis's own computed
+   symmetric box — each end label aligns to the axis's own computed
    y-position via its own marginTop instead (see ReadoutRail.tsx). */
 .body {
   display: flex;
@@ -32,11 +32,11 @@
   white-space: nowrap;
 }
 
-/* Fix round 1: these were dead keys (referenced in the component,
-   undefined here, so the rendered class list literally included the
-   string "undefined"). The comment above `.endLabel` always implied the
-   two ends were meant to diverge slightly — they sit at the outer edges of
-   `.body`, so the natural divergence is which way their own text aligns. */
+/* These were dead keys (referenced in the component, undefined here, so
+   the rendered class list literally included the string "undefined"). The
+   comment above `.endLabel` always implied the two ends were meant to
+   diverge slightly — they sit at the outer edges of `.body`, so the
+   natural divergence is which way their own text aligns. */
 .endLabelMin {
   text-align: left;
 }
@@ -53,12 +53,12 @@
 }
 
 /* Houses the axis line and its end ticks, the threshold rule and its
-   label, and every marker (stem + label). Fix round 2, R2: height is set
-   inline per rail (see ReadoutRail.tsx's trackHeightPx), derived from what
-   this particular rail actually contains — the tallest stacked marker row
-   plus a measured label height above the axis, and a measured threshold
-   label (or a small fixed minimum) below it — instead of a constant tall
-   enough for the worst case every rail might have. */
+   label, and every marker (stem + label). Height is set inline per rail
+   (see ReadoutRail.tsx's trackHeightPx), derived from what this particular
+   rail actually contains — the tallest stacked marker row plus a measured
+   label height above the axis, and a measured threshold label (or a small
+   fixed minimum) below it — instead of a constant tall enough for the
+   worst case every rail might have. */
 .trackVisual {
   position: relative;
 }
@@ -82,9 +82,9 @@
   }
 }
 
-/* D1: a short terminal at each end, the same weight as the axis, so the
-   line reads as a measured span rather than a rule that just stops. Kept
-   as siblings of .axisLine (not its ::before/::after) so they are not
+/* A short terminal at each end, the same weight as the axis, so the line
+   reads as a measured span rather than a rule that just stops. Kept as
+   siblings of .axisLine (not its ::before/::after) so they are not
    squashed by the axis's own scaleX sweep. */
 .axisTick {
   position: absolute;
@@ -112,10 +112,10 @@
   }
 }
 
-/* D2: a full-height dashed rule spanning the entire marker band, top to
+/* A full-height dashed rule spanning the entire marker band, top to
    bottom of .trackVisual — not a short segment that barely crosses the
-   axis. Unaffected by R2's dynamic sizing: .trackVisual's box *is* the
-   band now, whatever height it computes to, so top:0/bottom:0 already
+   axis. Unaffected by the track's dynamic sizing: .trackVisual's box *is*
+   the band now, whatever height it computes to, so top:0/bottom:0 already
    means "the whole band" without needing its own measurement. */
 .thresholdLine {
   position: absolute;
@@ -132,24 +132,25 @@
   font-variant-numeric: tabular-nums;
   color: var(--muted);
   white-space: nowrap;
-  /* R1: an opaque mask in the surface's own colour, so the full-height
+  /* An opaque mask in the surface's own colour, so the full-height
      threshold rule (which necessarily passes right through this label's
-     position — that's the point of D2) is interrupted by the label and
-     resumes on the other side, instead of visibly cutting it in half.
-     --panel matches Panel's own surface, which is what this rail always
-     renders inside on this site; if a rail is ever used outside a Panel,
-     this token would need to travel with that context. */
+     position — that's the point of a rule spanning the whole band) is
+     interrupted by the label and resumes on the other side, instead of
+     visibly cutting it in half. --panel matches Panel's own surface, which
+     is what this rail always renders inside on this site; if a rail is
+     ever used outside a Panel, this token would need to travel with that
+     context. */
   background: var(--panel);
   padding-inline: var(--s1);
 }
 
-/* D3 + D4: a marker's stem is its leader (a vertical tick in the marker's
-   own colour, running from the axis up to where its label sits) plus the
+/* A marker's stem is its leader (a vertical tick in the marker's own
+   colour, running from the axis up to where its label sits) plus the
    triangle marking the exact point on the axis. Stems render as one DOM
-   group, before the labels group below (R1) — that ordering, not per-
-   marker DOM position, is what guarantees every label paints on top of
-   every stem regardless of which marker a stem or a label belongs to, or
-   which row a label was measured into. */
+   group, before the labels group below — that ordering, not per-marker DOM
+   position, is what guarantees every label paints on top of every stem
+   regardless of which marker a stem or a label belongs to, or which row a
+   label was measured into. */
 .markerStem {
   position: absolute;
   width: 1px;
@@ -180,8 +181,8 @@
   }
 }
 
-/* A marker's value + name, as one label. R1: an opaque --panel background
-   with a little horizontal padding, so any rule passing behind it (its own
+/* A marker's value + name, as one label. An opaque --panel background with
+   a little horizontal padding, so any rule passing behind it (its own
    stem's leader when another marker's stem crosses it in a stacked row —
    see .markerStem above) is masked rather than visibly cutting through the
    text. Same animation timing as the stem it belongs to, so the two still
@@ -204,7 +205,7 @@
 
 .markerLabelText {
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   font-size: 0.75em;
 }
 
@@ -219,14 +220,14 @@
   font-family: var(--font-data);
   font-size: var(--fs-label);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   color: var(--muted);
   white-space: nowrap;
 }
 
 /* Anchoring: a label in the outer band of the axis grows inward from its
    near edge instead of centring on the exact point, so it cannot overflow
-   past the track. See labelAnchor() in scale.ts. Unchanged by this round. */
+   past the track. See labelAnchor() in scale.ts. */
 .anchorStart {
   transform: translateX(0);
   text-align: left;
@@ -246,10 +247,10 @@
    (embedding a `Num` for any figure it quotes — see types.ts), so it is
    not float-positioned on the axis; it renders below the rail in normal
    flow, where it can wrap freely without ever causing horizontal scroll.
-   D5: plain rows — no colour swatch, no repeated label — since the rail
-   above already shows the marker's colour and name; the caption's only
-   job here is the sentence itself. D6: set apart from the axis block
-   above by a clearly larger gap than any of that block's internal gaps. */
+   Plain rows — no colour swatch, no repeated label — since the rail above
+   already shows the marker's colour and name; the caption's only job here
+   is the sentence itself. Set apart from the axis block above by a clearly
+   larger gap than any of that block's internal gaps. */
 .captionList {
   list-style: none;
   margin-top: var(--s7);
