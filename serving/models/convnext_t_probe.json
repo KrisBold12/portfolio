@@ -500,5 +500,9 @@
       "name": "African Hunting Dog"
     }
   ],
-  "tag": "in12k_ft_in1k"
+  "tag": "in12k_ft_in1k",
+  "calibration": {
+    "temperature": 1.2100411144302388,
+    "applied": "in_graph"
+  }
 }
