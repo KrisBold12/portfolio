@@ -1,0 +1,241 @@
+.rail {
+  width: 100%;
+}
+
+.header {
+  margin-bottom: var(--s5);
+}
+
+/* endLabelMin | scaleArea (flex:1) | endLabelMax. Flex reserves the end
+   labels' own width, so a marker or threshold approaching 0%/100% inside
+   scaleArea can never render underneath them. */
+.body {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+}
+
+.endLabel {
+  flex: 0 0 auto;
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.scaleArea {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Houses the axis line, the threshold rule and the marker triangles/values.
+   Fixed height reserves room for a tier of floating text above and below
+   the axis; markers are absolutely positioned so overflowing that height
+   (e.g. a longer marker label) does not affect layout of the rows below. */
+.trackVisual {
+  position: relative;
+  min-height: var(--s9);
+}
+
+.axisLine {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule);
+  transform-origin: left center;
+  animation: rail-sweep 400ms ease-out both;
+}
+
+@keyframes rail-sweep {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.thresholdLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px dashed var(--muted);
+  transform: translateX(-50%);
+}
+
+/* One marker: a triangle glyph anchored exactly on the axis, with its value
+   text stacked toward the outside (up for the "above" tier, down for
+   "below"). DOM order is always triangle, then value, so a "below" marker
+   uses the natural column order (triangle nearest the axis) and an "above"
+   marker reverses it (triangle still nearest the axis, now at the bottom of
+   the block). */
+.marker {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  white-space: nowrap;
+  color: var(--marker-color);
+  animation: marker-in 300ms ease-out 400ms both;
+}
+
+@keyframes marker-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.markerAbove {
+  bottom: 50%;
+  flex-direction: column-reverse;
+  padding-bottom: var(--s2);
+}
+
+.markerBelow {
+  top: 50%;
+  padding-top: var(--s2);
+}
+
+.markerTriangle {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.markerAbove .markerTriangle {
+  border-top: 7px solid currentColor;
+}
+
+.markerBelow .markerTriangle {
+  border-bottom: 7px solid currentColor;
+}
+
+.markerValue {
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.markerLabelText {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75em;
+}
+
+.thresholdLabelRow,
+.zonesRow {
+  position: relative;
+  margin-top: var(--s2);
+  min-height: 1.4em;
+}
+
+.thresholdLabel {
+  position: absolute;
+  font-family: var(--font-data);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.zoneLabel {
+  position: absolute;
+  font-family: var(--font-data);
+  font-size: var(--fs-label);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Anchoring: a label in the outer band of the axis grows inward from its
+   near edge instead of centring on the exact point, so it cannot overflow
+   past the track. See labelAnchor() in scale.ts. */
+.anchorStart {
+  transform: translateX(0);
+  text-align: left;
+  align-items: flex-start;
+}
+
+.anchorCenter {
+  transform: translateX(-50%);
+  text-align: center;
+  align-items: center;
+}
+
+.anchorEnd {
+  transform: translateX(-100%);
+  text-align: right;
+  align-items: flex-end;
+}
+
+/* A marker's optional caption is prose, potentially a full sentence, so it
+   is not float-positioned on the axis; it renders below the rail in normal
+   flow, where it can wrap freely without ever causing horizontal scroll. */
+.captionList {
+  list-style: none;
+  margin-top: var(--s4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.captionItem {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+.captionSwatch {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  background: var(--marker-color);
+  align-self: center;
+}
+
+.captionLabel {
+  flex: 0 0 auto;
+  font-family: var(--font-data);
+  font-size: var(--fs-label);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--marker-color);
+}
+
+.captionText {
+  flex: 1 1 auto;
+}
+
+/* The mount sweep is the only animation on the site and it is skipped
+   entirely for reduced motion: the final state renders immediately. This
+   extends base.css's global reduced-motion block (which shortens any
+   transition/animation duration to near-zero) with a stronger, more
+   specific rule, because the sweep also relies on animation-delay, which
+   that global rule does not touch — without this, a delayed animation
+   would still leave markers invisible for the length of the delay. */
+@media (prefers-reduced-motion: reduce) {
+  .axisLine {
+    animation: none;
+    transform: scaleX(1);
+  }
+
+  .marker {
+    animation: none;
+    opacity: 1;
+  }
+}

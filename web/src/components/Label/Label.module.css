@@ -1,0 +1,10 @@
+.label {
+  display: inline-block;
+  font-family: var(--font-data);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
