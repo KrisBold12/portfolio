@@ -70,9 +70,21 @@ carry meaning and must never be used decoratively.
 --reject   #C96A54   MEANING: rejected by the gate
 ```
 
-The colour of a number says which dataset it came from. A Stanford figure is
-`--signal`, an Oxford figure is `--probe`, everywhere on the site, without
-exception. This is the structural device: it encodes the project's argument.
+Colour marks a figure whose dataset is load-bearing for the argument being made.
+Where it is, a Stanford figure is `--signal` and an Oxford figure is `--probe`,
+without exception. Where the dataset is not the variable under discussion, the
+figure carries no colour.
+
+This is the structural device, and the second half of it is what keeps it one:
+colouring a number for a property that is not in question is decoration, and a
+device that fires everywhere stops encoding anything. The calibration table
+compares T = 1 against T = 1.21 on the same Stanford data, so its rows are
+uncoloured; the out-of-distribution table compares the two datasets, so its
+columns are coloured.
+
+Amended after Task 4. The rule first read "a Stanford figure is `--signal`, an
+Oxford figure is `--probe`, everywhere on the site, without exception", which
+turned the calibration table entirely amber and said nothing by it.
 
 **Type.** Three roles, from Google Fonts, loaded with `display=swap` and
 preconnect.
