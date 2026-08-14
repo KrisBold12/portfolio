@@ -25,17 +25,27 @@
   align-items: flex-start;
 }
 
+/* Fix round 1, R1: the recede layout — a small drop-zone control and the
+   preview sit side by side at a modest scale, rather than the full-height
+   invitation row used before any photo has been tried. */
+.uploadRowCompact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s4);
+  align-items: center;
+}
+
 .previewSlot {
   display: flex;
   flex-direction: column;
   gap: var(--s2);
-  width: 160px;
+  width: calc(var(--s10) + var(--s6));
 }
 
 .thumb,
 .thumbFallback {
-  width: 160px;
-  height: 160px;
+  width: calc(var(--s10) + var(--s6));
+  height: calc(var(--s10) + var(--s6));
   object-fit: cover;
   background: var(--ink);
   border: 1px solid var(--rule);
@@ -53,6 +63,11 @@
   min-height: 2.6em;
 }
 
-.statusError {
-  color: var(--reject);
+/* Fix round 1, IMPORTANT: a too-large file or a down backend is not a gate
+   rejection, so it does not get `--reject` — that token means one thing on
+   this site. Weight and brightness lead instead of a hue; the message's own
+   words already carry what went wrong. */
+.statusIssue {
+  color: var(--bone);
+  font-weight: 600;
 }

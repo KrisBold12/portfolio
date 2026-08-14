@@ -21,6 +21,15 @@
   cursor: not-allowed;
 }
 
+/* Fix round 1, R1: recede to a modest control once a photo has been tried,
+   so the empty invitation stops outweighing the answer above it. */
+.zone[data-compact] {
+  flex: 0 1 auto;
+  min-width: 200px;
+  min-height: var(--s8);
+  padding: var(--s3) var(--s5);
+}
+
 .zone:focus-within {
   outline: 2px solid var(--signal);
   outline-offset: 2px;
@@ -55,6 +64,12 @@
 }
 
 .promptSub {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+.promptCompact {
   font-family: var(--font-body);
   font-size: var(--fs-small);
   color: var(--muted);

@@ -3,6 +3,19 @@
   gap: var(--s5);
 }
 
+/* Fix round 1, R3: the two rails share one panel; each keeps its own
+   eyebrow label so the "is it a dog" / "how sure" framing survives the
+   merge. */
+.dualRail {
+  display: grid;
+  gap: var(--s6);
+}
+
+.sectionLabel {
+  display: block;
+  margin-bottom: var(--s3);
+}
+
 .gateNote {
   font-family: var(--font-body);
   font-size: var(--fs-small);
@@ -39,7 +52,7 @@
 
 .breedBarTrack {
   grid-column: 1 / -1;
-  height: 4px;
+  height: var(--s1);
   border-radius: 2px;
   background: var(--rule);
   overflow: hidden;

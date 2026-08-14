@@ -4,6 +4,12 @@ import styles from './DropZone.module.css'
 type DropZoneProps = {
   onFile: (file: File) => void
   disabled?: boolean
+  /**
+   * Fix round 1, R1: once a photo has been tried, the zone recedes to a
+   * modest control rather than staying the largest object on screen — it
+   * does not disappear, since a visitor will want a second try.
+   */
+  compact?: boolean
 }
 
 /**
@@ -15,7 +21,7 @@ type DropZoneProps = {
  * open the same dialog — no custom keydown handling needed. Drag-over
  * state changes the border colour only (Task 5 brief).
  */
-function DropZone({ onFile, disabled = false }: DropZoneProps) {
+function DropZone({ onFile, disabled = false, compact = false }: DropZoneProps) {
   const [dragging, setDragging] = useState(false)
   const inputId = useId()
 
@@ -30,6 +36,7 @@ function DropZone({ onFile, disabled = false }: DropZoneProps) {
       className={styles.zone}
       data-dragging={dragging ? '' : undefined}
       data-disabled={disabled ? '' : undefined}
+      data-compact={compact ? '' : undefined}
       onDragOver={(event) => {
         if (disabled) return
         event.preventDefault()
@@ -57,8 +64,14 @@ function DropZone({ onFile, disabled = false }: DropZoneProps) {
         }}
       />
       <span className={styles.prompt}>
-        <strong className={styles.promptMain}>Drop a photo here</strong>
-        <span className={styles.promptSub}>or choose a file. JPEG or PNG, any size.</span>
+        {compact ? (
+          <span className={styles.promptCompact}>Try another photo</span>
+        ) : (
+          <>
+            <strong className={styles.promptMain}>Drop a photo here</strong>
+            <span className={styles.promptSub}>or choose a file. JPEG or PNG, any size.</span>
+          </>
+        )}
       </span>
     </label>
   )

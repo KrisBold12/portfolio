@@ -1,4 +1,5 @@
 import type { PredictResponse } from '../../api/client'
+import Label from '../../components/Label/Label'
 import Num from '../../components/Num/Num'
 import Panel from '../../components/Panel/Panel'
 import ReadoutRail from '../../components/ReadoutRail/ReadoutRail'
@@ -9,8 +10,17 @@ type ResultProps = {
 }
 
 /**
- * The two ReadoutRails plus the breed list (Task 5 brief, point 6). Verdict
- * and calibration sentences ride as marker captions, the affordance
+ * The reasoning underneath `Answer`'s headline: the two ReadoutRails and the
+ * breed list.
+ *
+ * Fix round 1, R3 (minor, ruled): the distance and confidence rails now
+ * share one panel instead of two. They are two readings of the same event,
+ * and sharing a panel puts the accept/reject verdict directly beside the
+ * confidence it qualifies rather than splitting one answer across two
+ * bordered boxes. The breed list stays in its own panel — it is a list, not
+ * a rail.
+ *
+ * Verdict and calibration sentences ride as marker captions, the affordance
  * ReadoutRailDemo already established for exactly this: a figure inside a
  * plain sentence, wrapped word by word in Num where the digits are
  * (web/src/pages/ReadoutRailDemo.tsx).
@@ -24,57 +34,63 @@ function Result({ response }: ResultProps) {
 
   return (
     <div className={styles.result}>
-      <Panel label="Is it a dog">
-        <ReadoutRail
-          title="Distance to nearest breed"
-          min={0}
-          max={90}
-          threshold={{ value: ood.threshold, label: 'threshold' }}
-          zones={{ left: 'accepted', right: 'rejected' }}
-          markers={[
-            {
-              value: ood.distance,
-              label: 'your photo',
-              color: tone,
-              caption: is_dog ? (
-                <>
-                  Accepted: <Num>{distance}</Num> sits below the <Num>{threshold}</Num> threshold, so the gate
-                  treats this photo as a dog.
-                </>
-              ) : (
-                <>
-                  Rejected: <Num>{distance}</Num> sits above the <Num>{threshold}</Num> threshold, so the gate
-                  does not treat this photo as a dog.
-                </>
-              ),
-            },
-          ]}
-        />
-      </Panel>
+      <Panel>
+        <div className={styles.dualRail}>
+          <div>
+            <Label className={styles.sectionLabel}>Is it a dog</Label>
+            <ReadoutRail
+              title="Distance to nearest breed"
+              min={0}
+              max={90}
+              threshold={{ value: ood.threshold, label: 'threshold' }}
+              zones={{ left: 'accepted', right: 'rejected' }}
+              markers={[
+                {
+                  value: ood.distance,
+                  label: 'your photo',
+                  color: tone,
+                  caption: is_dog ? (
+                    <>
+                      Accepted: <Num>{distance}</Num> sits below the <Num>{threshold}</Num> threshold, so the gate
+                      treats this photo as a dog.
+                    </>
+                  ) : (
+                    <>
+                      Rejected: <Num>{distance}</Num> sits above the <Num>{threshold}</Num> threshold, so the gate
+                      does not treat this photo as a dog.
+                    </>
+                  ),
+                },
+              ]}
+            />
+          </div>
 
-      {top && (
-        <Panel label="How sure">
-          <ReadoutRail
-            title="Top prediction confidence"
-            min={0}
-            max={100}
-            unit="%"
-            markers={[
-              {
-                value: top.probability * 100,
-                label: top.name,
-                color: tone,
-                caption: (
-                  <>
-                    Predictions in the <Num>0.93&ndash;1.00</Num> band were right <Num>98.5%</Num> of the time, on
-                    the 8580-image test split.
-                  </>
-                ),
-              },
-            ]}
-          />
-        </Panel>
-      )}
+          {top && (
+            <div>
+              <Label className={styles.sectionLabel}>How sure</Label>
+              <ReadoutRail
+                title="Top prediction confidence"
+                min={0}
+                max={100}
+                unit="%"
+                markers={[
+                  {
+                    value: top.probability * 100,
+                    label: top.name,
+                    color: tone,
+                    caption: (
+                      <>
+                        Predictions in the <Num>0.93&ndash;1.00</Num> band were right <Num>98.5%</Num> of the time,
+                        on the <Num>8580</Num>-image test split.
+                      </>
+                    ),
+                  },
+                ]}
+              />
+            </div>
+          )}
+        </div>
+      </Panel>
 
       <Panel label={is_dog ? 'Top 5 breeds' : 'Closest matches'}>
         {!is_dog && (
@@ -87,7 +103,7 @@ function Result({ response }: ResultProps) {
             <li key={prediction.id} className={styles.breedRow}>
               <span className={styles.breedName}>{prediction.name}</span>
               <span className={styles.breedPct}>
-                <Num>{(prediction.probability * 100).toFixed(1)}%</Num>
+                <Num>{(prediction.probability * 100).toFixed(2)}%</Num>
               </span>
               <span className={styles.breedBarTrack}>
                 <span
