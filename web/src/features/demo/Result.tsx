@@ -1,9 +1,59 @@
+import type { ReactNode } from 'react'
 import type { PredictResponse } from '../../api/client'
 import Label from '../../components/Label/Label'
 import Num from '../../components/Num/Num'
 import Panel from '../../components/Panel/Panel'
 import ReadoutRail from '../../components/ReadoutRail/ReadoutRail'
+import { lookupCalibrationBand, type BandLookup } from './calibration'
 import styles from './Result.module.css'
+
+function formatFraction(value: number): string {
+  return value.toFixed(2)
+}
+
+function formatPercent(value: number): string {
+  return `${(value * 100).toFixed(1)}%`
+}
+
+/**
+ * UX round, P4: this used to be a hardcoded sentence about the 0.93-1.00
+ * band regardless of what the prediction's confidence actually was — the
+ * best line on the site when confidence was high and a false statement
+ * otherwise. It now describes the band the prediction's own confidence
+ * falls into, from the measured per-bin table in calibration.ts. Where a
+ * band holds too few test images to support a claim (below
+ * `MIN_BAND_SUPPORT`), it says that instead of quoting an accuracy from a
+ * handful of images.
+ */
+function confidenceCaption(band: BandLookup): ReactNode {
+  const lowStr = formatFraction(band.low)
+  const highStr = formatFraction(band.high)
+
+  if (band.kind === 'measured') {
+    return (
+      <>
+        Predictions in the <Num>{lowStr}&ndash;{highStr}</Num> band were right{' '}
+        <Num>{formatPercent(band.accuracy)}</Num> of the time, on the <Num>8580</Num>-image test split.
+      </>
+    )
+  }
+
+  if (band.n === 0) {
+    return (
+      <>
+        No test image landed in the <Num>{lowStr}&ndash;{highStr}</Num> confidence band, so there is nothing
+        measured to compare this prediction to.
+      </>
+    )
+  }
+
+  return (
+    <>
+      Only <Num>{band.n}</Num> test {band.n === 1 ? 'image' : 'images'} landed in the{' '}
+      <Num>{lowStr}&ndash;{highStr}</Num> band, too few to say what a confidence like this one means.
+    </>
+  )
+}
 
 type ResultProps = {
   response: PredictResponse
@@ -78,12 +128,7 @@ function Result({ response }: ResultProps) {
                     value: top.probability * 100,
                     label: top.name,
                     color: tone,
-                    caption: (
-                      <>
-                        Predictions in the <Num>0.93&ndash;1.00</Num> band were right <Num>98.5%</Num> of the time,
-                        on the <Num>8580</Num>-image test split.
-                      </>
-                    ),
+                    caption: confidenceCaption(lookupCalibrationBand(top.probability)),
                   },
                 ]}
               />
