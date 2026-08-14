@@ -31,7 +31,14 @@ build/
 # ─────────────────────────────────────────────────────────────
 projects/*/data/
 projects/*/artifacts/
-servings/models/
+
+# I pesi e la gate OOD, copiati in serving/models/ per il container.
+# Il metafile .json resta tracciato di proposito: 9 KB di testo che
+# descrivono cosa e' deployato (preprocessing, classi, temperatura),
+# si diffa e vale da documentazione. Il .npz e' 2.7 MB di binario che
+# cambia a ogni run di ood.py, e l'.onnx e' 112 MB: quelli si scaricano
+# al deploy, non si versionano.
+serving/models/*.npz
 *.onnx
 *.pt
 *.pth
