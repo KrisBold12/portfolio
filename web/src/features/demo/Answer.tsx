@@ -18,10 +18,32 @@ type AnswerProps = {
  * and the percentage are the measurement itself, not a Stanford/Oxford
  * attribution or the verdict, so per the plan's amended colour rule they
  * stay plain.
+ *
+ * UX round, P2: that layout put the breed name first and the verdict last
+ * and small, so a rejected photo still read as an identification — upload
+ * a cat and "Otterhound, 10.33%" led, with "rejected" a quiet word beside
+ * it. When the gate says no, the rejection is the headline instead: a
+ * plain "Not a dog", with the model's closest guess demoted to a smaller
+ * line underneath and named as a guess rather than a result. The accepted
+ * case is unchanged.
  */
 function Answer({ response }: AnswerProps) {
   const top = response.predictions[0]
-  const tone = response.is_dog ? 'var(--signal)' : 'var(--reject)'
+
+  if (!response.is_dog) {
+    return (
+      <div className={styles.answerRejected} aria-live="polite">
+        <p className={styles.answerNotDog} style={{ color: 'var(--reject)' }}>
+          Not a dog
+        </p>
+        {top && (
+          <p className={styles.answerGuess}>
+            Closest guess: {top.name}, <Num>{(top.probability * 100).toFixed(2)}%</Num>
+          </p>
+        )}
+      </div>
+    )
+  }
 
   return (
     <p className={styles.answer} aria-live="polite">
@@ -30,8 +52,8 @@ function Answer({ response }: AnswerProps) {
           {top.name}, <Num className={styles.answerPct}>{(top.probability * 100).toFixed(2)}%</Num>
         </span>
       )}
-      <span className={styles.answerVerdict} style={{ color: tone }}>
-        {response.is_dog ? 'accepted' : 'rejected'}
+      <span className={styles.answerVerdict} style={{ color: 'var(--signal)' }}>
+        accepted
       </span>
     </p>
   )

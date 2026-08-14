@@ -23,3 +23,22 @@
   text-transform: uppercase;
   letter-spacing: 0.14em;
 }
+
+/* UX round, P2: the rejected case leads with the verdict, not the breed
+   guess. Two stacked lines instead of the accepted case's single row. */
+.answerRejected {
+  display: grid;
+  gap: var(--s2);
+}
+
+.answerNotDog {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 600;
+}
+
+.answerGuess {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
