@@ -3,9 +3,8 @@
   gap: var(--s5);
 }
 
-/* Fix round 1, R3: the two rails share one panel; each keeps its own
-   eyebrow label so the "is it a dog" / "how sure" framing survives the
-   merge. */
+/* The two rails share one panel; each keeps its own eyebrow label so the
+   "is it a dog" / "how sure" framing survives the merge. */
 .dualRail {
   display: grid;
   gap: var(--s6);

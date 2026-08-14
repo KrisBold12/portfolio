@@ -2,10 +2,10 @@
  * Per-band calibration lookup for the confidence caption under the "how
  * sure" rail.
  *
- * UX round, P4: the caption used to hardcode the 0.93-1.00 band's numbers
- * regardless of the prediction's actual confidence, so it quoted a fact
- * about the wrong group whenever a photo landed anywhere else on the axis.
- * This derives the caption from the band the prediction actually falls in.
+ * The caption used to hardcode the 0.93-1.00 band's numbers regardless of
+ * the prediction's actual confidence, so it quoted a fact about the wrong
+ * group whenever a photo landed anywhere else on the axis. This derives the
+ * caption from the band the prediction actually falls in.
  *
  * Source: projects/dog-breed/reports/convnext_t_probe_calibration.csv,
  * rows with experiment=convnext_t_probe, split=test,

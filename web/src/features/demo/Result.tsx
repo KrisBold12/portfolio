@@ -16,14 +16,17 @@ function formatPercent(value: number): string {
 }
 
 /**
- * UX round, P4: this used to be a hardcoded sentence about the 0.93-1.00
- * band regardless of what the prediction's confidence actually was — the
- * best line on the site when confidence was high and a false statement
- * otherwise. It now describes the band the prediction's own confidence
- * falls into, from the measured per-bin table in calibration.ts. Where a
- * band holds too few test images to support a claim (below
- * `MIN_BAND_SUPPORT`), it says that instead of quoting an accuracy from a
- * handful of images.
+ * This used to be a hardcoded sentence about the 0.93-1.00 band regardless
+ * of what the prediction's confidence actually was — the best line on the
+ * site when confidence was high and a false statement otherwise. It now
+ * describes the band the prediction's own confidence falls into, from the
+ * measured per-bin table in calibration.ts. Where a band holds too few
+ * test images to support a claim (below `MIN_BAND_SUPPORT`), it says that
+ * instead of quoting an accuracy from a handful of images.
+ *
+ * Not called at all when the top prediction is a merged entry (see
+ * `Result` below) — its probability is a sum of two softmax outputs, a
+ * quantity none of these bins were measured over.
  */
 function confidenceCaption(band: BandLookup): ReactNode {
   const lowStr = formatFraction(band.low)
@@ -57,35 +60,41 @@ function confidenceCaption(band: BandLookup): ReactNode {
 
 type ResultProps = {
   response: PredictResponse
+  /**
+   * Whether the top prediction is a merged entry (breedMerge.ts,
+   * `mergeIsTopAnswer`). Its probability is a sum of two softmax outputs,
+   * not the per-class confidence `calibration.ts`'s bins were measured
+   * over, so the confidence rail shows a disclosure sentence instead of
+   * `confidenceCaption`'s calibration claim.
+   */
+  isMergedTop?: boolean
 }
 
 /**
  * The reasoning underneath `Answer`'s headline: the two ReadoutRails and the
  * breed list.
  *
- * Fix round 1, R3 (minor, ruled): the distance and confidence rails now
- * share one panel instead of two. They are two readings of the same event,
- * and sharing a panel puts the accept/reject verdict directly beside the
- * confidence it qualifies rather than splitting one answer across two
- * bordered boxes. The breed list stays in its own panel — it is a list, not
- * a rail.
+ * The distance and confidence rails share one panel instead of two. They
+ * are two readings of the same event, and sharing a panel puts the
+ * accept/reject verdict directly beside the confidence it qualifies rather
+ * than splitting one answer across two bordered boxes. The breed list
+ * stays in its own panel — it is a list, not a rail.
  *
- * Verdict and calibration sentences ride as marker captions, the affordance
- * ReadoutRailDemo already established for exactly this: a figure inside a
- * plain sentence, wrapped word by word in Num where the digits are
- * (web/src/pages/ReadoutRailDemo.tsx).
+ * Verdict and calibration sentences ride as marker captions: a figure
+ * inside a plain sentence, wrapped word by word in Num where the digits
+ * are (see types.ts).
  *
- * Husky round: `response.predictions` arrives already passed through
- * `applyBreedMerges` (breedMerge.ts), so the confidence rail's marker and
- * the breed list below both read the joined entry for free, with no merge
- * awareness needed here. The list renders exactly what it is given rather
- * than assuming a count: unmerged that is the API's five, and after a
- * merge joins two of them it is four, since padding a fifth back in would
- * mean showing a class the model ranked below all of these inside
+ * `response.predictions` arrives already passed through `applyBreedMerges`
+ * (breedMerge.ts), so the confidence rail's marker and the breed list
+ * below both read the joined entry for free, with no merge awareness
+ * needed here beyond `isMergedTop`. The list renders exactly what it is
+ * given rather than assuming a count: unmerged that is the API's five, and
+ * after a merge joins two of them it is four, since padding a fifth back
+ * in would mean showing a class the model ranked below all of these inside
  * something a visitor reads as the top five. The panel is titled "Closest
  * matches" for the same reason "Top 5" no longer describes what is here.
  */
-function Result({ response }: ResultProps) {
+function Result({ response, isMergedTop = false }: ResultProps) {
   const { is_dog, ood, predictions } = response
   const top = predictions[0]
   const tone = is_dog ? 'var(--signal)' : 'var(--reject)'
@@ -138,7 +147,9 @@ function Result({ response }: ResultProps) {
                     value: top.probability * 100,
                     label: top.name,
                     color: tone,
-                    caption: confidenceCaption(lookupCalibrationBand(top.probability)),
+                    caption: isMergedTop
+                      ? 'Two class names were combined into this answer, so its probability is a summed pair the calibration table never measured.'
+                      : confidenceCaption(lookupCalibrationBand(top.probability)),
                   },
                 ]}
               />

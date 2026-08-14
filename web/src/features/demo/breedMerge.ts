@@ -43,7 +43,7 @@ export type BreedMerge = {
   /** id/name used for the combined entry, standing in for either original. */
   id: string
   name: string
-  /** Shown once, near the result, only when this entry is the top answer. */
+  /** Shown once, near the result, whenever this entry's merge fired. */
   note: string
 }
 
@@ -99,8 +99,10 @@ export function applyBreedMerges(predictions: Prediction[]): BreedMergeResult {
 
 /**
  * Whether the merge that fired (if any) is also the top-ranked entry after
- * re-sorting — the condition for showing the disclosure line, since a
- * merged pair that fired but landed lower in the list is not "the answer".
+ * re-sorting. Its probability is then a sum of two softmax outputs, not the
+ * per-class confidence the calibration table's bins were measured over, so
+ * the caller uses this to withhold the calibration caption rather than
+ * quoting a band against a quantity it never measured.
  */
 export function mergeIsTopAnswer(result: BreedMergeResult): boolean {
   return result.applied !== null && result.predictions[0]?.id === result.applied.id
