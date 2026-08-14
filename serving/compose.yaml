@@ -1,0 +1,41 @@
+# Deployment for the VPS. Lives in the repo rather than on the server so that
+# what is running is answerable from git rather than from someone's memory of
+# what they typed over SSH.
+#
+#   scp serving/compose.yaml ubuntu@<host>:/opt/dogbreed/
+#   ssh ubuntu@<host> "cd /opt/dogbreed && docker compose pull && docker compose up -d"
+
+name: dogbreed
+
+services:
+  api:
+    # Pinned to a commit, not to :latest. A deploy is then a one-line change
+    # with a diff, and `docker compose up -d` on an unchanged file is a no-op
+    # instead of a silent version bump.
+    image: ghcr.io/krisbold12/dogbreed-serving:54b633f
+
+    # Bound to loopback, not 0.0.0.0. nginx is the only thing that reaches the
+    # API, so TLS, the upload size limit and the access log cannot be bypassed
+    # by anyone who finds the host and guesses the port.
+    ports:
+      - "127.0.0.1:8000:8000"
+
+    restart: unless-stopped
+
+    # The default json-file driver grows without bound; on a 75 GB disk that
+    # takes a while to matter and then matters all at once.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Measured peak is 361 MB with four concurrent requests. The cap is not
+    # there to save memory, it is there so a leak takes the container down
+    # instead of the host.
+    mem_limit: 1g
+
+    # OMP_NUM_THREADS, DOGBREED_MODEL_DIR and the HEALTHCHECK are baked into
+    # the image; nothing here should need to restate them. If a value has to be
+    # overridden at deploy time, it belongs in the Dockerfile's defaults being
+    # wrong, not in a second source of truth here.
