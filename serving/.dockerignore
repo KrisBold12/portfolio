@@ -11,6 +11,11 @@
 .pytest_cache/
 .ruff_cache/
 
+# Tests
+# They exercise the HTTP layer with the model stubbed out, so they prove
+# nothing about the image and only add weight to the build context.
+tests/
+
 # Docker files
 Dockerfile
 .dockerignore
