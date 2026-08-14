@@ -59,6 +59,8 @@ lightning_logs/
 node_modules/
 dist/
 .vite/
+web/node_modules/
+web/dist/
 
 # ─────────────────────────────────────────────────────────────
 # Segreti e credenziali
