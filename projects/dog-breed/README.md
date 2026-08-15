@@ -1,7 +1,7 @@
 # Dog breed classifier
 
 Names one of 120 dog breeds from a photo, turns away anything that is not a dog,
-and answers in 137 ms p95 on a 4-vCPU VPS. Live at
+and answers in 123 ms p95 on a 4-vCPU VPS. Live at
 [kb-portfolio.dev](https://kb-portfolio.dev).
 
 The model serving that traffic was never trained. It is the classifier that came
@@ -240,14 +240,23 @@ cannot be avoided server-side.
 160 ms on two desktop threads was expected to extrapolate to 240-400 ms on a cheap
 VPS, straddling the 300 ms budget. On the real hardware it came out better:
 
-| Measured on the deployed service | p50 | p95 |
-|---|---:|---:|
-| On the VPS, over loopback | 97 ms | 127 ms |
-| From a laptop in Italy, HTTPS and network included | 134 ms | **137 ms** |
+| Measured on the deployed service | p50 | p95 | p99 | max |
+|---|---:|---:|---:|---:|
+| The service, on the VPS over loopback | 66 ms | **123 ms** | 130 ms | 134 ms |
+| From a laptop in Italy, HTTPS and network included | 127 ms | 157 ms | 369 ms | 1156 ms |
 
-Factor of two in hand, with client-side downscaling and int8 quantisation still
-unspent. The estimate was pessimistic because it was taken through Docker Desktop
-on a WSL2 virtual machine, and the VPS runs the same image on native cores.
+200 requests each, one 27 kB JPEG, re-measured after the head swap.
+
+The loopback row is the one to quote, because it is a property of the service
+rather than of whoever is measuring it. The second row is the same request seen
+through a domestic connection, and the tail belongs to that connection: a
+1156 ms request cannot come from a container whose own worst case over the same
+200 requests was 134 ms.
+
+Factor of two in hand against the budget, with client-side downscaling and int8
+quantisation still unspent. The pre-deployment estimate was pessimistic because
+it was taken through Docker Desktop on a WSL2 virtual machine, and the VPS runs
+the same image on native cores.
 
 ## Data
 
@@ -391,4 +400,4 @@ numpy alone, and both are held to the originals by parity tests that run from th
 project.
 
 Deployed at **https://kb-portfolio.dev/api** behind nginx on a 4-vCPU VPS, at
-137 ms p95 including TLS and the network.
+123 ms p95 measured on the machine itself.

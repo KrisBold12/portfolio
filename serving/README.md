@@ -110,19 +110,23 @@ see and several workers on a small VPS then contend for the same ones. The proce
 runs as a non-root user and the artifacts stay owned by root, so the service
 cannot modify the model it serves.
 
-Verified against a running container:
+Verified through the public endpoint, so each row is a statement about what is
+deployed rather than about a container on a laptop:
 
 | | |
 |---|---|
-| `/health` | reports `convnext_t_probe` / `convnext_tiny`, Docker health check passes |
-| Chihuahua photo | accepted, distance 32.4 against a threshold of 56.36, 99.60% on the breed |
-| Abyssinian cat | rejected, distance 61.5, and the top guess only reaches 10.3% |
+| `/health` | reports `imagenet_head` / `convnext_tiny`, Docker health check passes |
+| Chihuahua photo | accepted, distance 32.41 against a threshold of 56.36, 98.92% on the breed |
+| Abyssinian cat | rejected, distance 61.49, and the top guess only reaches 9.30% |
 | text file | 400 |
 | request with no file | 422 |
-| latency, 10 requests | 74 ms min, **100 ms median**, 114 ms max |
 
-The cat is the useful row. Both defences — the distance gate and the calibrated
-confidence — say the same thing independently, and neither was tuned on it.
+The cat is the useful row. Both defences, the distance gate and the calibrated
+confidence, say the same thing independently, and neither was tuned on it.
+
+Both distances are unchanged from the previous model, which is expected and
+worth recording: the head swap left the backbone alone, so the gate sees the
+same features and returns the same numbers. Only the probabilities moved.
 
 ## Deployed
 
@@ -130,10 +134,15 @@ Running at **https://kb-portfolio.dev/api** on a 4-vCPU Infomaniak VPS: Ubuntu
 24.04, Docker, nginx terminating TLS and serving the static frontend from the
 same origin.
 
-| | p50 | p95 |
-|---|---:|---:|
-| On the VPS, over loopback | 97 ms | 127 ms |
-| From a laptop in Italy, HTTPS and network included | 134 ms | **137 ms** |
+| | p50 | p95 | p99 | max |
+|---|---:|---:|---:|---:|
+| The service, over loopback | 66 ms | **123 ms** | 130 ms | 134 ms |
+| From a laptop in Italy, HTTPS and network included | 127 ms | 157 ms | 369 ms | 1156 ms |
+
+200 requests each, one 27 kB JPEG. The first row is the service; the second is
+the service seen through a domestic connection, whose tail is visibly not the
+container's, since the container's own worst case over the same 200 requests
+was 134 ms.
 
 Against a 300 ms budget, with the client-side downscaling and int8 quantisation
 levers still unspent. The pre-deployment estimate of 240-400 ms was pessimistic

@@ -117,9 +117,9 @@ function DogBreedProject() {
               </dd>
             </div>
             <div className={styles.glanceRow}>
-              <dt className={styles.glanceLabel}>p95 in production, network included</dt>
+              <dt className={styles.glanceLabel}>p95 in production, on the VPS</dt>
               <dd className={styles.glanceValue}>
-                <Num>137 ms</Num>
+                <Num>123 ms</Num>
               </dd>
             </div>
           </dl>
@@ -617,21 +617,21 @@ function DogBreedProject() {
                 </td>
               </tr>
               <tr>
-                <td>Deployed VPS, over loopback</td>
+                <td>The deployed service, over loopback</td>
                 <td className={styles.numCol}>
-                  <Num>97 ms</Num>
+                  <Num>66 ms</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>127 ms</Num>
+                  <Num>123 ms</Num>
                 </td>
               </tr>
               <tr>
-                <td>Deployed VPS, from a laptop in Italy (HTTPS + network)</td>
+                <td>The same, from a laptop in Italy (HTTPS + network)</td>
                 <td className={styles.numCol}>
-                  <Num>134 ms</Num>
+                  <Num>127 ms</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>137 ms</Num>
+                  <Num>157 ms</Num>
                 </td>
               </tr>
             </tbody>
@@ -641,7 +641,10 @@ function DogBreedProject() {
           Decoding a 4K JPEG cost more than the inference until <code>Image.draft()</code> let
           libjpeg decode at <Num>1/8</Num> scale inside the DCT domain. The{' '}
           <Num>300 ms</Num> budget was the last number still untested on real hardware, and the
-          VPS came in at <Num>137 ms</Num> with the network included.
+          service came in at <Num>123 ms</Num>. The row below it is the same request through a
+          domestic connection, where the tail is the connection&apos;s: its worst case reached{' '}
+          <Num>1156 ms</Num> while the container&apos;s, over the same <Num>200</Num> requests,
+          stopped at <Num>134 ms</Num>.
         </p>
         <More to="#serving">The container and the deployment</More>
       </section>

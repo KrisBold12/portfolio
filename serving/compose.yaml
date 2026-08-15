@@ -2,9 +2,20 @@
 # what is running is answerable from git rather than from someone's memory of
 # what they typed over SSH.
 #
-#   scp serving/compose.yaml ubuntu@<host>:/opt/dogbreed/
-#   ssh ubuntu@<host> "cd /opt/dogbreed && docker compose pull && docker compose up -d"
-
+# The VPS holds a clone of this repository at /opt/portfolio, so a deploy is a
+# pull rather than a copy. Copying the file over would have broken the claim
+# above the moment anyone edited the copy: nothing would have noticed. With a
+# clone, `git log -1` on the server answers what is deployed and `git status`
+# answers whether anyone touched it by hand.
+#
+#   ssh ubuntu@<host> "cd /opt/portfolio && git pull \
+#     && docker compose -f serving/compose.yaml pull \
+#     && docker compose -f serving/compose.yaml up -d"
+#
+# The directory is named for the repository and the compose project for the
+# service, because the repository will hold more than one of these. The name
+# below is what gives the stack its identity, so moving the directory does not
+# create a second copy of it.
 name: dogbreed
 
 services:

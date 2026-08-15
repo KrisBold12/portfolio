@@ -16,11 +16,11 @@
  *   follow the project page's emphasis, so the middle slot goes to the gate
  *   rather than to the second accuracy: a visitor who reads only the card
  *   should learn that the thing knows when to refuse.
- * - 137 ms p95 measured on the deployed service itself (README, "Latency":
- *   "from a laptop in Italy, HTTPS and network included"), not the in-
- *   container or loopback benchmarks quoted elsewhere, which run on other
- *   hardware and skip the network. Not attributable to either dataset, so
- *   it carries no semantic colour.
+ * - 123 ms p95 measured on the deployed VPS over loopback, 200 requests
+ *   (README, "Latency"). The loopback figure rather than the end-to-end one:
+ *   the number should describe the service, and the end-to-end tail belongs
+ *   to whichever connection is doing the measuring. Not attributable to
+ *   either dataset, so it carries no semantic colour.
  *
  * The contamination measurement is in the summary sentence rather than in a
  * figure, since it needs the Stanford/Oxford pair to mean anything and three
@@ -66,7 +66,7 @@ export const projects: Project[] = [
         label: "real dog photos the gate accepts",
         color: "var(--probe)",
       },
-      { value: "137 ms", label: "p95, deployed VPS incl. network" },
+      { value: "123 ms", label: "p95, deployed VPS" },
     ],
   },
   {
