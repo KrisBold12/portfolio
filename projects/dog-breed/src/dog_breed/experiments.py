@@ -9,12 +9,15 @@ EXPERIMENTS = {
 }
 
 
-def parse_experiment() -> str:
+HEAD_NAME = "imagenet_head"
+
+
+def parse_experiment(choices=(*EXPERIMENTS, HEAD_NAME)) -> str:
     """Read the experiment name from the command line.
 
     Every script that touches a trained model needs it, and `choices` turns a
     misspelled name into a helpful error instead of a KeyError.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("experiment", choices=EXPERIMENTS)
+    parser.add_argument("experiment", choices=choices)
     return parser.parse_args().experiment

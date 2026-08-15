@@ -14,3 +14,6 @@ effnet_b0_probe,efficientnet_b0,15,Oxford dogs (21 breeds),4178,0.90562262547649
 convnext_t_probe,convnext_tiny,4,Stanford test (120 breeds),8580,0.32744144740772796,0.8998834498834499
 convnext_t_probe,convnext_tiny,4,Stanford test (21 breeds),1630,0.22702597155052873,0.9411042944785276
 convnext_t_probe,convnext_tiny,4,Oxford dogs (21 breeds),4178,0.5117804373762949,0.8786500718046912
+imagenet_head,convnext_tiny,0,Stanford test (120 breeds),8580,0.24999354331122411,0.9311188811188811
+imagenet_head,convnext_tiny,0,Stanford test (21 breeds),1630,0.20661659285974648,0.947239263803681
+imagenet_head,convnext_tiny,0,Oxford dogs (21 breeds),4178,0.4022843254816595,0.8853518429870751

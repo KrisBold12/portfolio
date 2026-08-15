@@ -22,7 +22,7 @@ from dogbreed_serving.app import MAX_UPLOAD_BYTES, app, get_artifacts
 from dogbreed_serving.model import Artifacts
 from dogbreed_serving.schemas import OodInfo, Prediction, PredictResponse
 
-EXPERIMENT = "convnext_t_probe"
+EXPERIMENT = "imagenet_head"
 ARCHITECTURE = "convnext_tiny"
 
 ANSWER = PredictResponse(

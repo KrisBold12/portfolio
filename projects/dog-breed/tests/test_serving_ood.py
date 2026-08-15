@@ -32,7 +32,7 @@ from dog_breed.paths import (
     ood_file,
 )
 
-EXPERIMENT = "convnext_t_probe"
+EXPERIMENT = "imagenet_head"
 
 SERVING_ROOT = PROJECT_ROOT.parents[1] / "serving"
 SERVING_SRC = SERVING_ROOT / "src"

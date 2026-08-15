@@ -27,6 +27,7 @@ from dog_breed.data.transforms import val_test_transforms
 from dog_breed.experiments import parse_experiment
 from dog_breed.model import load_trained_model
 from dog_breed.paths import MODEL_DIR, REPORTS_DIR, calibration_file, temperature_file
+from dog_breed.device import resolve_device
 
 BATCH_SIZE = 32
 N_BINS = 15

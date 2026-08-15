@@ -9,7 +9,7 @@ def correct_predictions(y_pred, y_true):
 
 
 def evaluation(model: torch.nn.Module, loader: DataLoader, loss_fn, device):
-    model.eval()
+    model.to(device).eval()
     with torch.inference_mode():
         total_loss = 0
         total_correct = 0

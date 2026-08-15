@@ -2,14 +2,13 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-import argparse
 import csv
 from dog_breed.data.dataset import stanford_dataset
 from dog_breed.data.transforms import train_transforms, val_test_transforms
 from dog_breed.model import create_model, save_model
 import matplotlib.pyplot as plt
 from dog_breed.paths import REPORTS_DIR, metrics_file, plot_file, model_file
-from dog_breed.experiments import EXPERIMENTS
+from dog_breed.experiments import EXPERIMENTS, parse_experiment
 from dog_breed.data.splits import RANDOM_SEED
 from dog_breed.device import resolve_device
 from dog_breed.metrics import correct_predictions, evaluation
@@ -47,9 +46,7 @@ def main():
     torch.manual_seed(RANDOM_SEED)
     torch.cuda.manual_seed(RANDOM_SEED)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("experiment", choices=EXPERIMENTS.keys())
-    name = parser.parse_args().experiment
+    name = parse_experiment(EXPERIMENTS)
     exp = EXPERIMENTS[name]
 
     # Device

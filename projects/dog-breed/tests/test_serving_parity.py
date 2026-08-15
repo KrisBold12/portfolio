@@ -23,7 +23,7 @@ from PIL import Image
 from dog_breed.data.transforms import val_test_transforms
 from dog_breed.paths import BREEDS_DIR, PROJECT_ROOT, model_meta_file, onnx_file
 
-EXPERIMENT = "convnext_t_probe"
+EXPERIMENT = "imagenet_head"
 SERVING_ROOT = PROJECT_ROOT.parents[1] / "serving"
 PREPROCESS_MODULE = SERVING_ROOT / "src" / "dogbreed_serving" / "preprocess.py"
 META_FILE = model_meta_file(EXPERIMENT)
@@ -36,7 +36,7 @@ SAMPLE_SIZE = 10
 # Stanford test accuracy as recorded in reports/evaluation.csv. The serving
 # path has to reproduce it; half a point of slack allows for the handful of
 # images where scaled decoding could flip a near-tie.
-RECORDED_TEST_ACCURACY = 0.8998834498834499
+RECORDED_TEST_ACCURACY = 0.9311188811188811
 ACCURACY_TOLERANCE = 0.005
 
 pytestmark = [

@@ -25,7 +25,7 @@ from dog_breed.data.splits import LABEL_SIZE, class_names
 from dog_breed.data.transforms import INTERPOLATION, val_test_transforms
 from dog_breed.paths import BREEDS_DIR, model_meta_file, onnx_file
 
-EXPERIMENT = "convnext_t_probe"
+EXPERIMENT = "imagenet_head"
 META_FILE = model_meta_file(EXPERIMENT)
 
 pytestmark = [

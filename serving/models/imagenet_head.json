@@ -1,5 +1,5 @@
 {
-  "experiment": "convnext_t_probe",
+  "experiment": "imagenet_head",
   "model_name": "convnext_tiny",
   "input_size": [
     3,
@@ -502,7 +502,7 @@
   ],
   "tag": "in12k_ft_in1k",
   "calibration": {
-    "temperature": 1.2100411144302388,
+    "temperature": 0.7572732742105879,
     "applied": "in_graph"
   }
 }

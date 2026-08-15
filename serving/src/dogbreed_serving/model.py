@@ -8,7 +8,7 @@ import json
 
 
 MODEL_DIR = Path(os.environ.get("DOGBREED_MODEL_DIR", Path(__file__).resolve().parents[2] / "models"))
-EXPERIMENT = "convnext_t_probe"
+EXPERIMENT = "imagenet_head"
 
 
 @dataclass
