@@ -127,11 +127,12 @@
 
 /* At a glance
  *
- * The page's five sections each argue one decision. This block exists because
- * a reader arriving cold needs the outcome before the arguments, and had no
- * way to get it: the headline accuracy was buried in a table cell in section
- * one. Figures only, no prose -- the labels say what each number is and the
- * sections say why it is that. */
+ * Each section below argues one decision. This block exists because a reader
+ * arriving cold needs the outcomes before the arguments, and had no way to get
+ * them: the headline accuracy was buried in a table cell in section one.
+ * Figures only, no prose -- the labels say what each number is and the sections
+ * say why it is that. One row per section that produced a number worth
+ * remembering, in the order the sections appear. */
 .glance {
   margin-top: var(--s5);
 }
