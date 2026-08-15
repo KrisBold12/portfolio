@@ -190,30 +190,17 @@ function DogBreedProject() {
       <section className={styles.section}>
         <h2 className={styles.heading}>Refusing what it can&apos;t answer&nbsp;for</h2>
         <p className={styles.prose}>
-          Softmax normalises over the <Num>120</Num> outputs, so what comes back is a
-          distribution conditioned on the input already being one of them. No mass is left for
-          &ldquo;none of these&rdquo;, and no threshold on the confidence recovers it: a cat
-          produces a peaked distribution over dog breeds as readily as a dog does.
+          Softmax normalises over the <Num>120</Num> outputs, so it returns a distribution
+          conditioned on the input already being a dog. A cat gets a peaked one just as
+          readily, and no threshold on the confidence recovers that.
         </p>
         <p className={styles.prose}>
-          The decision is made a layer earlier, on the <Num>768</Num>-dimensional penultimate
-          features (Lee et al., <Num>2018</Num>). Each breed gets a mean, and all{' '}
-          <Num>120</Num> share one covariance estimated from within-class residuals, each
-          vector minus the centre of its own class.
-        </p>
-        <p className={styles.prose}>
-          That last detail is the one that matters. Fitting the covariance on the raw features
-          instead would describe how far the breeds sit from one another, which makes the empty
-          space between two breeds look ordinary, and the empty space between breeds is exactly
-          where a cat lands.
-        </p>
-        <p className={styles.prose}>
-          Sharing one covariance is also the only affordable option: <Num>85</Num> images per
-          breed cannot support <Num>120</Num> separate <Num>768&times;768</Num> estimates, while{' '}
-          <Num>10200</Num> residuals support one. It is inverted under Ledoit-Wolf shrinkage
-          rather than directly, since in <Num>768</Num> dimensions the empirical estimate is
-          near-singular and inverting it amplifies rounding error. An image then scores the
-          smallest Mahalanobis distance to any of the <Num>120</Num> centres.
+          So the decision happens a layer earlier, on the <Num>768</Num> penultimate features
+          (Lee et al., <Num>2018</Num>): per-breed means, one shared covariance, and the
+          smallest Mahalanobis distance to any centre. The covariance is fitted on within-class
+          residuals rather than raw features, because on raw features it would describe the
+          distance between breeds and make the gap between two of them look ordinary. That gap
+          is where a cat lands.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
