@@ -36,7 +36,7 @@ turned away, the number is already in the response they can paste.
 
 The breed list is populated even when `is_dog` is false. The service reports what
 it measured; the interface decides what to show. Blanking the list here would
-leave that 5% with no way back, and changing a frontend is cheaper than
+leave those 2% with no way back, and changing a frontend is cheaper than
 redeploying an API.
 
 `/health` returns the experiment and the architecture read from the loaded
@@ -99,7 +99,7 @@ Multi-stage: the builder carries `uv` and the caches, the runtime image gets the
 finished virtualenv and the model. 664 MB, of which 112 MB is the graph itself.
 
 The model is baked in rather than mounted or fetched at boot, which makes the
-image a specific model version: `/health` reporting `convnext_t_probe` is then a
+image a specific model version: `/health` reporting `imagenet_head` is then a
 guarantee about what was deployed, not a description of what should have been.
 
 `libgomp1` is installed explicitly — onnxruntime's wheel links against OpenMP,
