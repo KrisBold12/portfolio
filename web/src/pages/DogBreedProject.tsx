@@ -34,28 +34,28 @@ function More({ to, children }: { to: string; children: React.ReactNode }) {
  * The dog breed classifier project page: the written account around the live
  * demo.
  *
- * Section order is the argument, not the chronology. The zero-shot result
- * leads because it is the one a reader remembers; contamination follows
- * because it is what explains the result; the deployment choice comes third
- * because it only makes sense once both are on the page.
+ * Section order follows what the visitor just used. The demo either answers or
+ * refuses, and prints a percentage, so the two pieces of engineering behind
+ * those come first: the calibration that makes the percentage mean something
+ * and the gate that produces the refusal. The five experiments and their
+ * results follow, then which model was deployed, then how it is served.
  *
  * Every figure below is copied from projects/dog-breed/README.md or
- * serving/README.md and rewritten shorter for the web; none is invented.
+ * serving/README.md; none is inferred. Claims about alternatives that were
+ * never built carry no numbers, because a page whose argument is "measure it"
+ * cannot estimate the thing it decided against.
  *
  * Colour marks a figure whose dataset is load-bearing for the argument being
  * made. Where it is, a Stanford figure is `--signal` and an Oxford figure is
  * `--probe`, without exception; where the dataset is not the variable under
  * discussion, the figure carries no colour (Global Constraints, "Colour" —
  * colouring a number for a property that is not in question is decoration,
- * and a device that fires everywhere stops encoding anything). The zero-shot
- * table compares trained against untrained on one dataset at a time, so its
- * columns are uncoloured; the out-of-distribution table compares the two
- * datasets, so its columns are coloured.
+ * and a device that fires everywhere stops encoding anything).
  */
 function DogBreedProject() {
   useDocumentMeta(
     'Dog breed classifier — Kristian Boldini',
-    'A dog breed classifier whose deployed model was never trained, with the measurements that led to that decision: benchmark contamination, an out-of-distribution gate, calibrated confidence, and a live demo.',
+    'A dog breed classifier that refuses the photos it cannot answer for and reports a confidence that matches its accuracy, with the measurements behind both and a live demo.',
   )
 
   return (
@@ -67,9 +67,9 @@ function DogBreedProject() {
       <header className={styles.header}>
         <h1 className={styles.title}>Dog breed classifier</h1>
         <p className={styles.thesis}>
-          Five models trained on Stanford Dogs, and the one in production is none of them. It
-          is the classifier that was already inside the pretrained weights, with{' '}
-          <Num>880</Num> of its <Num>1000</Num> outputs deleted.
+          Names one of <Num>120</Num> dog breeds from a photo, refuses the images it cannot
+          answer for, and reports a confidence that matches how often it is right. Both of
+          those are measured on photographs from a dataset it was never fitted on.
         </p>
       </header>
 
@@ -87,6 +87,24 @@ function DogBreedProject() {
         <Panel className={styles.glance}>
           <dl className={styles.glanceGrid}>
             <div className={styles.glanceRow}>
+              <dt className={styles.glanceLabel}>Calibration error, 8580 test images</dt>
+              <dd className={styles.glanceValue}>
+                <Num>5.71% &rarr; 0.84%</Num>
+              </dd>
+            </div>
+            <div className={styles.glanceRow}>
+              <dt className={styles.glanceLabel}>Real dog photos the gate accepts</dt>
+              <dd className={`${styles.glanceValue} ${styles.probe}`}>
+                <Num>98.0%</Num>
+              </dd>
+            </div>
+            <div className={styles.glanceRow}>
+              <dt className={styles.glanceLabel}>Cats it accepts</dt>
+              <dd className={`${styles.glanceValue} ${styles.probe}`}>
+                <Num>4.47%</Num>
+              </dd>
+            </div>
+            <div className={styles.glanceRow}>
               <dt className={styles.glanceLabel}>Accuracy, 8580 test images</dt>
               <dd className={`${styles.glanceValue} ${styles.signal}`}>
                 <Num>93.11%</Num>
@@ -96,18 +114,6 @@ function DogBreedProject() {
               <dt className={styles.glanceLabel}>Lost by changing the photo source</dt>
               <dd className={styles.glanceValue}>
                 <Num>6.2</Num> points
-              </dd>
-            </div>
-            <div className={styles.glanceRow}>
-              <dt className={styles.glanceLabel}>Cats accepted by the gate</dt>
-              <dd className={styles.glanceValue}>
-                <Num>4.47%</Num>
-              </dd>
-            </div>
-            <div className={styles.glanceRow}>
-              <dt className={styles.glanceLabel}>Calibration error, 8580 test images</dt>
-              <dd className={styles.glanceValue}>
-                <Num>5.71% &rarr; 0.84%</Num>
               </dd>
             </div>
             <div className={styles.glanceRow}>
@@ -121,16 +127,340 @@ function DogBreedProject() {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>The model was never trained</h2>
+        <h2 className={styles.heading}>Making the percentage mean&nbsp;something</h2>
         <p className={styles.prose}>
-          Stanford Dogs is cut from ImageNet, and all <Num>120</Num> of its breeds are
-          ImageNet-1k classes. So every pretrained backbone already carries a classifier for
-          this exact task, sitting unused among its <Num>1000</Num> outputs.
+          The demo shows a percentage, which is a promise: say <Num>80%</Num> and you should be
+          right four times in five. A raw softmax output does not keep that promise, and
+          expected calibration error is the size of the gap.
         </p>
         <p className={styles.prose}>
-          Keep the <Num>120</Num> rows that name dog breeds, delete the other{' '}
-          <Num>880</Num>, and you have a classifier for this task that has seen none of the
-          training data. It is the baseline everything else should be read against.
+          Textbooks say networks overstate their confidence and the fix is to flatten the
+          output. This one does the opposite. The temperature that corrects it came out at{' '}
+          <Num>0.76</Num>, below <Num>1</Num>, which sharpens.
+        </p>
+        <Panel className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Expected calibration error</th>
+                <th className={styles.numCol}>Uncalibrated</th>
+                <th className={styles.numCol}>
+                  T = <Num>0.76</Num>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  Validation, <Num>1800</Num> images
+                </td>
+                <td className={styles.numCol}>
+                  <Num>5.10%</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>1.22%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Test, <Num>8580</Num> images
+                </td>
+                <td className={styles.numCol}>
+                  <Num>5.71%</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>0.84%</Num>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Panel>
+        <p className={styles.prose}>
+          The temperature is fitted on validation alone, so the test row is measured on{' '}
+          <Num>8580</Num> images the fitting never saw. It is one scalar, folded into the
+          exported graph rather than left for the server to remember. Dividing by a positive
+          constant cannot reorder the logits, so not one prediction changes. Only the promise
+          does.
+        </p>
+        <More to="#making-the-percentage-mean-something">
+          How the temperature was fitted, and why it landed below one
+        </More>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.heading}>Refusing what it can&apos;t answer&nbsp;for</h2>
+        <p className={styles.prose}>
+          The classifier has <Num>120</Num> outputs and all of them are dog breeds. Show it a
+          cat and it answers confidently anyway, because softmax has no way to say &ldquo;not a
+          dog&rdquo;. A demo anyone can upload to needs a way out of that.
+        </p>
+        <p className={styles.prose}>
+          The check happens one layer earlier, on the <Num>768</Num> features behind the
+          classifier. Training dogs form a cloud there, and an image is judged by its distance
+          from the nearest breed centre.
+        </p>
+        <Panel className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Threshold calibrated on</th>
+                <th className={styles.numCol}>Val dogs</th>
+                <th className={styles.numCol}>Oxford dogs</th>
+                <th className={styles.numCol}>Oxford cats</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Stanford validation</td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
+                  <Num>95.0%</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>87.8%</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>0.25%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Oxford dogs, <Num>95%</Num> TPR
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
+                  <Num>97.8%</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>95.0%</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>1.18%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Oxford dogs, <Num>98%</Num> TPR (used)
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
+                  <Num>99.0%</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>98.0%</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>4.47%</Num>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Panel>
+        <p className={styles.prose}>
+          The negatives are Oxford&apos;s <Num>2371</Num> cat photos, not blank walls. Fur, four
+          legs, a muzzle, the same pet-photo framing. The threshold comes off Oxford&apos;s dogs
+          too, because a visitor&apos;s photo will look like theirs and not like Stanford&apos;s.
+        </p>
+        <p className={styles.prose}>
+          A dog detector would be the other way to do this. It was not built, for two reasons.
+          The budget was fixed before any model was trained, <Num>300 ms</Num> p95 on CPU and an
+          image under <Num>500 MB</Num>, and a detector is a second model inside both. The gate
+          instead reuses features the classifier has already computed, so it adds no forward
+          pass at all. The escalation criterion was written as a number: build the detector if
+          the gate lets through more than <Num>10%</Num> of cats. It lets through{' '}
+          <Num>4.47%</Num>.
+        </p>
+        <p className={styles.prose}>
+          The two also answer different questions. A detector reports whether a dog is present.
+          The gate reports whether an image is one this classifier can answer for, and the next
+          section is where those two come apart.
+        </p>
+        <More to="#rejecting-what-isnt-a-dog">
+          The distance, the shared covariance, and the threshold sweep
+        </More>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.heading}>Step back from the dog and the gate stops&nbsp;working</h2>
+        <p className={styles.prose}>
+          The first version shipped at a <Num>95%</Num> true positive rate. Using the deployed
+          demo turned up something neither dataset had shown: photographs taken from a few
+          metres away were being refused, and the gate degraded much faster than the classifier.
+        </p>
+        <p className={styles.prose}>
+          Stanford ships a bounding box with every image, so the test split already held the
+          explanation.
+        </p>
+        <Panel className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Dog fills</th>
+                <th className={styles.numCol}>Images</th>
+                <th className={styles.numCol}>Accuracy</th>
+                <th className={styles.numCol}>Accepted</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>under 10%</td>
+                <td className={styles.numCol}>
+                  <Num>233</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>82.8%</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>77.3%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>10 to 20%</td>
+                <td className={styles.numCol}>
+                  <Num>622</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>88.9%</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>91.6%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>20 to 35%</td>
+                <td className={styles.numCol}>
+                  <Num>1331</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>91.7%</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>96.1%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>35 to 50%</td>
+                <td className={styles.numCol}>
+                  <Num>1560</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>90.4%</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>98.3%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>50 to 70%</td>
+                <td className={styles.numCol}>
+                  <Num>2176</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>90.1%</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>99.0%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>over 70%</td>
+                <td className={styles.numCol}>
+                  <Num>2658</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>89.7%</Num>
+                </td>
+                <td className={styles.numCol}>
+                  <Num>99.7%</Num>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Panel>
+        <p className={styles.prose}>
+          The classifier gives up <Num>7</Num> points across that range. The gate gives up{' '}
+          <Num>22</Num> and refuses nearly a quarter of the most distant dogs.
+        </p>
+        <p className={styles.prose}>
+          Nothing was malfunctioning. Both calibration sets are pet portraits, so a dog filling
+          a twentieth of the frame really is far from the training distribution, and the gate
+          reported that correctly. It answered the question it was asked. The question was
+          wrong, so the threshold moved to <Num>98%</Num>, which takes acceptance of those
+          distant dogs from <Num>77.3%</Num> to <Num>87.6%</Num> and costs <Num>3.3</Num>{' '}
+          points of cats.
+        </p>
+        <p className={styles.prose}>
+          One more thing came out of the same table. Accuracy peaks when the dog fills a fifth
+          to a third of the frame, not when it fills the whole thing.
+        </p>
+        <More to="#step-back-from-the-dog-and-the-gate-stops-working">
+          The full sweep and what each step of true positive rate costs
+        </More>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.heading}>The experiments</h2>
+        <p className={styles.prose}>
+          Five configurations, same data, same seed, same preprocessing. Scored twice, because
+          Stanford Dogs is cut from ImageNet and every pretrained backbone has already seen its
+          test images. Oxford-IIIT Pet shares <Num>21</Num> breeds, photographed by other
+          people.
+        </p>
+        <Panel className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Evaluation</th>
+                <th className={styles.numCol}>Images</th>
+                <th className={styles.numCol}>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  Stanford test, <Num>120</Num> breeds
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
+                  <Num>8580</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
+                  <Num>93.11%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Stanford test, <Num>21</Num> shared breeds
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
+                  <Num>1630</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.signal}`}>
+                  <Num>94.72%</Num>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Oxford-IIIT Pet, same <Num>21</Num> breeds
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>4178</Num>
+                </td>
+                <td className={`${styles.numCol} ${styles.probe}`}>
+                  <Num>88.54%</Num>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Panel>
+        <p className={styles.prose}>
+          The middle row is what makes the comparison honest. Those <Num>21</Num> breeds are
+          easier than the average of <Num>120</Num>, so without it the drop would mix two
+          causes. Holding the breeds fixed and changing only where the photographs came from
+          leaves <Num>6.2</Num> points, and every configuration shows it, between{' '}
+          <Num>4.7</Num> and <Num>8.1</Num>. It belongs to the benchmark rather than to a model.
+        </p>
+        <p className={styles.prose}>
+          Since all <Num>120</Num> breeds are ImageNet classes, each backbone also ships a
+          classifier for this task among its <Num>1000</Num> outputs. Keeping those{' '}
+          <Num>120</Num> rows gives a fourth thing to compare against, and it is the one that
+          came out in front.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -217,254 +547,35 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          Stanford test split, <Num>8580</Num> images. The right-hand column is the same
-          backbone with its original head, restricted to the <Num>120</Num> breeds. Nothing
-          was tuned to produce it.
-        </p>
-        <p className={styles.prose}>
-          On Oxford, whose photos are not ImageNet photos, the two sides converge:{' '}
-          <Num>87.87%</Num> against <Num>88.54%</Num>. That is the next section.
+          Freezing the backbone helped convnext by <Num>12.3</Num> points and hurt efficientnet
+          by <Num>4.5</Num>. The regime is not what decided the outcome. The quality of the
+          pretrained features did, and the right-hand column is how far that goes.
         </p>
         <More to="#the-result">The full grid, and why two of the runs prove little</More>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.heading}>How much of the score is the benchmark</h2>
-        <p className={styles.prose}>
-          A pretrained backbone has already seen these photographs, with these labels, during
-          pretraining. That inflates the published number and nobody reports by how much.
-        </p>
-        <p className={styles.prose}>
-          Oxford-IIIT Pet shares <Num>21</Num> breeds with Stanford, photographed by other
-          people. Scoring the same model on both separates the two effects.
-        </p>
-        <Panel className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Evaluation</th>
-                <th className={styles.numCol}>Images</th>
-                <th className={styles.numCol}>Accuracy</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  Stanford test, <Num>120</Num> breeds
-                </td>
-                <td className={`${styles.numCol} ${styles.signal}`}>
-                  <Num>8580</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.signal}`}>
-                  <Num>93.11%</Num>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Stanford test, <Num>21</Num> shared breeds
-                </td>
-                <td className={`${styles.numCol} ${styles.signal}`}>
-                  <Num>1630</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.signal}`}>
-                  <Num>94.72%</Num>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Oxford-IIIT Pet, same <Num>21</Num> breeds
-                </td>
-                <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>4178</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>88.54%</Num>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </Panel>
-        <p className={styles.prose}>
-          The middle row is what makes the comparison honest. Those <Num>21</Num> breeds are
-          easier than the average of <Num>120</Num>, so without it the drop would mix two
-          causes.
-        </p>
-        <p className={styles.prose}>
-          Holding the breeds fixed and changing only where the photographs came from leaves{' '}
-          <Num>6.2</Num> points. Every configuration shows it, between <Num>4.7</Num> and{' '}
-          <Num>8.1</Num> points, so it belongs to the benchmark and not to one model.
-        </p>
-        <More to="#how-much-of-the-score-is-the-benchmark">How the three-way split works</More>
-      </section>
-
-      <section className={styles.section}>
         <h2 className={styles.heading}>What runs in production</h2>
         <p className={styles.prose}>
-          <code>resnet50</code> has the strongest untouched head of the three at{' '}
-          <Num>95.05%</Num>. It is not what is deployed.
+          <code>convnext_tiny</code> with the <Num>120</Num> dog rows of its own ImageNet
+          classifier. <Num>93.11%</Num> on Stanford, <Num>88.54%</Num> on Oxford.
         </p>
         <p className={styles.prose}>
-          On Oxford, the only set whose photos are not ImageNet photos, <code>resnet50</code>{' '}
-          and <code>convnext_tiny</code> are separated by eight images out of{' '}
-          <Num>4178</Num>. <code>resnet50</code> also falls further between the two datasets,{' '}
-          <Num>7.71</Num> points against <Num>6.18</Num>, which is what more memorisation
-          looks like.
-        </p>
-        <p className={styles.prose}>
-          Choosing it would mean choosing on the contaminated number, which is the mistake
-          this page is about. They are tied on the honest one, so the tiebreak is cost, and
-          convnext was already deployed with its gate calibrated and its latency measured.
+          <code>resnet50</code> scores higher on Stanford at <Num>95.05%</Num> and was not
+          chosen. On Oxford, the only set whose photos are not ImageNet photos, the two are
+          separated by eight images out of <Num>4178</Num>, and resnet50 falls further between
+          the two datasets. Picking it would mean picking on the contaminated number, which is
+          the one this project spent its time measuring.
         </p>
         <p className={styles.prose}>
           Swapping it in changed only the last matrix. The backbone was already frozen, so the{' '}
-          <Num>768</Num> features behind the classifier are identical and the gate below did
-          not have to move. Rebuilding it from scratch produced a byte-for-byte identical
-          file, threshold included, which was a prediction before it was a result.
+          <Num>768</Num> features are identical and the gate did not have to move. Rebuilding it
+          from scratch produced a byte-for-byte identical file, threshold included, which was a
+          prediction before it was a result.
         </p>
         <More to="#what-is-deployed-and-why-it-is-not-the-highest-number">
           Why the highest number was not the right one
         </More>
-      </section>
-
-      <section className={styles.section}>
-        <h2 className={styles.heading}>Rejecting what isn&apos;t a dog</h2>
-        <p className={styles.prose}>
-          The classifier has <Num>120</Num> outputs and all of them are dog breeds. Show it a
-          cat and it answers confidently anyway, because softmax has no way to say &ldquo;not a
-          dog&rdquo;.
-        </p>
-        <p className={styles.prose}>A demo anyone can upload to needs an answer for that.</p>
-        <p className={styles.prose}>
-          The check happens one layer earlier, on the <Num>768</Num> features behind the
-          classifier. Training dogs form a cloud there, and an image is judged by how far
-          outside it falls.
-        </p>
-        <Panel className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Threshold calibrated on</th>
-                <th className={styles.numCol}>Val dogs</th>
-                <th className={styles.numCol}>Oxford dogs</th>
-                <th className={styles.numCol}>Oxford cats</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Stanford validation</td>
-                <td className={`${styles.numCol} ${styles.signal}`}>
-                  <Num>95.0%</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>87.8%</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>0.25%</Num>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Oxford dogs, <Num>95%</Num> TPR
-                </td>
-                <td className={`${styles.numCol} ${styles.signal}`}>
-                  <Num>97.8%</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>95.0%</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>1.18%</Num>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Oxford dogs, <Num>98%</Num> TPR (used)
-                </td>
-                <td className={`${styles.numCol} ${styles.signal}`}>
-                  <Num>99.0%</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>98.0%</Num>
-                </td>
-                <td className={`${styles.numCol} ${styles.probe}`}>
-                  <Num>4.47%</Num>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </Panel>
-        <p className={styles.prose}>
-          The negatives are Oxford&apos;s <Num>2371</Num> cat photos, not blank walls. The
-          threshold comes off Oxford&apos;s dogs too, because a visitor&apos;s photo will look
-          like theirs.
-        </p>
-        <p className={styles.prose}>
-          Using the demo found something the datasets could not. The gate accepts{' '}
-          <Num>99.7%</Num> of photos where the dog fills the frame and <Num>77.3%</Num> where
-          it fills under a tenth of it. Both calibration sets are pet portraits, so a distant
-          dog really is outside what the gate was shown.
-        </p>
-        <More to="#step-back-from-the-dog-and-the-gate-stops-working">
-          The framing measurement and the threshold sweep
-        </More>
-      </section>
-
-      <section className={styles.section}>
-        <h2 className={styles.heading}>Making the percentage mean&nbsp;something</h2>
-        <p className={styles.prose}>
-          The demo shows a percentage, which is a promise: say <Num>80%</Num> and you should be
-          right four times in five. A raw softmax output does not keep that promise, and
-          expected calibration error is the size of the gap.
-        </p>
-        <p className={styles.prose}>
-          Textbooks say networks overstate their confidence and the fix is to flatten the
-          output. This one does the opposite. The temperature that corrects it came out at{' '}
-          <Num>0.76</Num>, below <Num>1</Num>, which sharpens.
-        </p>
-        <Panel className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Expected calibration error</th>
-                <th className={styles.numCol}>Uncalibrated</th>
-                <th className={styles.numCol}>
-                  T = <Num>0.76</Num>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  Validation, <Num>1800</Num> images
-                </td>
-                <td className={styles.numCol}>
-                  <Num>5.10%</Num>
-                </td>
-                <td className={styles.numCol}>
-                  <Num>1.22%</Num>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Test, <Num>8580</Num> images
-                </td>
-                <td className={styles.numCol}>
-                  <Num>5.71%</Num>
-                </td>
-                <td className={styles.numCol}>
-                  <Num>0.84%</Num>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </Panel>
-        <p className={styles.prose}>
-          The cause is the recipe, not the architecture: label smoothing and mixup teach a
-          network never to commit, and both went into these weights. The fix is one scalar,
-          folded into the exported graph. It cannot reorder the logits, so not one prediction
-          changes. Only the promise does.
-        </p>
-        <More to="#making-the-percentage-mean-something">How the temperature was fitted</More>
       </section>
 
       <section className={styles.section}>
@@ -526,28 +637,12 @@ function DogBreedProject() {
           </table>
         </Panel>
         <p className={styles.prose}>
-          The <Num>300 ms</Num> budget was fixed before any model was trained. It was the last
-          number still untested on real hardware. The VPS came in at <Num>137 ms</Num>, network
-          included.
+          Decoding a 4K JPEG cost more than the inference until <code>Image.draft()</code> let
+          libjpeg decode at <Num>1/8</Num> scale inside the DCT domain. The{' '}
+          <Num>300 ms</Num> budget was the last number still untested on real hardware, and the
+          VPS came in at <Num>137 ms</Num> with the network included.
         </p>
         <More to="#serving">The container and the deployment</More>
-      </section>
-
-      <section className={styles.section}>
-        <h2 className={styles.heading}>What I would do differently</h2>
-        <p className={styles.prose}>
-          The untrained baseline should have been the first measurement rather than the last.
-          Five training runs went into beating a number that the weights they all started from
-          had already beaten.
-        </p>
-        <p className={styles.prose}>
-          The reason it came last is the same fact as the finding. A baseline like this only
-          exists because the <Num>120</Num> target labels are themselves ImageNet labels; on a
-          genuinely new dataset there is nothing to compare against, which is why the step is
-          easy to skip. Skipping it means not noticing the labels are ImageNet labels, and
-          noticing that is the contamination result.
-        </p>
-        <More to="#what-i-would-do-differently">The order the work actually happened in</More>
       </section>
 
       {/* This is the page that gets shared on its own, so it carries the
