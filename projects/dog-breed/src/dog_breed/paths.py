@@ -17,6 +17,7 @@ EVAL_FILE = REPORTS_DIR / "evaluation.csv"
 BENCHMARK_FILE = REPORTS_DIR / "benchmark.csv"
 ONNX_PARITY_FILE = REPORTS_DIR / "onnx_parity.csv"
 OOD_REPORT_FILE = REPORTS_DIR / "ood.csv"
+ZERO_SHOT_FILE = REPORTS_DIR / "zero_shot.csv"
 
 OXFORD_DIR = DATA_DIR / "oxford_pet"
 OXFORD_RAW_DIR = OXFORD_DIR / "raw"
