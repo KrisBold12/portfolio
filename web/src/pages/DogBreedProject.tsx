@@ -67,9 +67,9 @@ function DogBreedProject() {
       <header className={styles.header}>
         <h1 className={styles.title}>Dog breed classifier</h1>
         <p className={styles.thesis}>
-          Names one of <Num>120</Num> dog breeds from a photo. The model answering below was
-          never trained: it came inside the pretrained backbone, and finding that out is what
-          this project turned into.
+          Five models trained on Stanford Dogs, and the one in production is none of them. It
+          is the classifier that was already inside the pretrained weights, with{' '}
+          <Num>880</Num> of its <Num>1000</Num> outputs deleted.
         </p>
       </header>
 
@@ -80,9 +80,9 @@ function DogBreedProject() {
       <section className={styles.section}>
         <h2 className={styles.heading}>At a glance</h2>
         <p className={styles.prose}>
-          Five models trained and compared, scored on two datasets, measured against the
-          backbone they all started from, exported to ONNX and checked image by image, then
-          served from a container behind a gate and a calibration.
+          Five models compared on two datasets, then the winner exported, checked image by
+          image against the original, and served from a container. Every number below is in
+          the repository.
         </p>
         <Panel className={styles.glance}>
           <dl className={styles.glanceGrid}>

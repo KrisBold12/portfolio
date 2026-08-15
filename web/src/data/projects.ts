@@ -49,7 +49,7 @@ export const projects: Project[] = [
     domain: "Image classification",
     title: "Dog breed classifier",
     summary:
-      "Names one of 120 dog breeds from a photo and turns away anything that is not a dog. The model in production was never trained: it came inside the pretrained backbone, and measuring that is what the project turned into.",
+      "Five models trained on Stanford Dogs, and the one in production is none of them: it was already inside the pretrained weights. Scored on two datasets, because the usual benchmark is cut from ImageNet and inflates the number by six points.",
     figures: [
       {
         value: "93.11%",
