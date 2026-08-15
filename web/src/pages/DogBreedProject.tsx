@@ -190,14 +190,30 @@ function DogBreedProject() {
       <section className={styles.section}>
         <h2 className={styles.heading}>Refusing what it can&apos;t answer&nbsp;for</h2>
         <p className={styles.prose}>
-          The classifier has <Num>120</Num> outputs and all of them are dog breeds. Show it a
-          cat and it answers confidently anyway, because softmax has no way to say &ldquo;not a
-          dog&rdquo;. A demo anyone can upload to needs a way out of that.
+          Softmax normalises over the <Num>120</Num> outputs, so what comes back is a
+          distribution conditioned on the input already being one of them. No mass is left for
+          &ldquo;none of these&rdquo;, and no threshold on the confidence recovers it: a cat
+          produces a peaked distribution over dog breeds as readily as a dog does.
         </p>
         <p className={styles.prose}>
-          The check happens one layer earlier, on the <Num>768</Num> features behind the
-          classifier. Training dogs form a cloud there, and an image is judged by its distance
-          from the nearest breed centre.
+          The decision is made a layer earlier, on the <Num>768</Num>-dimensional penultimate
+          features (Lee et al., <Num>2018</Num>). Each breed gets a mean, and all{' '}
+          <Num>120</Num> share one covariance estimated from within-class residuals, each
+          vector minus the centre of its own class.
+        </p>
+        <p className={styles.prose}>
+          That last detail is the one that matters. Fitting the covariance on the raw features
+          instead would describe how far the breeds sit from one another, which makes the empty
+          space between two breeds look ordinary, and the empty space between breeds is exactly
+          where a cat lands.
+        </p>
+        <p className={styles.prose}>
+          Sharing one covariance is also the only affordable option: <Num>85</Num> images per
+          breed cannot support <Num>120</Num> separate <Num>768&times;768</Num> estimates, while{' '}
+          <Num>10200</Num> residuals support one. It is inverted under Ledoit-Wolf shrinkage
+          rather than directly, since in <Num>768</Num> dimensions the empirical estimate is
+          near-singular and inverting it amplifies rounding error. An image then scores the
+          smallest Mahalanobis distance to any of the <Num>120</Num> centres.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
