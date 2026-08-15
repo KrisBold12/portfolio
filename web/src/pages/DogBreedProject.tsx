@@ -285,12 +285,12 @@ function DogBreedProject() {
         <p className={styles.prose}>
           The first version shipped at a <Num>95%</Num> true positive rate. Using the deployed
           demo turned up something neither dataset had shown: photographs taken from a few
-          metres away were being refused, and the gate degraded much faster than the classifier.
+          metres away were being refused.
         </p>
         <p className={styles.prose}>
           Stanford ships a bounding box with every image, so the test split already held the
           explanation. Binning all <Num>8580</Num> test photos by how much of the frame the dog
-          occupies separates the two failures.
+          occupies puts a number on it.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -298,8 +298,8 @@ function DogBreedProject() {
               <tr>
                 <th>Dog fills</th>
                 <th className={styles.numCol}>Images</th>
-                <th className={styles.numCol}>Right breed</th>
                 <th className={styles.numCol}>Accepted by the gate</th>
+                <th className={styles.numCol}>Median distance</th>
               </tr>
             </thead>
             <tbody>
@@ -309,10 +309,10 @@ function DogBreedProject() {
                   <Num>233</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>82.8%</Num>
+                  <Num>77.3%</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>77.3%</Num>
+                  <Num>39.7</Num>
                 </td>
               </tr>
               <tr>
@@ -321,10 +321,10 @@ function DogBreedProject() {
                   <Num>622</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>88.9%</Num>
+                  <Num>91.6%</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>91.6%</Num>
+                  <Num>31.4</Num>
                 </td>
               </tr>
               <tr>
@@ -333,10 +333,10 @@ function DogBreedProject() {
                   <Num>1331</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>91.7%</Num>
+                  <Num>96.1%</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>96.1%</Num>
+                  <Num>27.6</Num>
                 </td>
               </tr>
               <tr>
@@ -345,10 +345,10 @@ function DogBreedProject() {
                   <Num>1560</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>90.4%</Num>
+                  <Num>98.3%</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>98.3%</Num>
+                  <Num>25.0</Num>
                 </td>
               </tr>
               <tr>
@@ -357,10 +357,10 @@ function DogBreedProject() {
                   <Num>2176</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>90.1%</Num>
+                  <Num>99.0%</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>99.0%</Num>
+                  <Num>23.4</Num>
                 </td>
               </tr>
               <tr>
@@ -369,18 +369,19 @@ function DogBreedProject() {
                   <Num>2658</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>89.7%</Num>
+                  <Num>99.7%</Num>
                 </td>
                 <td className={styles.numCol}>
-                  <Num>99.7%</Num>
+                  <Num>22.7</Num>
                 </td>
               </tr>
             </tbody>
           </table>
         </Panel>
         <p className={styles.prose}>
-          The classifier gives up <Num>7</Num> points across that range. The gate gives up{' '}
-          <Num>22</Num> and refuses nearly a quarter of the most distant dogs.
+          Acceptance falls <Num>22</Num> points across that range, and the median distance
+          climbs from <Num>22.7</Num> to <Num>39.7</Num>. Nearly a quarter of the most distant
+          dogs are refused.
         </p>
         <p className={styles.prose}>
           Nothing was malfunctioning. Both calibration sets are pet portraits, so a dog filling
@@ -389,10 +390,6 @@ function DogBreedProject() {
           wrong, so the threshold moved to <Num>98%</Num>, which takes acceptance of those
           distant dogs from <Num>77.3%</Num> to <Num>87.6%</Num> and costs <Num>3.3</Num>{' '}
           points of cats.
-        </p>
-        <p className={styles.prose}>
-          One more thing came out of the same table. Accuracy peaks when the dog fills a fifth
-          to a third of the frame, not when it fills the whole thing.
         </p>
         <More to="#step-back-from-the-dog-and-the-gate-stops-working">
           The full sweep and what each step of true positive rate costs

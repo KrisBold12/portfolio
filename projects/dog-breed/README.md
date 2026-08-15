@@ -135,22 +135,27 @@ only worth anything if it was fixed before the measurement.
 
 The first version shipped at a 95% true positive rate. Using the deployed demo
 turned up something neither dataset could: photographs taken from a few metres
-away were being refused, and the gate degraded much faster than the classifier.
+away were being refused.
 
 Stanford ships a bounding box with every image, so the test split already held the
 explanation. Binning all 8580 photos by how much of the frame the dog occupies:
 
-| Dog fills | Images | Accuracy | Accepted by the gate | Median distance |
-|---|---:|---:|---:|---:|
-| under 10% | 233 | 82.8% | **77.3%** | 39.7 |
-| 10 to 20% | 622 | 88.9% | 91.6% | 31.4 |
-| 20 to 35% | 1331 | **91.7%** | 96.1% | 27.6 |
-| 35 to 50% | 1560 | 90.4% | 98.3% | 25.0 |
-| 50 to 70% | 2176 | 90.1% | 99.0% | 23.4 |
-| over 70% | 2658 | 89.7% | 99.7% | 22.7 |
+| Dog fills | Images | Accepted by the gate | Median distance |
+|---|---:|---:|---:|
+| under 10% | 233 | **77.3%** | 39.7 |
+| 10 to 20% | 622 | 91.6% | 31.4 |
+| 20 to 35% | 1331 | 96.1% | 27.6 |
+| 35 to 50% | 1560 | 98.3% | 25.0 |
+| 50 to 70% | 2176 | 99.0% | 23.4 |
+| over 70% | 2658 | 99.7% | 22.7 |
 
-The classifier gives up 7 points across that range. The gate gives up 22 and
-refuses nearly a quarter of the most distant dogs.
+Acceptance falls 22 points across that range and nearly a quarter of the most
+distant dogs are refused.
+
+This table used to carry a third column, the classifier's accuracy per bin. It
+was measured on the trained probe and has not been re-run against the deployed
+head, so it is not quoted. The two columns above are unaffected: both come from
+the penultimate features, which the head swap left identical.
 
 Nothing was malfunctioning. Both calibration sets are pet portraits, so a dog
 filling a twentieth of the frame really is far from the training distribution, and
@@ -178,10 +183,6 @@ it a cat is deliberately poking at it.
 98 rather than 98.5 because of what each further step costs. From 95 the price
 runs 3 cats per point recovered on distant dogs, then 28, then 65 above 98. At
 8.10% cats, 98.5 would sit 1.9 points under the ceiling where 98 leaves 5.5.
-
-One more thing came out of the same table. Accuracy peaks at 91.7% when the dog
-fills a fifth to a third of the frame, not when it fills the whole thing. A tight
-close-up costs two points, presumably by cropping away the silhouette.
 
 ## Making the percentage mean something
 
