@@ -52,7 +52,7 @@ export const projects: Project[] = [
     slug: "dog-breed",
     href: "/projects/dog-breed",
     domain: "Image classification",
-    title: "Dog breed classifier",
+    title: "Calibrated dog breed classifier",
     summary:
       "Names one of 120 dog breeds from a photo, refuses the ones it cannot answer for, and reports a confidence that matches how often it is right. Scored on two datasets, because the usual benchmark is cut from ImageNet and inflates the number by six points.",
     figures: [

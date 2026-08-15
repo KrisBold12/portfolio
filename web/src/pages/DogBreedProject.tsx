@@ -54,7 +54,7 @@ function More({ to, children }: { to: string; children: React.ReactNode }) {
  */
 function DogBreedProject() {
   useDocumentMeta(
-    'Dog breed classifier — Kristian Boldini',
+    'Calibrated dog breed classifier — Kristian Boldini',
     'A dog breed classifier that refuses the photos it cannot answer for and reports a confidence that matches its accuracy, with the measurements behind both and a live demo.',
   )
 
@@ -65,7 +65,7 @@ function DogBreedProject() {
       </Link>
 
       <header className={styles.header}>
-        <h1 className={styles.title}>Dog breed classifier</h1>
+        <h1 className={styles.title}>Calibrated dog breed classifier</h1>
         <p className={styles.thesis}>
           Names one of <Num>120</Num> dog breeds from a photo, refuses the images it cannot
           answer for, and reports a confidence that matches how often it is right. Both of
