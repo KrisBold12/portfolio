@@ -5,8 +5,7 @@
 # intermediate artifact from what ships.
 #
 # The model is baked in rather than mounted or downloaded at boot. The image
-# then *is* a specific model version: /health reporting convnext_t_probe is a
-# guarantee about what was deployed, not a hopeful description of it.
+# then *is* a specific model version.
 
 # ----------------------------------------------------------------- builder
 
