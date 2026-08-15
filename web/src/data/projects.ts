@@ -10,16 +10,21 @@
  *
  * Every value here matches projects/dog-breed/README.md exactly:
  * - 93.11% top-1 on the 8580-image Stanford test split, measured on the
- *   deployed model: the pretrained ImageNet head restricted to the 120
- *   breeds, which beat all five trained experiments (README, "The result").
+ *   deployed model.
+ * - 98.0% of real Oxford dog photos are accepted by the gate, at the 98%
+ *   true positive rate the threshold was moved to. The card's three figures
+ *   follow the project page's emphasis, so the middle slot goes to the gate
+ *   rather than to the second accuracy: a visitor who reads only the card
+ *   should learn that the thing knows when to refuse.
  * - 137 ms p95 measured on the deployed service itself (README, "Latency":
  *   "from a laptop in Italy, HTTPS and network included"), not the in-
  *   container or loopback benchmarks quoted elsewhere, which run on other
  *   hardware and skip the network. Not attributable to either dataset, so
  *   it carries no semantic colour.
- * - 88.54% on Oxford-IIIT Pet's 4178 photos of the 21 shared breeds. The
- *   pair with the Stanford figure is the contamination measurement, which
- *   is why both carry their dataset's colour.
+ *
+ * The contamination measurement is in the summary sentence rather than in a
+ * figure, since it needs the Stanford/Oxford pair to mean anything and three
+ * slots cannot carry a pair plus everything else.
  */
 export type ProjectFigure = {
   value: string;
@@ -49,19 +54,19 @@ export const projects: Project[] = [
     domain: "Image classification",
     title: "Dog breed classifier",
     summary:
-      "Five models trained on Stanford Dogs, and the one in production is none of them: it was already inside the pretrained weights. Scored on two datasets, because the usual benchmark is cut from ImageNet and inflates the number by six points.",
+      "Names one of 120 dog breeds from a photo, refuses the ones it cannot answer for, and reports a confidence that matches how often it is right. Scored on two datasets, because the usual benchmark is cut from ImageNet and inflates the number by six points.",
     figures: [
       {
         value: "93.11%",
         label: "Stanford test, 8580 images",
         color: "var(--signal)",
       },
-      { value: "137 ms", label: "p95, deployed VPS incl. network" },
       {
-        value: "88.54%",
-        label: "Oxford photos, 21 shared breeds",
+        value: "98.0%",
+        label: "real dog photos the gate accepts",
         color: "var(--probe)",
       },
+      { value: "137 ms", label: "p95, deployed VPS incl. network" },
     ],
   },
   {
