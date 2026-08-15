@@ -1,7 +1,7 @@
-"""Measure and correct the model's overconfidence.
+"""Measure and correct the model's confidence.
 
-Softmax probabilities are not confidences: networks routinely claim 95% and
-are right far less often. Showing an uncalibrated number to a user is a claim
+Softmax probabilities are not confidences. 
+Showing an uncalibrated number to a user is a claim
 the model cannot back.
 
 Temperature scaling (Guo et al., 2017) divides the logits by a single scalar
