@@ -289,7 +289,8 @@ function DogBreedProject() {
         </p>
         <p className={styles.prose}>
           Stanford ships a bounding box with every image, so the test split already held the
-          explanation.
+          explanation. Binning all <Num>8580</Num> test photos by how much of the frame the dog
+          occupies separates the two failures.
         </p>
         <Panel className={styles.tableWrap}>
           <table className={styles.table}>
@@ -297,8 +298,8 @@ function DogBreedProject() {
               <tr>
                 <th>Dog fills</th>
                 <th className={styles.numCol}>Images</th>
-                <th className={styles.numCol}>Accuracy</th>
-                <th className={styles.numCol}>Accepted</th>
+                <th className={styles.numCol}>Breed correct</th>
+                <th className={styles.numCol}>Gate accepts</th>
               </tr>
             </thead>
             <tbody>
