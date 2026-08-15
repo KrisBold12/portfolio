@@ -15,13 +15,13 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
-from dog_breed.data.dataset import oxford_dataset, stanford_dataset
-from dog_breed.data.oxford import mapped_dog_samples
+from dog_breed.data.dataset import test_evaluations
 from dog_breed.data.transforms import val_test_transforms
+from dog_breed.device import resolve_device
 from dog_breed.experiments import parse_experiment
+from dog_breed.metrics import evaluation
 from dog_breed.model import load_trained_model
 from dog_breed.paths import EVAL_FILE, REPORTS_DIR
-from dog_breed.train import evaluation
 
 BATCH_SIZE = 32
 CSV_HEADER = ["experiment", "model", "epoch", "evaluation", "num_images", "loss", "acc"]
@@ -34,17 +34,12 @@ def run_eval(model, dataset, device):
 
 def main():
     name = parse_experiment()
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = resolve_device()
 
     model, ckpt = load_trained_model(name, device)
     tf = val_test_transforms(model.pretrained_cfg)
 
-    mapped_labels = {label for _, label in mapped_dog_samples()}
-    evaluations = (
-        ("Stanford test (120 breeds)", stanford_dataset("test", tf)),
-        ("Stanford test (21 breeds)", stanford_dataset("test", tf, keep_labels=mapped_labels)),
-        ("Oxford dogs (21 breeds)", oxford_dataset(tf)),
-    )
+    evaluations = test_evaluations(tf)
 
     print(f"Evaluating '{name}' ({ckpt['model_name']}, epoch {ckpt['epoch']}) on {device}")
 

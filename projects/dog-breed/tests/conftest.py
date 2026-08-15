@@ -8,8 +8,7 @@ import csv
 
 import pytest
 
-from dog_breed.data.oxford import stanford_label_index
-from dog_breed.data.splits import CSV_DELIMITER
+from dog_breed.data.splits import CSV_DELIMITER, stanford_label_index
 from dog_breed.paths import SPLIT_FILE
 
 

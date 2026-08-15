@@ -1,6 +1,5 @@
 from dog_breed.paths import OXFORD_LIST_FILE
-from dog_breed.paths import SPLIT_FILE
-import csv
+from dog_breed.data.splits import stanford_label_index
 
 
 CAT_SPECIES = 1
@@ -36,24 +35,6 @@ def stanford_breed(oxford_breed: str) -> str | None:
     if oxford_breed in UNMAPPED_BREEDS:
         return None
     return BREED_ALIASES.get(oxford_breed, oxford_breed)
-
-
-def stanford_label_index() -> dict[str, int]:
-    """
-    Returns a dictionary with unique breeds and the
-    corresponding labels for the stanford's dataset.
-    """
-    unique_label_index = {}
-    with open(SPLIT_FILE, 'r', encoding='utf-8') as f:
-        reader = csv.reader(f, delimiter=';')
-        next(reader)
-        for file_dir, label,_ in reader:
-            name = file_dir.split("/")[0].split("-", 1)[1].lower()
-            idx = int(label)
-            if name not in unique_label_index.keys():
-                unique_label_index[name] = idx
-    return unique_label_index
-            
 
 
 def load_oxford_list():

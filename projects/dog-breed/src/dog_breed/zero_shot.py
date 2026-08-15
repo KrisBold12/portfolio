@@ -28,9 +28,9 @@ from tqdm import tqdm
 from dog_breed.paths import SPLIT_FILE, REPORTS_DIR, ZERO_SHOT_FILE
 from dog_breed.data.splits import LABEL_SIZE
 from dog_breed.data.transforms import val_test_transforms
-from dog_breed.data.dataset import stanford_dataset, oxford_dataset
-from dog_breed.data.oxford import mapped_dog_samples
-from dog_breed.train import correct_predictions
+from dog_breed.data.dataset import test_evaluations
+from dog_breed.metrics import correct_predictions
+from dog_breed.device import resolve_device
 from dog_breed.experiments import EXPERIMENTS
 
 BATCH_SIZE = 32
@@ -87,7 +87,7 @@ def zero_shot_accuracy(model: nn.Module, loader: DataLoader, idx: torch.Tensor, 
 
 def main():
     backbones = {cfg["model_name"] for cfg in EXPERIMENTS.values()}
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = resolve_device()
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
     idx = torch.tensor(imagenet_indices(), device=device)
@@ -99,11 +99,7 @@ def main():
         model = timm.create_model(backbone, pretrained=True)
         tf = val_test_transforms(model.pretrained_cfg)
 
-        evaluations = (
-            ("Stanford test (120 breeds)", stanford_dataset('test', tf)),
-            ("Stanford test (21 breeds)", stanford_dataset('test', tf, keep_labels={label for _, label in mapped_dog_samples()})),
-            ("Oxford dogs (21 breeds)", oxford_dataset(tf)),
-        )
+        evaluations = test_evaluations(tf)
 
         model.to(device).eval()
         for eval_name, ds in evaluations:

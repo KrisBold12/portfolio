@@ -105,7 +105,7 @@ def split_logits(model, split, tf, device):
 
 def main():
     name = parse_experiment()
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = resolve_device()
 
     model, _ = load_trained_model(name, device)
     tf = val_test_transforms(model.pretrained_cfg)

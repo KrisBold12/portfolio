@@ -35,6 +35,7 @@ from dog_breed.model import load_trained_model
 from dog_breed.data.dataset import stanford_dataset, oxford_cat_dataset, oxford_dataset
 from dog_breed.data.transforms import val_test_transforms
 from dog_breed.paths import MODEL_DIR, OOD_REPORT_FILE, REPORTS_DIR, features_file, ood_file
+from dog_breed.device import resolve_device
 from dog_breed.data.splits import LABEL_SIZE
 
 BATCH_SIZE = 32
@@ -145,7 +146,7 @@ def score_dataset(model, dataset, means, precision, device):
 def main():
     name = parse_experiment()
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = resolve_device()
 
     model, _ = load_trained_model(name, device)
     tf = val_test_transforms(model.pretrained_cfg)

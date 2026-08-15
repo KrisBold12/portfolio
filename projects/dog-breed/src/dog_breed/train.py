@@ -11,13 +11,12 @@ import matplotlib.pyplot as plt
 from dog_breed.paths import REPORTS_DIR, metrics_file, plot_file, model_file
 from dog_breed.experiments import EXPERIMENTS
 from dog_breed.data.splits import RANDOM_SEED
+from dog_breed.device import resolve_device
+from dog_breed.metrics import correct_predictions, evaluation
 
 
 BATCH_SIZE = 32
 
-
-def correct_predictions(y_pred, y_true):
-    return (y_pred == y_true).sum().item()
 
 
 def train_one_epoch(model: torch.nn.Module, loader: DataLoader, loss_fn, optimizer, device):
@@ -44,26 +43,6 @@ def train_one_epoch(model: torch.nn.Module, loader: DataLoader, loss_fn, optimiz
     return total_loss / len(loader.dataset), total_correct / len(loader.dataset)
 
 
-def evaluation(model: torch.nn.Module, loader: DataLoader, loss_fn, device):
-    model.eval()
-    with torch.inference_mode():
-        total_loss = 0
-        total_correct = 0
-        for images, labels in tqdm(loader, desc="Evaluating the model..."):
-            images = images.to(device)
-            labels = labels.to(device)
-
-            outputs = model(images)
-
-            loss = loss_fn(outputs, labels)
-            total_loss += loss.item() * labels.size(0)
-
-            y_preds = outputs.argmax(dim=1)
-            total_correct += correct_predictions(y_pred=y_preds, y_true=labels)   
-
-    return total_loss / len(loader.dataset), total_correct / len(loader.dataset)
-
-
 def main():
     torch.manual_seed(RANDOM_SEED)
     torch.cuda.manual_seed(RANDOM_SEED)
@@ -74,7 +53,7 @@ def main():
     exp = EXPERIMENTS[name]
 
     # Device
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = resolve_device()
     print(f"Selected device: {device}")
 
     # Model and config

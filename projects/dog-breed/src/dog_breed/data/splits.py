@@ -19,7 +19,6 @@ import scipy.io as sio
 from sklearn.model_selection import train_test_split
 
 from dog_breed.paths import LISTS_DIR, SPLIT_FILE
-from dog_breed.data.oxford import stanford_label_index
 
 TRAIN_DATA_SIZE = 12000
 TEST_DATA_SIZE = 8580
@@ -154,6 +153,23 @@ def class_names() -> list[str]:
     """
     index = stanford_label_index()
     return sorted(index, key=index.get)
+
+
+def stanford_label_index() -> dict[str, int]:
+    """
+    Returns a dictionary with unique breeds and the
+    corresponding labels for the stanford's dataset.
+    """
+    unique_label_index = {}
+    with open(SPLIT_FILE, 'r', encoding='utf-8') as f:
+        reader = csv.reader(f, delimiter=';')
+        next(reader)
+        for file_dir, label,_ in reader:
+            name = file_dir.split("/")[0].split("-", 1)[1].lower()
+            idx = int(label)
+            if name not in unique_label_index.keys():
+                unique_label_index[name] = idx
+    return unique_label_index
 
 
 def main() -> None:
