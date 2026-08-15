@@ -298,8 +298,8 @@ function DogBreedProject() {
               <tr>
                 <th>Dog fills</th>
                 <th className={styles.numCol}>Images</th>
-                <th className={styles.numCol}>Breed correct</th>
-                <th className={styles.numCol}>Gate accepts</th>
+                <th className={styles.numCol}>Right breed</th>
+                <th className={styles.numCol}>Accepted by the gate</th>
               </tr>
             </thead>
             <tbody>
