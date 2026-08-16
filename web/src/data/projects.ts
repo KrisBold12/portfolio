@@ -42,6 +42,11 @@ export type ProjectFigure = {
  * A card is either a project that exists, with a route and measured figures,
  * or one that is planned and has neither. Written as a union rather than as
  * optional fields so a planned card cannot be given a link that goes nowhere.
+ *
+ * A planned card still carries a title and a summary. "Coming soon" on its own
+ * says only that something is missing; naming the problem says what is being
+ * worked on, which is the part worth showing before there is anything to link
+ * to. It closes on "Coming soon" so nobody clicks looking for the page.
  */
 export type Project = {
   slug: string;
@@ -76,10 +81,11 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "next",
+    slug: "safety-signals",
     planned: true,
     domain: "Project in development",
-    title: "Coming soon",
-    summary: "",
+    title: "Safety signals under reporting delay",
+    summary:
+      "Veterinary adverse event reports reach the FDA months after the event, so a recent month looks quiet until it fills in and a growing problem can read as a receding one. Measures how early a signal is detectable under that delay, and what the earliness costs in false alarms. With no denominator there is no absolute risk, so the output ranks what to investigate rather than declaring a verdict. Coming soon.",
   },
 ];
