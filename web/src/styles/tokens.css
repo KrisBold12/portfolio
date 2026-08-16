@@ -29,7 +29,14 @@
   --font-data: 'IBM Plex Mono', monospace;
 
   /* ---- Type: scale (16px root) ------------------------------------ */
-  --fs-display: clamp(2.75rem, 6vw, 4.5rem); /* Archivo 700, wdth 115, tracking -0.02em */
+  /*
+   * 80% of the plan's clamp(2.75rem, 6vw, 4.5rem), reduced in all three terms
+   * so the change holds at every viewport width and not only at the ends. Both
+   * consumers move together, which is the point: the wordmark and a project
+   * page's title are the same rank and splitting them into two tokens would
+   * have been a hierarchy the site does not have.
+   */
+  --fs-display: clamp(2.2rem, 4.8vw, 3.6rem); /* Archivo 700, wdth 115, tracking -0.02em */
   --fs-h1: clamp(2rem, 4vw, 2.75rem); /* Archivo 600, wdth 110 */
   --fs-h2: 1.375rem; /* Archivo 600 */
   --fs-h3: 1.0625rem; /* Archivo 600 */

@@ -27,7 +27,7 @@ function Home() {
     <>
       <SiteHeader />
 
-      <main className={pageLayout.page}>
+      <main className={`${pageLayout.page} ${styles.main}`}>
         <section>
           <Label as="h2" className={styles.projectsHeading}>
             Projects

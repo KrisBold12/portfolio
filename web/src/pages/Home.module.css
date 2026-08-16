@@ -1,3 +1,17 @@
+/* The identity block sits directly above the grid, so the join is closer than
+   the shared page padding assumes; it is set at 80% of it. Only the home has
+   anything above <main> — on the project page the same padding is the distance
+   from the top of the viewport, with nothing to tighten against. */
+.main {
+  --page-top: calc(var(--s6) * 0.8);
+}
+
+@media (min-width: 768px) {
+  .main {
+    --page-top: calc(var(--s7) * 0.8);
+  }
+}
+
 .projectsHeading {
   margin-bottom: var(--s4);
 }

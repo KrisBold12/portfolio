@@ -2,16 +2,25 @@
    768px and 48px at and above it (Global Constraints, "Layout"). Home and
    DogBreedProject both need exactly this contract, so it lives once here
    instead of being copied into each page's own module. */
+/* The top padding is read through --page-top so a page that renders something
+   above <main> can tighten the join without restating the contract. Written
+   as a variable rather than as an override in the page's own module: two
+   rules of equal specificity setting the same property would be decided by
+   the order the bundler happens to emit the two files in, and the shorthand
+   in the media query below would silently win back the value at 768px. A
+   custom property is read, not competed with, so neither can happen.
+
+   Pages that set nothing keep --s6 / --s7 exactly as before. */
 .page {
   max-width: 1120px;
   margin: 0 auto;
-  padding: var(--s6) var(--s5);
+  padding: var(--page-top, var(--s6)) var(--s5) var(--s6);
   display: grid;
   gap: var(--s7);
 }
 
 @media (min-width: 768px) {
   .page {
-    padding: var(--s7) var(--s7);
+    padding: var(--page-top, var(--s7)) var(--s7) var(--s7);
   }
 }
