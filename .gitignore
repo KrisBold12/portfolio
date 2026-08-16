@@ -103,3 +103,7 @@ Desktop.ini
 # esattamente le stesse versioni. Ignorarli e l'errore che
 # distrugge la riproducibilita.
 # ─────────────────────────────────────────────────────────────
+
+# Claude
+.claude/
+CLAUDE.md
