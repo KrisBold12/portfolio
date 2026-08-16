@@ -5,10 +5,15 @@ origin: nginx terminates TLS, serves the built front end, and forwards `/api`
 to a container on loopback. There is no CORS configuration anywhere in the
 FastAPI service because from the browser's point of view there is one host.
 
-The server holds a clone of this repository at `/opt/portfolio`. Nothing is
-copied onto it by hand, which is the property the rest of this file exists to
-keep: `git log -1` there answers what is deployed, and `git status` answers
-whether anyone changed it outside git.
+The server holds a clone of this repository at `/opt/portfolio`, tracking
+`main`. Nothing is copied onto it by hand, which is the property the rest of
+this file exists to keep: `git log -1` there answers what is deployed, and
+`git status` answers whether anyone changed it outside git.
+
+`main` and not `dev`: the clone was on `dev` for a while, which meant a push to
+the working branch would have gone live at the next pull, before anything had
+been merged. Nothing bad came of it, but the branch a server follows is the
+branch that decides what can reach production.
 
 Getting to that took two corrections. The compose file was originally copied up
 with `scp` while its own header claimed the deploy was answerable from git, and
@@ -84,7 +89,7 @@ Pillow.
 Recorded because it is otherwise only in one person's memory.
 
 ```
-sudo git clone https://github.com/KrisBold12/portfolio.git /opt/portfolio
+sudo git clone -b main https://github.com/KrisBold12/portfolio.git /opt/portfolio
 sudo chown -R ubuntu:ubuntu /opt/portfolio
 
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash -
