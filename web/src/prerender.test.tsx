@@ -5,7 +5,7 @@ import { BrowserRouter, StaticRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 
 import App from './App'
-import { DOG_BREED, HOME, OG_IMAGE, ROUTES, SITE_URL } from './routes'
+import { DOG_BREED, HOME, ROUTES, SITE_URL } from './routes'
 import { attr, head, text } from '../scripts/head.mjs'
 
 /**
@@ -39,6 +39,18 @@ describe('ROUTES', () => {
   it('does not repeat a title or a description between routes', () => {
     expect(HOME.title).not.toBe(DOG_BREED.title)
     expect(HOME.description).not.toBe(DOG_BREED.description)
+  })
+
+  /**
+   * A route copied from another one keeps its card, and then two pages unfurl
+   * as the same picture — which is the whole reason the card is per route.
+   * That the file it names exists is checked in scripts/cards.test.mts, which
+   * can read the filesystem; this project's types are the browser's.
+   */
+  it('gives every route its own card', () => {
+    const images = ROUTES.map((r) => r.ogImage)
+    expect(new Set(images).size).toBe(images.length)
+    for (const image of images) expect(image.startsWith('/')).toBe(true)
   })
 })
 
@@ -96,7 +108,7 @@ describe('server rendering', () => {
 })
 
 describe('head tags', () => {
-  const built = (route: typeof HOME) => head({ route, siteUrl: SITE_URL, ogImage: OG_IMAGE })
+  const built = (route: typeof HOME) => head({ route, siteUrl: SITE_URL })
 
   it('makes canonical and og:url absolute', () => {
     expect(built(DOG_BREED)).toContain(
@@ -106,12 +118,20 @@ describe('head tags', () => {
   })
 
   it('points og:image at an absolute URL, which is the only kind unfurlers fetch', () => {
-    expect(built(HOME)).toContain(`property="og:image" content="${SITE_URL}${OG_IMAGE}"`)
+    for (const route of ROUTES) {
+      expect(built(route)).toContain(`property="og:image" content="${SITE_URL}${route.ogImage}"`)
+    }
+    expect(built(HOME)).not.toContain(DOG_BREED.ogImage)
   })
 
   it('escapes quotes so a description cannot close its own attribute', () => {
-    const route = { path: '/x', title: 'a & b', description: 'he said "no" & left' }
-    const html = head({ route, siteUrl: SITE_URL, ogImage: OG_IMAGE })
+    const route = {
+      path: '/x',
+      title: 'a & b',
+      description: 'he said "no" & left',
+      ogImage: '/og.png',
+    }
+    const html = head({ route, siteUrl: SITE_URL })
     expect(html).toContain('content="he said &quot;no&quot; &amp; left"')
     expect(html).toContain('<title>a &amp; b</title>')
   })

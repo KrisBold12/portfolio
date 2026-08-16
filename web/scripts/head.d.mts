@@ -13,8 +13,4 @@ export declare function attr(value: string): string
 
 export declare function text(value: string): string
 
-export declare function head(input: {
-  route: RouteMeta
-  siteUrl: string
-  ogImage: string
-}): string
+export declare function head(input: { route: RouteMeta; siteUrl: string }): string

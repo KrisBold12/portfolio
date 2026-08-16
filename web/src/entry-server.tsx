@@ -37,4 +37,4 @@ export function render(path: string): string {
   )
 }
 
-export { ROUTES, SITE_URL, OG_IMAGE } from './routes'
+export { ROUTES, SITE_URL } from './routes'

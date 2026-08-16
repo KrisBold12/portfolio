@@ -39,13 +39,13 @@ async function main() {
   }
 
   const entry = pathToFileURL(join(ssrDir, 'entry-server.js')).href
-  const { render, ROUTES, SITE_URL, OG_IMAGE } = await import(entry)
+  const { render, ROUTES, SITE_URL } = await import(entry)
 
   for (const route of ROUTES) {
     const before = template.slice(0, template.indexOf(HEAD_START))
     const after = template.slice(template.indexOf(HEAD_END) + HEAD_END.length)
 
-    const html = (before + head({ route, siteUrl: SITE_URL, ogImage: OG_IMAGE }) + after).replace(
+    const html = (before + head({ route, siteUrl: SITE_URL }) + after).replace(
       APP_HTML,
       render(route.path),
     )

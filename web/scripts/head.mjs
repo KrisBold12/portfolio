@@ -28,7 +28,7 @@ export function text(value) {
  * og:url and canonical are absolute because both are read by machines that
  * have no base to resolve against, unlike the browser loading the page.
  */
-export function head({ route, siteUrl, ogImage }) {
+export function head({ route, siteUrl }) {
   const url = siteUrl + (route.path === '/' ? '/' : route.path)
   return [
     `<title>${text(route.title)}</title>`,
@@ -38,7 +38,7 @@ export function head({ route, siteUrl, ogImage }) {
     `<meta property="og:url" content="${attr(url)}" />`,
     `<meta property="og:title" content="${attr(route.title)}" />`,
     `<meta property="og:description" content="${attr(route.description)}" />`,
-    `<meta property="og:image" content="${attr(siteUrl + ogImage)}" />`,
+    `<meta property="og:image" content="${attr(siteUrl + route.ogImage)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
   ].join('\n    ')
 }
