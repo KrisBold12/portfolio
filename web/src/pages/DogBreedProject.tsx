@@ -65,9 +65,10 @@ function DogBreedProject() {
       <header className={styles.header}>
         <h1 className={styles.title}>Calibrated dog breed classifier</h1>
         <p className={styles.thesis}>
-          Names one of <Num>120</Num> dog breeds from a photo, refuses the images it cannot
-          answer for, and reports a confidence that matches how often it is right. Both of
-          those are measured on photographs from a dataset it was never fitted on.
+          Measured a six-point generalisation gap that the standard benchmark cannot
+          show, because its test images sit in the training set of every pretrained model. The
+          classifier itself names one of <Num>120</Num> dog breeds, refuses the photos it
+          cannot answer for, and reports a confidence that matches how often it is right.
         </p>
       </header>
 

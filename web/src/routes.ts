@@ -35,7 +35,7 @@ export const DOG_BREED: RouteMeta = {
   path: '/projects/dog-breed',
   title: 'Calibrated dog breed classifier — Kristian Boldini',
   description:
-    'A dog breed classifier that refuses the photos it cannot answer for and reports a confidence that matches its accuracy, with the measurements behind both and a live demo.',
+    'A six-point generalisation gap the standard benchmark cannot show, measured on a dog breed classifier that also refuses the photos it cannot answer for and states a confidence matching its accuracy.',
 }
 
 export const ROUTES: RouteMeta[] = [HOME, DOG_BREED]
