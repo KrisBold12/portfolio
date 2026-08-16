@@ -84,8 +84,8 @@ export const projects: Project[] = [
     slug: "triton-kernel",
     planned: true,
     domain: "Project in development",
-    title: "Fused Triton kernel on a real hot path",
+    title: "When a fused Triton kernel is worth writing",
     summary:
-      "A kernel is easy to make look fast on its own, because a microbenchmark measures the operation and not the model around it. Profiles a model to find an operation limited by memory bandwidth rather than by arithmetic, fuses it into one custom Triton kernel, and reports what that changes in end-to-end latency next to what it changes in the microbenchmark, since the two rarely agree. Coming soon.",
+      "A fused kernel is easy to make look fast on its own, because a microbenchmark times the operation and not the model around it. Writes two Triton kernels for the memory-bound tail of a transformer and measures them across batch sizes and sequence lengths, since the activations a fusion saves scale with the tokens processed together while the weights it cannot avoid reading do not. The answer is a crossover rather than a speedup. Coming soon.",
   },
 ];
