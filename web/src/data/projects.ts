@@ -81,11 +81,11 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "safety-signals",
+    slug: "triton-kernel",
     planned: true,
     domain: "Project in development",
-    title: "Safety signals under reporting delay",
+    title: "Fused Triton kernel on a real hot path",
     summary:
-      "Veterinary adverse event reports reach the FDA months after the event, so a recent month looks quiet until it fills in and a growing problem can read as a receding one. Measures how early a signal is detectable under that delay, and what the earliness costs in false alarms. With no denominator there is no absolute risk, so the output ranks what to investigate rather than declaring a verdict. Coming soon.",
+      "A kernel is easy to make look fast on its own, because a microbenchmark measures the operation and not the model around it. Profiles a model to find an operation limited by memory bandwidth rather than by arithmetic, fuses it into one custom Triton kernel, and reports what that changes in end-to-end latency next to what it changes in the microbenchmark, since the two rarely agree. Coming soon.",
   },
 ];
