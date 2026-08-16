@@ -2,6 +2,12 @@
  * One entry per project card on the home page. Adding a project is a data
  * edit here, not a markup change in Home.tsx or ProjectCard.tsx.
  *
+ * The summary leads with the finding rather than with what the thing is,
+ * because a card in a list is read by someone deciding whether to click and
+ * "dog breed classifier" is a title they have seen before. The second sentence
+ * carries the description, so nobody is left reading a result without knowing
+ * what produced it.
+ *
  * `color` on a figure follows the site's dataset colour convention (Global
  * Constraints, "Colour"): a figure measured on Stanford Dogs is `--signal`,
  * one measured on Oxford-IIIT Pet is `--probe`. A figure that isn't
@@ -54,7 +60,7 @@ export const projects: Project[] = [
     domain: "Image classification",
     title: "Calibrated dog breed classifier",
     summary:
-      "Names one of 120 dog breeds from a photo, refuses the ones it cannot answer for, and reports a confidence that matches how often it is right. Scored on two datasets, because the usual benchmark is cut from ImageNet and inflates the number by six points.",
+      "Measured a six-point generalisation gap that the standard benchmark cannot show, because its test images sit in the training set of every pretrained model. The classifier itself names one of 120 dog breeds, refuses the photos it cannot answer for, and reports a confidence that matches how often it is right.",
     figures: [
       {
         value: "93.11%",
