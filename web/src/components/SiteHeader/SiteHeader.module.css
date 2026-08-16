@@ -33,8 +33,22 @@
   color: var(--bone);
 }
 
-.role {
+/* Both metadata lines under the name — the role and the course of study —
+   share one class. They are the same thing typographically and neither is
+   emphasised over the other; two rules would be identical today and would
+   drift the first time only one of them was touched. */
+.meta {
   font-family: var(--font-data);
   font-size: var(--fs-small);
   color: var(--muted);
+}
+
+/* <address> is the right element for the author's contact details, and it
+   arrives with the browser's italic default, which the data face is not
+   drawn for. */
+.contact {
+  font-style: normal;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
 }

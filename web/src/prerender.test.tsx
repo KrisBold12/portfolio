@@ -79,6 +79,20 @@ describe('server rendering', () => {
     )
     expect(html).toContain('classifier-demo-slot')
   })
+
+  it('puts the contact address in the markup rather than behind JavaScript', () => {
+    // The address is on the page to be written to, and an obfuscated one would
+    // be the single piece of content on the site that appears only after
+    // hydration — the arrangement this whole step exists to remove. Assembling
+    // it in a handler would still render and still look right in a browser,
+    // so the assertion is on the markup the server produces.
+    const html = renderToString(
+      <StaticRouter location={HOME.path}>
+        <App />
+      </StaticRouter>,
+    )
+    expect(html).toContain('mailto:kristianboldini@gmail.com')
+  })
 })
 
 describe('head tags', () => {
