@@ -3,6 +3,7 @@ import ProjectCard from '../components/ProjectCard/ProjectCard'
 import SiteHeader from '../components/SiteHeader/SiteHeader'
 import { projects } from '../data/projects'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { HOME } from '../routes'
 import pageLayout from '../styles/pageLayout.module.css'
 import styles from './Home.module.css'
 
@@ -20,10 +21,7 @@ import styles from './Home.module.css'
  * explains it.
  */
 function Home() {
-  useDocumentMeta(
-    'Kristian Boldini — Machine learning engineer',
-    'Portfolio of Kristian Boldini, a machine learning engineer. Evidence-first project pages, starting with a dog breed classifier measured across two datasets.',
-  )
+  useDocumentMeta(HOME.title, HOME.description)
 
   return (
     <>

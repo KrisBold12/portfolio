@@ -3,6 +3,7 @@ import ClassifierDemo from '../features/demo/ClassifierDemo'
 import Num from '../components/Num/Num'
 import Panel from '../components/Panel/Panel'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { DOG_BREED } from '../routes'
 import pageLayout from '../styles/pageLayout.module.css'
 import quietLink from '../styles/quietLink.module.css'
 import styles from './DogBreedProject.module.css'
@@ -53,10 +54,7 @@ function More({ to, children }: { to: string; children: React.ReactNode }) {
  * and a device that fires everywhere stops encoding anything).
  */
 function DogBreedProject() {
-  useDocumentMeta(
-    'Calibrated dog breed classifier — Kristian Boldini',
-    'A dog breed classifier that refuses the photos it cannot answer for and reports a confidence that matches its accuracy, with the measurements behind both and a live demo.',
-  )
+  useDocumentMeta(DOG_BREED.title, DOG_BREED.description)
 
   return (
     <main className={pageLayout.page}>

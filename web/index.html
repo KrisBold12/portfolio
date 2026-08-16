@@ -10,19 +10,21 @@
       href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <title>Kristian Boldini — Machine learning engineer</title>
-    <meta
-      name="description"
-      content="Portfolio of Kristian Boldini, a machine learning engineer. Evidence-first project pages, starting with a dog breed classifier measured across two datasets."
-    />
-    <meta property="og:title" content="Kristian Boldini — Machine learning engineer" />
-    <meta
-      property="og:description"
-      content="Portfolio of Kristian Boldini, a machine learning engineer. Evidence-first project pages, starting with a dog breed classifier measured across two datasets."
-    />
+    <!--
+      Everything between the two markers is replaced per route by
+      scripts/prerender.mjs, so nothing written here reaches production. It
+      exists for `vite dev`, which does not run the prerender step and would
+      otherwise serve a document with no title at all until React mounts and
+      useDocumentMeta sets one. The real values live in src/routes.ts, and are
+      deliberately not copied here: a copy would be a second place to update
+      and would read as authoritative while being neither used nor checked.
+    -->
+    <!--head-start-->
+    <title>Kristian Boldini</title>
+    <!--head-end-->
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><!--app-html--></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
